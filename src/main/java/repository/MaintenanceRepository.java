@@ -2,5 +2,5 @@ package repository;
 
 import model.MaintenanceTask;
 
-public class MaintenanceTaskRepository extends AbstractRepository<MaintenanceTask> {
+public class MaintenanceRepository extends AbstractRepository<MaintenanceTask> {
 }
