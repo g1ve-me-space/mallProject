@@ -72,4 +72,11 @@ public class FloorController {
         floorService.save(floor);
         return ResponseEntity.status(201).body(floor);
     }
+
+    // Added: delete via POST to avoid DELETE verb as per assignment
+    @PostMapping("/{id}/delete")
+    public ResponseEntity<?> deleteViaPost(@PathVariable String id) {
+        floorService.deleteById(id);
+        return ResponseEntity.noContent().build();
+    }
 }

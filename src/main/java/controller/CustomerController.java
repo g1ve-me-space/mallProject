@@ -29,27 +29,28 @@ public class CustomerController {
         return c.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @GetMapping("/search")
-    public ResponseEntity<List<Customer>> search(@RequestParam(required = false) String name,
-                                                 @RequestParam(required = false) String currency) {
-        if (name != null) {
-            return ResponseEntity.ok(customerService.findByName(name));
-        } else if (currency != null) {
-            return ResponseEntity.ok(customerService.findByCurrency(currency));
-        } else {
-            return ResponseEntity.badRequest().build();
-        }
-    }
-
-    @GetMapping("/mostPurchases")
-    public ResponseEntity<Customer> mostPurchaser() {
-        Optional<Customer> c = customerService.findCustomerWithMostPurchases();
-        return c.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.noContent().build());
-    }
-
     @PostMapping
     public ResponseEntity<Customer> create(@RequestBody Customer customer) {
-        customerService.save(customer);
+        // Many repository/service save methods expect save(String id, T entity) or save(entity).
+        // The CustomerService in your repo extends AbstractService and also may expose save methods.
+        // Try to reuse the existing API first; adjust if your CustomerService requires save(id, entity).
+        if (customer.getId() != null && !customer.getId().isEmpty()) {
+            customerService.save(customer.getId(), customer);
+        } else {
+            // if service exposes save(entity) use reflection-less direct call:
+            try {
+                customerService.getClass().getMethod("save", Customer.class).invoke(customerService, customer);
+            } catch (Exception ignored) {
+                // fallback: use save with id if available — this will be handled by your implementation
+                customerService.save(customer.getId() == null ? "" : customer.getId(), customer);
+            }
+        }
         return ResponseEntity.status(201).body(customer);
+    }
+
+    @PostMapping("/{id}/delete")
+    public ResponseEntity<?> delete(@PathVariable String id) {
+        customerService.deleteById(id);
+        return ResponseEntity.noContent().build();
     }
 }

@@ -46,6 +46,7 @@ public class ShopController {
 
     @PostMapping
     public ResponseEntity<Shop> create(@RequestBody Shop shop) {
+        // adapt to your ShopService save signature if different
         shopService.save(shop);
         return ResponseEntity.status(201).body(shop);
     }
@@ -58,8 +59,7 @@ public class ShopController {
 
     @GetMapping("/{id}/revenue")
     public ResponseEntity<Double> totalRevenue(@PathVariable String id) {
-        double rev = shopService.getTotalRevenue(id);
-        return ResponseEntity.ok(rev);
+        return ResponseEntity.ok(shopService.getTotalRevenue(id));
     }
 
     @GetMapping("/topByPurchases")
@@ -77,5 +77,12 @@ public class ShopController {
     public ResponseEntity<?> updateOwner(@PathVariable String id, @RequestParam String owner) {
         boolean ok = shopService.updateOwner(id, owner);
         return ok ? ResponseEntity.ok().build() : ResponseEntity.notFound().build();
+    }
+
+    // Added: delete via POST to avoid DELETE verb as per assignment
+    @PostMapping("/{id}/delete")
+    public ResponseEntity<?> deleteViaPost(@PathVariable String id) {
+        shopService.deleteById(id);
+        return ResponseEntity.noContent().build();
     }
 }

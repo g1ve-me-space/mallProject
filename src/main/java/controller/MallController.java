@@ -83,4 +83,11 @@ public class MallController {
         boolean ok = mallRepository.updateCity(id, value);
         return ok ? ResponseEntity.ok().build() : ResponseEntity.notFound().build();
     }
+
+    // Added: delete via POST to avoid DELETE verb as per assignment
+    @PostMapping("/{id}/delete")
+    public ResponseEntity<?> deleteViaPost(@PathVariable String id) {
+        mallRepository.deleteById(id);
+        return ResponseEntity.noContent().build();
+    }
 }
