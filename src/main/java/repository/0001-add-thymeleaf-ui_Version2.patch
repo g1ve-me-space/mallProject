@@ -1,0 +1,58 @@
+From e9f1d7a0b000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: MihalyAndrei <you@example.com>
+Date: Tue, 04 Nov 2025 21:18:26 +0000
+Subject: [PATCH] Add Thymeleaf web UI (Projektaufgabe 2): mall,floor,shop,customer
+
+Add a Thymeleaf view layer: MallService, view controllers for mall/floor/shop/customer,
+register MallService bean in AppConfig, and add Thymeleaf templates (index + form)
+for mall, floor, shop, customer.
+
+This complements the existing REST API by adding the HTML UI required by the assignment.
+---
+ src/main/java/controller/AppConfig.java                 |  6 ++++++
+ src/main/java/controller/CustomerViewController.java   | 125 ++++++++++++++++++++++++++++++
+ src/main/java/controller/FloorViewController.java      | 107 ++++++++++++++++++++++++++
+ src/main/java/controller/MallViewController.java       | 113 +++++++++++++++++++++++++++
+ src/main/java/controller/ShopViewController.java       | 112 ++++++++++++++++++++++++++
+ src/main/java/service/MallService.java                 |  56 +++++++++++
+ src/main/resources/templates/customer/form.html       |  36 +++++++
+ src/main/resources/templates/customer/index.html      |  63 ++++++++++
+ src/main/resources/templates/floor/form.html          |  34 ++++++
+ src/main/resources/templates/floor/index.html         |  63 ++++++++++
+ src/main/resources/templates/mall/form.html           |  56 +++++++++
+ src/main/resources/templates/mall/index.html          |  84 +++++++++++++
+ src/main/resources/templates/shop/form.html           |  67 ++++++++++
+ src/main/resources/templates/shop/index.html          |  84 +++++++++++++
+ 14 files changed, 1066 insertions(+)
+ create mode 100644 src/main/java/controller/CustomerViewController.java
+ create mode 100644 src/main/java/controller/FloorViewController.java
+ create mode 100644 src/main/java/controller/MallViewController.java
+ create mode 100644 src/main/java/controller/ShopViewController.java
+ create mode 100644 src/main/java/service/MallService.java
+ create mode 100644 src/main/resources/templates/customer/form.html
+ create mode 100644 src/main/resources/templates/customer/index.html
+ create mode 100644 src/main/resources/templates/floor/form.html
+ create mode 100644 src/main/resources/templates/floor/index.html
+ create mode 100644 src/main/resources/templates/mall/form.html
+ create mode 100644 src/main/resources/templates/mall/index.html
+ create mode 100644 src/main/resources/templates/shop/form.html
+ create mode 100644 src/main/resources/templates/shop/index.html
+--- a/src/main/java/controller/AppConfig.java
++++ b/src/main/java/controller/AppConfig.java
+@@ -13,6 +13,7 @@
+ import service.CustomerService;
+ import service.FloorService;
+ import service.ShopService;
++import service.MallService;
+ 
+ import java.util.ArrayList;
+ 
+@@
+     @Bean public ShopService shopService() { return new ShopService(shop_repository()); }
+     @Bean public FloorService floorService() { return new FloorService(floorRepository()); }
+     @Bean public CustomerService customerService() { return new CustomerService(customerRepository()); }
++    @Bean public MallService mallService() { return new MallService(mallRepository()); }
+ 
+     @Bean
+     public CommandLineRunner seedData(
+*** End Patch
