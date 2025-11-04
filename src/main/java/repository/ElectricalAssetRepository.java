@@ -90,6 +90,11 @@ public class ElectricalAssetRepository extends AbstractRepository<ElectricalAsse
         super.save(id, entity);
     }
 
+    @Override
+    public void delete(String id) {
+
+    }
+
     // Alternative save method that uses the entity's own ID
     public void save(ElectricalAsset entity) {
         if (entity.getId() == null || entity.getId().trim().isEmpty()) {

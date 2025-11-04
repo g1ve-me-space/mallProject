@@ -4,7 +4,7 @@ import model.SecurityStaff;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class SecurityStaffRepository extends AbstractRepository<SecurityStaff> {
+public abstract class SecurityStaffRepository extends AbstractRepository<SecurityStaff> {
 
     // Find security staff by badge number
     public Optional<SecurityStaff> findByBadgeNo(String badgeNo) {

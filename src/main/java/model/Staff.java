@@ -2,7 +2,7 @@
 
 package model;
 
-public abstract class Staff {
+public class Staff {
     private String id;
     private String name;
 
@@ -18,4 +18,7 @@ public abstract class Staff {
 
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
+
+    public void setRole(String security) {
+    }
 }

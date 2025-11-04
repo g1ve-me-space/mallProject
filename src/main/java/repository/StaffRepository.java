@@ -4,7 +4,7 @@ import model.Staff;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class StaffRepository extends AbstractRepository<Staff> {
+public abstract class StaffRepository extends AbstractRepository<Staff> {
 
     // Find staff by name (partial match)
     public List<Staff> findByNameContaining(String name) {

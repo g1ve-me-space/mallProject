@@ -5,7 +5,7 @@ import model.Floor;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class MallRepository extends AbstractRepository<Mall> {
+public abstract class MallRepository extends AbstractRepository<Mall> {
 
     // Find mall by name
     public Optional<Mall> findByName(String name) {

@@ -5,7 +5,7 @@ import model.Purchase;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class ShopRepository extends AbstractRepository<Shop> {
+public abstract class ShopRepository extends AbstractRepository<Shop> {
 
     // Find shop by name
     public Optional<Shop> findByName(String name) {

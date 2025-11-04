@@ -4,7 +4,7 @@ import model.Purchase;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class PurchaseRepository extends AbstractRepository<Purchase> {
+public abstract class PurchaseRepository extends AbstractRepository<Purchase> {
 
     // Find purchases by customer ID
     public List<Purchase> findByCustomerId(String customerId) {

@@ -143,6 +143,11 @@ public class StaffAssignmentRepository extends AbstractRepository<StaffAssignmen
         super.save(id, entity);
     }
 
+    @Override
+    public void delete(String id) {
+
+    }
+
     // Alternative save method that uses the entity's own ID
     public void save(StaffAssignment entity) {
         if (entity.getId() == null || entity.getId().trim().isEmpty()) {

@@ -28,4 +28,6 @@ public abstract class AbstractRepository<T> {
     public int count() {
         return store.size();
     }
+
+    public abstract void delete(String id);
 }

@@ -4,7 +4,7 @@ import model.MaintenanceTask;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class MaintenanceTaskRepository extends AbstractRepository<MaintenanceTask> {
+public abstract class MaintenanceTaskRepository extends AbstractRepository<MaintenanceTask> {
 
     // Find tasks by status
     public List<MaintenanceTask> findByStatus(String status) {
