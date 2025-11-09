@@ -1,81 +1,94 @@
 package controller;
 
+import model.Floor;
+import model.Staff;
 import model.StaffAssignment;
-import org.springframework.http.ResponseEntity;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import repository.FloorRepository;
+import repository.MaintenanceStaffRepository;
+import repository.SecurityStaffRepository;
 import repository.StaffAssignmentRepository;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.UUID;
 
-@RestController
-@RequestMapping("/api/assignments")
+@Controller
+@RequestMapping("/assignments")
 public class StaffAssignmentController {
 
     private final StaffAssignmentRepository assignmentRepository;
+    private final MaintenanceStaffRepository maintenanceStaffRepository;
+    private final SecurityStaffRepository securityStaffRepository;
+    private final FloorRepository floorRepository;
 
-    public StaffAssignmentController(StaffAssignmentRepository assignmentRepository) {
+    @Autowired
+    public StaffAssignmentController(StaffAssignmentRepository assignmentRepository,
+                                     MaintenanceStaffRepository maintenanceStaffRepository,
+                                     SecurityStaffRepository securityStaffRepository,
+                                     FloorRepository floorRepository) {
         this.assignmentRepository = assignmentRepository;
+        this.maintenanceStaffRepository = maintenanceStaffRepository;
+        this.securityStaffRepository = securityStaffRepository;
+        this.floorRepository = floorRepository;
     }
 
+    /**
+     * GET /assignments
+     * Displays a list of all staff assignments.
+     */
     @GetMapping
-    public ResponseEntity<List<StaffAssignment>> listAll() {
-        return ResponseEntity.ok(assignmentRepository.findAll());
+    public String listAll(Model model) {
+        model.addAttribute("assignments", assignmentRepository.findAll());
+        return "assignments/index";
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<StaffAssignment> getById(@PathVariable String id) {
-        Optional<StaffAssignment> a = assignmentRepository.findById(id);
-        return a.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    /**
+     * GET /assignments/new
+     * Displays the form for creating a new assignment.
+     * It pre-populates the form with lists of all staff and floors.
+     */
+    @GetMapping("/new")
+    public String showCreateForm(Model model) {
+        // Combine maintenance and security staff into one list
+        List<Staff> allStaff = new ArrayList<>();
+        allStaff.addAll(maintenanceStaffRepository.findAll());
+        allStaff.addAll(securityStaffRepository.findAll());
+        allStaff.sort(Comparator.comparing(Staff::getName));
+
+        // Get all floors
+        List<Floor> allFloors = floorRepository.findAll();
+        allFloors.sort(Comparator.comparing(Floor::getNumber));
+
+        model.addAttribute("assignment", new StaffAssignment());
+        model.addAttribute("allStaff", allStaff);
+        model.addAttribute("allFloors", allFloors);
+
+        return "assignments/form";
     }
 
-    @GetMapping("/byFloor/{floorId}")
-    public ResponseEntity<List<StaffAssignment>> byFloor(@PathVariable String floorId) {
-        return ResponseEntity.ok(assignmentRepository.findByFloorId(floorId));
+    /**
+     * POST /assignments
+     * Processes the form submission for creating a new assignment.
+     */
+    @PostMapping
+    public String create(@ModelAttribute StaffAssignment assignment) {
+        assignment.setId(UUID.randomUUID().toString());
+        assignmentRepository.save(assignment);
+        return "redirect:/assignments";
     }
 
-    @GetMapping("/byStaff/{staffId}")
-    public ResponseEntity<List<StaffAssignment>> byStaff(@PathVariable String staffId) {
-        return ResponseEntity.ok(assignmentRepository.findByStaffId(staffId));
-    }
-
-    @PatchMapping("/{id}/shift")
-    public ResponseEntity<?> updateShift(@PathVariable String id, @RequestParam String shift) {
-        boolean ok = assignmentRepository.updateShift(id, shift);
-        return ok ? ResponseEntity.ok().build() : ResponseEntity.notFound().build();
-    }
-
-    @PatchMapping("/{id}/floor")
-    public ResponseEntity<?> updateFloor(@PathVariable String id, @RequestParam String floorId) {
-        boolean ok = assignmentRepository.updateFloor(id, floorId);
-        return ok ? ResponseEntity.ok().build() : ResponseEntity.notFound().build();
-    }
-
-    @GetMapping("/countsByFloor")
-    public ResponseEntity<Map<String, Long>> countsByFloor() {
-        return ResponseEntity.ok(assignmentRepository.getAssignmentCountByFloor());
-    }
-
-    @GetMapping("/countsByShift")
-    public ResponseEntity<Map<String, Long>> countsByShift() {
-        return ResponseEntity.ok(assignmentRepository.getAssignmentCountByShift());
-    }
-
-    @GetMapping("/staffWithMultiple")
-    public ResponseEntity<Map<String, Long>> staffWithMultiple() {
-        return ResponseEntity.ok(assignmentRepository.findStaffWithMultipleAssignments());
-    }
-
-    @GetMapping("/isAssigned")
-    public ResponseEntity<Boolean> isAssigned(@RequestParam String staffId, @RequestParam String floorId, @RequestParam String shift) {
-        boolean assigned = assignmentRepository.isStaffAssignedToFloor(staffId, floorId, shift);
-        return ResponseEntity.ok(assigned);
-    }
-
-    @GetMapping("/allStaffIds")
-    public ResponseEntity<Set<String>> allStaffIds() {
-        return ResponseEntity.ok(assignmentRepository.getAllStaffIdsWithAssignments());
+    /**
+     * POST /assignments/{id}/delete
+     * Deletes the specified assignment.
+     */
+    @PostMapping("/{id}/delete")
+    public String delete(@PathVariable String id) {
+        assignmentRepository.delete(id);
+        return "redirect:/assignments";
     }
 }

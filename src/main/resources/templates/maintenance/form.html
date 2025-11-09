@@ -1,4 +1,5 @@
 <!--@thymesVar id="task" type="model.MaintenanceTask"-->
+<!--@thymesVar id="allStatuses" type="java.util.List<model.TaskStatus>"-->
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
@@ -16,10 +17,13 @@
     </div>
     <div>
         <label for="status">Status:</label>
+        <!-- This dropdown is now built dynamically from the TaskStatus enum -->
         <select id="status" th:field="*{status}">
-            <option value="Planned">Planned</option>
-            <option value="Active">Active</option>
-            <option value="Done">Done</option>
+            <option th:each="s : ${allStatuses}"
+                    th:value="${s}"
+                    th:text="${s.toString()}">
+                ...
+            </option>
         </select>
     </div>
     <div>

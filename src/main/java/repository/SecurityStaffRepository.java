@@ -1,66 +1,75 @@
 package repository;
 
 import model.SecurityStaff;
-import java.util.*;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
-public abstract class SecurityStaffRepository extends AbstractRepository<SecurityStaff> {
+public class SecurityStaffRepository {
 
-    // Find security staff by badge number
+    protected final Map<String, SecurityStaff> store = new ConcurrentHashMap<>();
+
+    // --- Basic Methods ---
+
+    public List<SecurityStaff> findAll() {
+        return new ArrayList<>(store.values());
+    }
+
+    public Optional<SecurityStaff> findById(String id) {
+        return Optional.ofNullable(store.get(id));
+    }
+
+    public void save(SecurityStaff item) {
+        if (item.getId() == null || item.getId().isEmpty()) {
+            throw new IllegalArgumentException("Entity ID cannot be null or empty.");
+        }
+        store.put(item.getId(), item);
+    }
+
+    public void delete(String id) {
+        // This will be implemented in the AppConfig @Bean definition
+        throw new UnsupportedOperationException();
+    }
+
+    // --- Your Custom Methods (Preserved) ---
+
     public Optional<SecurityStaff> findByBadgeNo(String badgeNo) {
         return store.values().stream()
                 .filter(staff -> staff.getBadgeNo() != null && staff.getBadgeNo().equals(badgeNo))
                 .findFirst();
     }
 
-    // Find security staff with badge numbers containing pattern
     public List<SecurityStaff> findByBadgeNoContaining(String pattern) {
         return store.values().stream()
                 .filter(staff -> staff.getBadgeNo() != null && staff.getBadgeNo().contains(pattern))
                 .collect(Collectors.toList());
     }
 
-    // Update badge number
     public boolean updateBadgeNo(String staffId, String newBadgeNo) {
         Optional<SecurityStaff> staffOpt = findById(staffId);
         if (staffOpt.isPresent()) {
             SecurityStaff staff = staffOpt.get();
             staff.setBadgeNo(newBadgeNo);
-            save(staff.getId(), staff);
+            save(staff);
             return true;
         }
         return false;
     }
 
-    // Validate badge number uniqueness
     public boolean isBadgeNoUnique(String badgeNo) {
         return store.values().stream()
                 .noneMatch(staff -> staff.getBadgeNo() != null && staff.getBadgeNo().equals(badgeNo));
     }
 
-    // Get all badge numbers
     public List<String> getAllBadgeNumbers() {
         return store.values().stream()
                 .filter(staff -> staff.getBadgeNo() != null)
                 .map(SecurityStaff::getBadgeNo)
                 .sorted()
                 .collect(Collectors.toList());
-    }
-
-    // Override save method to ensure ID consistency
-    @Override
-    public void save(String id, SecurityStaff entity) {
-        if (!id.equals(entity.getId())) {
-            entity.setId(id);
-        }
-        super.save(id, entity);
-    }
-
-    // Alternative save method that uses the entity's own ID
-    public void save(SecurityStaff entity) {
-        if (entity.getId() == null || entity.getId().trim().isEmpty()) {
-            throw new IllegalArgumentException("SecurityStaff ID cannot be null or empty");
-        }
-        super.save(entity.getId(), entity);
     }
 }

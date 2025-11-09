@@ -1,6 +1,7 @@
 package controller;
 
 import model.MaintenanceTask;
+import model.TaskStatus; // Import the new enum
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -10,8 +11,8 @@ import repository.MaintenanceTaskRepository;
 import java.util.List;
 import java.util.UUID;
 
-@Controller // Changed from @RestController
-@RequestMapping("/maintenance") // Changed from /api/maintenance-tasks
+@Controller
+@RequestMapping("/maintenance")
 public class MaintenanceTaskController {
 
     private final MaintenanceTaskRepository taskRepository;
@@ -29,7 +30,7 @@ public class MaintenanceTaskController {
     public String listAllTasks(Model model) {
         List<MaintenanceTask> tasks = taskRepository.findAll();
         model.addAttribute("tasks", tasks);
-        return "maintenance/index"; // Renders templates/maintenance/index.html
+        return "maintenance/index";
     }
 
     /**
@@ -38,10 +39,15 @@ public class MaintenanceTaskController {
      */
     @GetMapping("/new")
     public String showCreateForm(Model model) {
+        // Create a new task object for the form
         MaintenanceTask newTask = new MaintenanceTask();
-        newTask.setStatus("Planned"); // Set a default status
+        newTask.setStatus(TaskStatus.PLANNED); // Set a default status using the enum
+
+        // Add the new task and the list of all possible statuses to the model
         model.addAttribute("task", newTask);
-        return "maintenance/form"; // Renders templates/maintenance/form.html
+        model.addAttribute("allStatuses", TaskStatus.values()); // This gets all values from the enum
+
+        return "maintenance/form";
     }
 
     /**
@@ -52,7 +58,7 @@ public class MaintenanceTaskController {
     public String createTask(@ModelAttribute MaintenanceTask task) {
         task.setId(UUID.randomUUID().toString());
         taskRepository.save(task);
-        return "redirect:/maintenance"; // Redirects to the list page
+        return "redirect:/maintenance";
     }
 
     /**
