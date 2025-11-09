@@ -1,0 +1,30 @@
+<!--@thymesVar id="shop" type="model.Shop"-->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Create Shop</title>
+</head>
+<body>
+
+<h1>Create New Shop</h1>
+
+<!-- Form to create a new shop, submits to POST /shop -->
+<form th:action="@{/shop}" th:object="${shop}" method="post">
+    <div>
+        <label for="name">Name:</label>
+        <input type="text" id="name" th:field="*{name}" />
+    </div>
+    <div>
+        <label for="category">Category:</label>
+        <input type="text" id="category" th:field="*{category}" />
+    </div>
+    <div>
+        <button type="submit">Save</button>
+    </div>
+</form>
+
+<a href="/shop">Back to List</a>
+
+</body>
+</html>

@@ -1,66 +1,67 @@
 package controller;
 
 import model.MaintenanceTask;
-import org.springframework.http.ResponseEntity;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import repository.MaintenanceTaskRepository;
 
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.UUID;
 
-@RestController
-@RequestMapping("/api/maintenance-tasks")
+@Controller // Changed from @RestController
+@RequestMapping("/maintenance") // Changed from /api/maintenance-tasks
 public class MaintenanceTaskController {
 
     private final MaintenanceTaskRepository taskRepository;
 
+    @Autowired
     public MaintenanceTaskController(MaintenanceTaskRepository taskRepository) {
         this.taskRepository = taskRepository;
     }
 
+    /**
+     * GET /maintenance
+     * Displays a list of all maintenance tasks.
+     */
     @GetMapping
-    public ResponseEntity<List<MaintenanceTask>> listAll() {
-        return ResponseEntity.ok(taskRepository.findAll());
+    public String listAllTasks(Model model) {
+        List<MaintenanceTask> tasks = taskRepository.findAll();
+        model.addAttribute("tasks", tasks);
+        return "maintenance/index"; // Renders templates/maintenance/index.html
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<MaintenanceTask> getById(@PathVariable String id) {
-        Optional<MaintenanceTask> t = taskRepository.findById(id);
-        return t.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    /**
+     * GET /maintenance/new
+     * Displays the form to create a new task.
+     */
+    @GetMapping("/new")
+    public String showCreateForm(Model model) {
+        MaintenanceTask newTask = new MaintenanceTask();
+        newTask.setStatus("Planned"); // Set a default status
+        model.addAttribute("task", newTask);
+        return "maintenance/form"; // Renders templates/maintenance/form.html
     }
 
-    @GetMapping("/byStatus")
-    public ResponseEntity<List<MaintenanceTask>> byStatus(@RequestParam String status) {
-        return ResponseEntity.ok(taskRepository.findByStatus(status));
-    }
-
+    /**
+     * POST /maintenance
+     * Processes the form submission for creating a new task.
+     */
     @PostMapping
-    public ResponseEntity<MaintenanceTask> create(@RequestBody MaintenanceTask task) {
+    public String createTask(@ModelAttribute MaintenanceTask task) {
+        task.setId(UUID.randomUUID().toString());
         taskRepository.save(task);
-        return ResponseEntity.status(201).body(task);
+        return "redirect:/maintenance"; // Redirects to the list page
     }
 
-    @PatchMapping("/{id}/status")
-    public ResponseEntity<?> updateStatus(@PathVariable String id, @RequestParam String status) {
-        boolean ok = taskRepository.updateStatus(id, status);
-        return ok ? ResponseEntity.ok().build() : ResponseEntity.notFound().build();
-    }
-
-    @PostMapping("/{id}/assign")
-    public ResponseEntity<?> assignTask(@PathVariable String id, @RequestParam String assignmentId) {
-        boolean ok = taskRepository.assignTask(id, assignmentId);
-        return ok ? ResponseEntity.ok().build() : ResponseEntity.notFound().build();
-    }
-
-    @PostMapping("/{id}/unassign")
-    public ResponseEntity<?> unassignTask(@PathVariable String id) {
-        boolean ok = taskRepository.unassignTask(id);
-        return ok ? ResponseEntity.ok().build() : ResponseEntity.notFound().build();
-    }
-
-    @GetMapping("/statistics")
-    public ResponseEntity<Map<String, Long>> statistics() {
-        return ResponseEntity.ok(taskRepository.getTaskCountsByStatus());
+    /**
+     * POST /maintenance/{id}/delete
+     * Deletes the specified task.
+     */
+    @PostMapping("/{id}/delete")
+    public String deleteTask(@PathVariable String id) {
+        taskRepository.delete(id);
+        return "redirect:/maintenance";
     }
 }

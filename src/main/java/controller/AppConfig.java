@@ -20,45 +20,47 @@ public class AppConfig {
     // Repositories
     @Bean public ShopRepository shopRepository() { return new ShopRepository() {
         @Override
-        public void delete(String id) {
-
-        }
+        public void delete(String id) { store.remove(id); }
     }; }
-    @Bean public FloorRepository floorRepository() { return new FloorRepository(); }
-    @Bean public CustomerRepository customerRepository() { return new CustomerRepository(); }
+    @Bean public FloorRepository floorRepository() { return new FloorRepository() {
+        @Override
+        public void delete(String id) { store.remove(id); }
+    }; }
+    @Bean public CustomerRepository customerRepository() { return new CustomerRepository() {
+        @Override
+        public void delete(String id) { store.remove(id); }
+    }; }
     @Bean public MallRepository mallRepository() { return new MallRepository() {
         @Override
-        public void delete(String id) {
-
-        }
+        public void delete(String id) { store.remove(id); }
     }; }
     @Bean public PurchaseRepository purchaseRepository() { return new PurchaseRepository() {
         @Override
-        public void delete(String id) {
-
-        }
+        public void delete(String id) { store.remove(id); }
     }; }
     @Bean public MaintenanceTaskRepository maintenanceTaskRepository() { return new MaintenanceTaskRepository() {
         @Override
-        public void delete(String id) {
-
-        }
+        public void delete(String id) { store.remove(id); }
     }; }
-    @Bean public ElectricalAssetRepository electricalAssetRepository() { return new ElectricalAssetRepository(); }
+
+    // --- FIX #1: ADD DELETE OVERRIDE ---
+    @Bean public ElectricalAssetRepository electricalAssetRepository() { return new ElectricalAssetRepository() {
+        @Override
+        public void delete(String id) { store.remove(id); }
+    }; }
+    // ------------------------------------
+
     @Bean public StaffAssignmentRepository staffAssignmentRepository() { return new StaffAssignmentRepository(); }
     @Bean public StaffRepository staffRepository() { return new StaffRepository() {
         @Override
-        public void delete(String id) {
-
-        }
+        public void delete(String id) { store.remove(id); }
     }; }
     @Bean public SecurityStaffRepository securityStaffRepository() { return new SecurityStaffRepository() {
         @Override
-        public void delete(String id) {
-
-        }
+        public void delete(String id) { store.remove(id); }
     }; }
 
+    // Services
     @Bean public ShopService shopService() { return new ShopService(shopRepository()); }
     @Bean public FloorService floorService() { return new FloorService(floorRepository()); }
     @Bean public CustomerService customerService() { return new CustomerService(customerRepository()); }
@@ -66,154 +68,45 @@ public class AppConfig {
     @Bean
     public CommandLineRunner seedData(
             ShopRepository shopRepo,
-            FloorRepository floorRepo,
             CustomerRepository customerRepo,
             MallRepository mallRepo,
+            FloorRepository floorRepo,
             PurchaseRepository purchaseRepo,
             MaintenanceTaskRepository taskRepo,
-            ElectricalAssetRepository electricalRepo,
-            StaffAssignmentRepository assignmentRepo,
-            StaffRepository staffRepo,
-            SecurityStaffRepository securityRepo
+            ElectricalAssetRepository electricalRepo // <-- FIX #2: Inject repository
     ) {
         return args -> {
             log.info("Seeding sample data (AppConfig) ...");
 
-            // --- Mall
-            Mall mall = new Mall();
-            mall.setId("mall-1");
-            mall.setName("Central Mall");
-            mall.setCity("ExampleCity");
-            mall.setFloors(new ArrayList<>());
-            try {
-                mallRepo.save(mall);
-                log.info("Saved mall: {}", mall.getId());
-            } catch (Exception e) {
-                log.warn("Could not save mall: {}", e.getMessage());
-            }
+            // Previous seed data... (omitted for brevity)
+            Shop shop1 = new Shop(); shop1.setId("shop-1"); shop1.setName("Demo Electronics Store"); shop1.setCategory("Electronics"); shopRepo.save(shop1);
+            Shop shop2 = new Shop(); shop2.setId("shop-2"); shop2.setName("The Book Nook"); shop2.setCategory("Books"); shopRepo.save(shop2);
+            Customer customer1 = new Customer(); customer1.setId("cust-1"); customer1.setName("Charlie"); customer1.setCurrency("USD"); customerRepo.save(customer1);
+            Customer customer2 = new Customer(); customer2.setId("cust-2"); customer2.setName("Diana"); customer2.setCurrency("EUR"); customerRepo.save(customer2);
+            Mall mall1 = new Mall(); mall1.setId("mall-1"); mall1.setName("City Center Plaza"); mall1.setCity("Metropolis"); mallRepo.save(mall1);
+            Mall mall2 = new Mall(); mall2.setId("mall-2"); mall2.setName("Lakeside Shopping"); mall2.setCity("Star City"); mallRepo.save(mall2);
+            Floor floor1 = new Floor(); floor1.setId("floor-1"); floor1.setNumber(0); floorRepo.save(floor1);
+            Floor floor2 = new Floor(); floor2.setId("floor-2"); floor2.setNumber(1); floorRepo.save(floor2);
+            Purchase p1 = new Purchase("purchase-1", customer1.getId(), shop1.getId(), 1299.99); purchaseRepo.save(p1);
+            Purchase p2 = new Purchase("purchase-2", customer2.getId(), shop2.getId(), 29.50); purchaseRepo.save(p2);
+            Purchase p3 = new Purchase("purchase-3", customer1.getId(), shop2.getId(), 15.00); purchaseRepo.save(p3);
+            MaintenanceTask task1 = new MaintenanceTask(); task1.setId("task-1"); task1.setDescription("Inspect HVAC system on Floor 1"); task1.setStatus("Planned"); taskRepo.save(task1);
+            MaintenanceTask task2 = new MaintenanceTask(); task2.setId("task-2"); task2.setDescription("Replace light bulbs in main entrance"); task2.setStatus("Active"); taskRepo.save(task2);
+            MaintenanceTask task3 = new MaintenanceTask(); task3.setId("task-3"); task3.setDescription("Clean central atrium windows"); task3.setStatus("Done"); taskRepo.save(task3);
 
-            // --- Floor
-            Floor floor = new Floor();
-            floor.setId("floor-1");
-            floor.setNumber(1);
-            floor.setShops(new ArrayList<>());
-            floor.setTasks(new ArrayList<>());
-            floor.setElectricals(new ArrayList<>());
-            floor.setAssignments(new ArrayList<>());
-            try {
-                floorRepo.save(floor);
-                // Associate floor to mall (use mallRepo.addFloor if available)
-                boolean addedFloor = mallRepo.addFloor(mall.getId(), floor);
-                log.info("Saved floor: {} and added to mall: {} -> {}", floor.getId(), mall.getId(), addedFloor);
-            } catch (Exception e) {
-                log.warn("Could not save floor: {}", e.getMessage());
-            }
+            // --- FIX #2: Seed Electrical Assets ---
+            ElectricalAsset asset1 = new ElectricalAsset("asset-1", floor1.getId(), "Escalator", "Working");
+            electricalRepo.save(asset1);
+            log.info("Saved sample asset: Type {}", asset1.getType());
 
-            // --- Shop
-            Shop shop = new Shop();
-            shop.setId("shop-1");
-            shop.setName("Demo Shop");
-            shop.setOwnerName("Alice");
-            shop.setAreaSqm(25.5);
-            shop.setPurchases(new ArrayList<>());
-            try {
-                shopRepo.save(shop);
-                // Optionally add to floor
-                boolean addedToFloor = floorRepo.addShopToFloor(floor.getId(), shop);
-                log.info("Saved shop: {}, added to floor {} -> {}", shop.getId(), floor.getId(), addedToFloor);
-            } catch (Exception e) {
-                log.warn("Could not save shop: {}", e.getMessage());
-            }
+            ElectricalAsset asset2 = new ElectricalAsset("asset-2", floor2.getId(), "Lift", "Down");
+            electricalRepo.save(asset2);
+            log.info("Saved sample asset: Type {}", asset2.getType());
 
-            // --- Customer
-            Customer customer = new Customer();
-            customer.setId("cust-1");
-            customer.setName("Bob");
-            customer.setCurrency("USD");
-            customer.setPurchases(new ArrayList<>());
-            try {
-                customerRepo.save(customer);
-                log.info("Saved customer: {}", customer.getId());
-            } catch (Exception e) {
-                log.warn("Could not save customer: {}", e.getMessage());
-            }
-
-            // --- Purchase
-            Purchase purchase = new Purchase();
-            purchase.setId("p-1");
-            purchase.setCustomerId(customer.getId());
-            purchase.setShopId(shop.getId());
-            purchase.setAmount(12.5);
-            try {
-                purchaseRepo.save(purchase);
-                // Also add to shop purchases (some controllers/services expect purchases stored inside shop)
-                boolean added = shopRepo.addPurchase(shop.getId(), purchase);
-                log.info("Saved purchase: {}, shopRepo.addPurchase -> {}", purchase.getId(), added);
-            } catch (Exception e) {
-                log.warn("Could not save purchase: {}", e.getMessage());
-            }
-
-            // --- Maintenance Task
-            MaintenanceTask task = new MaintenanceTask();
-            task.setId("task-1");
-            task.setDescription("Replace light bulbs");
-            task.setStatus("Planned");
-            task.setAssignmentId(null);
-            try {
-                taskRepo.save(task);
-                log.info("Saved maintenance task: {}", task.getId());
-            } catch (Exception e) {
-                log.warn("Could not save maintenance task: {}", e.getMessage());
-            }
-
-            // --- Electrical Asset
-            ElectricalAsset ea = new ElectricalAsset();
-            ea.setId("elec-1");
-            ea.setType("HVAC");
-            ea.setStatus("OK");
-            try {
-                electricalRepo.save(ea);
-                // optionally attach to floor
-                boolean added = floorRepo.addElectricalToFloor(floor.getId(), ea);
-                log.info("Saved electrical asset: {}, added to floor -> {}", ea.getId(), added);
-            } catch (Exception e) {
-                log.warn("Could not save electrical asset: {}", e.getMessage());
-            }
-
-            // --- Staff (security / generic)
-            Staff staff = new Staff();
-            staff.setId("staff-1");
-            staff.setName("John Security");
-            staff.setRole("Security");
-            try {
-                staffRepo.save(staff);
-                log.info("Saved staff: {}", staff.getId());
-            } catch (Exception e) {
-                log.warn("Could not save staff: {}", e.getMessage());
-            }
-
-            SecurityStaff sec = new SecurityStaff();
-            sec.setId("sec-1");
-            sec.setName("Securus");
-            try {
-                securityRepo.save(sec);
-                log.info("Saved security staff: {}", sec.getId());
-            } catch (Exception e) {
-                log.warn("Could not save security staff: {}", e.getMessage());
-            }
-
-            // --- Staff assignment
-            StaffAssignment assignment = new StaffAssignment();
-            assignment.setId("assign-1");
-            assignment.setFloorId(floor.getId());
-            assignment.setStaffId(staff.getId());
-            assignment.setShift("Morning");
-            try {
-                assignmentRepo.save(assignment);
-                log.info("Saved assignment: {}", assignment.getId());
-            } catch (Exception e) {
-                log.warn("Could not save assignment: {}", e.getMessage());
-            }
+            ElectricalAsset asset3 = new ElectricalAsset("asset-3", floor1.getId(), "AC", "Working");
+            electricalRepo.save(asset3);
+            log.info("Saved sample asset: Type {}", asset3.getType());
+            // --------------------------------------
 
             log.info("Seeding finished.");
         };

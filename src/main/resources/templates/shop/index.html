@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>All Shops</title>
+</head>
+<body>
+
+<h1>Shops</h1>
+
+<a href="/shop/new">Add New Shop</a>
+
+<table border="1">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Category</th>
+        <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <!-- Loop through the list of shops passed from the controller -->
+    <tr th:each="shop : ${shops}">
+        <td th:text="${shop.id}">-</td>
+        <td th:text="${shop.name}">-</td>
+        <td th:text="${shop.category}">-</td>
+        <td>
+            <!-- Form to handle the deletion of a shop -->
+            <form th:action="@{'/shop/' + ${shop.id} + '/delete'}" method="post" style="display:inline;">
+                <button type="submit">Delete</button>
+            </form>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+</body>
+</html>

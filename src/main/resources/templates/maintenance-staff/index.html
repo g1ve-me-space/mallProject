@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>All Maintenance Staff</title>
+</head>
+<body>
+
+<h1>Maintenance Staff</h1>
+
+<a href="/maintenance-staff/new">Add New Staff Member</a>
+
+<table border="1">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="staff : ${staffList}">
+        <td th:text="${staff.id}">-</td>
+        <td th:text="${staff.name}">-</td>
+        <td th:text="${staff.type}">-</td>
+        <td>
+            <form th:action="@{'/maintenance-staff/' + ${staff.id} + '/delete'}" method="post" style="display:inline;">
+                <button type="submit">Delete</button>
+            </form>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<br>
+<a href="/">Back to Home</a>
+
+</body>
+</html>

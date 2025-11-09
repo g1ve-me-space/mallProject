@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>All Purchases</title>
+</head>
+<body>
+
+<h1>Purchases</h1>
+
+<a href="/purchase/new">Add New Purchase</a>
+
+<table border="1">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Customer ID</th>
+        <th>Shop ID</th>
+        <th>Amount</th>
+        <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="purchase : ${purchases}">
+        <td th:text="${purchase.id}">-</td>
+        <td th:text="${purchase.customerId}">-</td>
+        <td th:text="${purchase.shopId}">-</td>
+        <td th:text="${purchase.amount}">-</td>
+        <td>
+            <form th:action="@{'/purchase/' + ${purchase.id} + '/delete'}" method="post" style="display:inline;">
+                <button type="submit">Delete</button>
+            </form>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<br>
+<a href="/">Back to Home</a>
+
+</body>
+</html>

@@ -1,55 +1,66 @@
 package controller;
 
 import model.Customer;
-import org.springframework.http.ResponseEntity;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import service.CustomerService;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.UUID;
 
-@RestController
-@RequestMapping("/api/customers")
+@Controller // This should be @Controller, NOT @RestController
+@RequestMapping("/customer") // This should be /customer for the UI
 public class CustomerController {
 
     private final CustomerService customerService;
 
+    @Autowired
     public CustomerController(CustomerService customerService) {
         this.customerService = customerService;
     }
 
+    /**
+     * GET /customer
+     * Displays a list of all customers.
+     */
     @GetMapping
-    public ResponseEntity<List<Customer>> listAll() {
-        return ResponseEntity.ok(customerService.findAll());
+    public String listAllCustomers(Model model) {
+        List<Customer> customers = customerService.findAll();
+        model.addAttribute("customers", customers);
+        return "customer/index"; // This returns the name of the HTML template
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Customer> getById(@PathVariable String id) {
-        Optional<Customer> c = customerService.findById(id);
-        return c.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    /**
+     * GET /customer/new
+     * Displays the form to create a new customer.
+     */
+    @GetMapping("/new")
+    public String showCreateForm(Model model) {
+        model.addAttribute("customer", new Customer());
+        return "customer/form"; // This returns the form template
     }
 
-    @GetMapping("/search")
-    public ResponseEntity<List<Customer>> search(@RequestParam(required = false) String name,
-                                                 @RequestParam(required = false) String currency) {
-        if (name != null) {
-            return ResponseEntity.ok(customerService.findByName(name));
-        } else if (currency != null) {
-            return ResponseEntity.ok(customerService.findByCurrency(currency));
-        } else {
-            return ResponseEntity.badRequest().build();
-        }
-    }
-
-    @GetMapping("/mostPurchases")
-    public ResponseEntity<Customer> mostPurchaser() {
-        Optional<Customer> c = customerService.findCustomerWithMostPurchases();
-        return c.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.noContent().build());
-    }
-
+    /**
+     * POST /customer
+     * Processes the form submission for creating a new customer.
+     */
     @PostMapping
-    public ResponseEntity<Customer> create(@RequestBody Customer customer) {
+    public String createCustomer(@ModelAttribute Customer customer) {
+        // Generate a unique String ID before saving
+        customer.setId(UUID.randomUUID().toString());
         customerService.save(customer);
-        return ResponseEntity.status(201).body(customer);
+        return "redirect:/customer"; // Redirects back to the list page
+    }
+
+    /**
+     * POST /customer/{id}/delete
+     * Deletes the specified customer.
+     */
+    @PostMapping("/{id}/delete")
+    public String deleteCustomer(@PathVariable String id) {
+        customerService.deleteById(id);
+        return "redirect:/customer";
     }
 }

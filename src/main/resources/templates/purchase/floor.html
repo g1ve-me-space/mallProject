@@ -1,0 +1,33 @@
+<!--@thymesVar id="purchase" type="model.Purchase"-->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Create Purchase</title>
+</head>
+<body>
+
+<h1>Create New Purchase</h1>
+
+<form th:action="@{/purchase}" th:object="${purchase}" method="post">
+    <div>
+        <label for="customerId">Customer ID:</label>
+        <input type="text" id="customerId" th:field="*{customerId}" placeholder="e.g., cust-1"/>
+    </div>
+    <div>
+        <label for="shopId">Shop ID:</label>
+        <input type="text" id="shopId" th:field="*{shopId}" placeholder="e.g., shop-1"/>
+    </div>
+    <div>
+        <label for="amount">Amount:</label>
+        <input type="number" step="0.01" id="amount" th:field="*{amount}" />
+    </div>
+    <div>
+        <button type="submit">Save</button>
+    </div>
+</form>
+
+<a href="/purchase">Back to List</a>
+
+</body>
+</html>

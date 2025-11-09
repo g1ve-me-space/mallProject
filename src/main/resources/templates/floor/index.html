@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>All Floors</title>
+</head>
+<body>
+
+<h1>Floors</h1>
+
+<a href="/floor/new">Add New Floor</a>
+
+<table border="1">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Number</th> <!-- Corrected from 'Floor Number' -->
+        <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <!-- Loop through the list of floors passed from the controller -->
+    <tr th:each="floor : ${floors}">
+        <td th:text="${floor.id}">-</td>
+        <td th:text="${floor.number}">-</td> <!-- Corrected to use 'number' -->
+        <td>
+            <!-- Form to handle the deletion of a floor -->
+            <form th:action="@{'/floor/' + ${floor.id} + '/delete'}" method="post" style="display:inline;">
+                <button type="submit">Delete</button>
+            </form>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<br>
+<a href="/mall">Back to Malls</a>
+
+</body>
+</html>

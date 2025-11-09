@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>All Malls</title>
+</head>
+<body>
+
+<h1>Malls</h1>
+
+<a href="/mall/new">Add New Mall</a>
+
+<table border="1">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>City</th>
+        <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <!-- Loop through the list of malls passed from the controller -->
+    <tr th:each="mall : ${malls}">
+        <td th:text="${mall.id}">-</td>
+        <td th:text="${mall.name}">-</td>
+        <td th:text="${mall.city}">-</td>
+        <td>
+            <!-- Form to handle the deletion of a mall -->
+            <form th:action="@{'/mall/' + ${mall.id} + '/delete'}" method="post" style="display:inline;">
+                <button type="submit">Delete</button>
+            </form>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<br>
+<a href="/shop">Back to Shops</a> | <a href="/customer">Back to Customers</a>
+
+</body>
+</html>

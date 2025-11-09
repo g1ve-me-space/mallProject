@@ -1,0 +1,33 @@
+<!--@thymesVar id="task" type="model.MaintenanceTask"-->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Create Maintenance Task</title>
+</head>
+<body>
+
+<h1>Create New Task</h1>
+
+<form th:action="@{/maintenance}" th:object="${task}" method="post">
+    <div>
+        <label for="description">Description:</label>
+        <input type="text" id="description" th:field="*{description}" />
+    </div>
+    <div>
+        <label for="status">Status:</label>
+        <select id="status" th:field="*{status}">
+            <option value="Planned">Planned</option>
+            <option value="Active">Active</option>
+            <option value="Done">Done</option>
+        </select>
+    </div>
+    <div>
+        <button type="submit">Save</button>
+    </div>
+</form>
+
+<a href="/maintenance">Back to List</a>
+
+</body>
+</html>

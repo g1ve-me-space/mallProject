@@ -1,0 +1,27 @@
+<!--@thymesVar id="floor" type="model.Floor"-->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Create Floor</title>
+</head>
+<body>
+
+<h1>Create New Floor</h1>
+
+<form th:action="@{/floor}" th:object="${floor}" method="post">
+    <div>
+        <label for="number">Floor Number:</label>
+        <!-- Corrected to use 'number' to match Floor.java -->
+        <input type="number" id="number" th:field="*{number}" />
+    </div>
+    <!-- Removed the non-existent 'levelName' field -->
+    <div>
+        <button type="submit">Save</button>
+    </div>
+</form>
+
+<a href="/floor">Back to List</a>
+
+</body>
+</html>

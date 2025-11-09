@@ -1,64 +1,65 @@
 package controller;
 
 import model.Purchase;
-import org.springframework.http.ResponseEntity;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import repository.PurchaseRepository;
 
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.UUID;
 
-@RestController
-@RequestMapping("/api/purchases")
+@Controller // Changed from @RestController
+@RequestMapping("/purchase") // Changed from /api/purchases
 public class PurchaseController {
 
     private final PurchaseRepository purchaseRepository;
 
+    @Autowired
     public PurchaseController(PurchaseRepository purchaseRepository) {
         this.purchaseRepository = purchaseRepository;
     }
 
+    /**
+     * GET /purchase
+     * Displays a list of all purchases.
+     */
     @GetMapping
-    public ResponseEntity<List<Purchase>> listAll() {
-        return ResponseEntity.ok(purchaseRepository.findAll());
+    public String listAllPurchases(Model model) {
+        List<Purchase> purchases = purchaseRepository.findAll();
+        model.addAttribute("purchases", purchases);
+        return "purchase/index"; // Renders templates/purchase/index.html
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Purchase> getById(@PathVariable String id) {
-        Optional<Purchase> p = purchaseRepository.findById(id);
-        return p.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    /**
+     * GET /purchase/new
+     * Displays the form to create a new purchase.
+     */
+    @GetMapping("/new")
+    public String showCreateForm(Model model) {
+        model.addAttribute("purchase", new Purchase());
+        return "purchase/form"; // Renders templates/purchase/form.html
     }
 
-    @GetMapping("/byCustomer/{customerId}")
-    public ResponseEntity<List<Purchase>> byCustomer(@PathVariable String customerId) {
-        return ResponseEntity.ok(purchaseRepository.findByCustomerId(customerId));
-    }
-
-    @GetMapping("/byShop/{shopId}")
-    public ResponseEntity<List<Purchase>> byShop(@PathVariable String shopId) {
-        return ResponseEntity.ok(purchaseRepository.findByShopId(shopId));
-    }
-
-    @GetMapping("/range")
-    public ResponseEntity<List<Purchase>> byAmountRange(@RequestParam double min, @RequestParam double max) {
-        return ResponseEntity.ok(purchaseRepository.findByAmountRange(min, max));
-    }
-
+    /**
+     * POST /purchase
+     * Processes the form submission for creating a new purchase.
+     */
     @PostMapping
-    public ResponseEntity<Purchase> create(@RequestBody Purchase purchase) {
+    public String createPurchase(@ModelAttribute Purchase purchase) {
+        purchase.setId(UUID.randomUUID().toString());
         purchaseRepository.save(purchase);
-        return ResponseEntity.status(201).body(purchase);
+        return "redirect:/purchase"; // Redirects to the list page
     }
 
-    @GetMapping("/stats")
-    public ResponseEntity<Map<String, Object>> stats() {
-        return ResponseEntity.ok(purchaseRepository.getPurchaseStatistics());
-    }
-
-    @PatchMapping("/{id}/amount")
-    public ResponseEntity<?> updateAmount(@PathVariable String id, @RequestParam double amount) {
-        boolean ok = purchaseRepository.updatePurchaseAmount(id, amount);
-        return ok ? ResponseEntity.ok().build() : ResponseEntity.notFound().build();
+    /**
+     * POST /purchase/{id}/delete
+     * Deletes the specified purchase.
+     */
+    @PostMapping("/{id}/delete")
+    public String deletePurchase(@PathVariable String id) {
+        purchaseRepository.delete(id);
+        return "redirect:/purchase";
     }
 }

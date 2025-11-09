@@ -1,81 +1,69 @@
 package controller;
 
 import model.Shop;
-import model.Purchase;
-import org.springframework.http.ResponseEntity;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import service.ShopService;
 
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.UUID; // A better way to generate unique string IDs
 
-@RestController
-@RequestMapping("/api/shops")
+@Controller // Changed from @RestController
+@RequestMapping("/shop") // Changed from /api/shops to match the UI path
 public class ShopController {
 
     private final ShopService shopService;
 
+    @Autowired
     public ShopController(ShopService shopService) {
         this.shopService = shopService;
     }
 
+    /**
+     * GET /shop
+     * Displays a list of all shops. This method now returns a template name.
+     */
     @GetMapping
-    public ResponseEntity<List<Shop>> listAll() {
-        return ResponseEntity.ok(shopService.findAll());
+    public String listAllShops(Model model) {
+        List<Shop> shops = shopService.findAll();
+        model.addAttribute("shops", shops);
+        return "shop/index"; // Renders templates/shop/index.html
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Shop> getById(@PathVariable String id) {
-        Optional<Shop> s = shopService.findById(id);
-        return s.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    /**
+     * GET /shop/new
+     * Displays the form to create a new shop. This is a new method.
+     */
+    @GetMapping("/new")
+    public String showCreateForm(Model model) {
+        model.addAttribute("shop", new Shop());
+        return "shop/form"; // Renders templates/shop/form.html
     }
 
-    @GetMapping("/search")
-    public ResponseEntity<?> searchByName(@RequestParam(required = false) String name,
-                                          @RequestParam(required = false) String owner) {
-        if (name != null) {
-            Optional<Shop> s = shopService.findByName(name);
-            return s.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
-        } else if (owner != null) {
-            return ResponseEntity.ok(shopService.findByOwnerName(owner));
-        } else {
-            return ResponseEntity.badRequest().body("Provide name or owner query parameter");
-        }
-    }
-
+    /**
+     * POST /shop
+     * Processes the form submission for creating a new shop.
+     * Changed from @RequestBody to @ModelAttribute for web forms.
+     */
     @PostMapping
-    public ResponseEntity<Shop> create(@RequestBody Shop shop) {
+    public String createShop(@ModelAttribute Shop shop) {
+        // Since we are using String IDs, we must generate a unique one before saving.
+        shop.setId(UUID.randomUUID().toString());
         shopService.save(shop);
-        return ResponseEntity.status(201).body(shop);
+        return "redirect:/shop"; // Redirects to the list page
     }
 
-    @PostMapping("/{id}/purchases")
-    public ResponseEntity<?> addPurchase(@PathVariable String id, @RequestBody Purchase purchase) {
-        boolean ok = shopService.addPurchase(id, purchase);
-        return ok ? ResponseEntity.status(201).build() : ResponseEntity.notFound().build();
+    /**
+     * POST /shop/{id}/delete
+     * Deletes the specified shop. This is a new method for the UI.
+     */
+    @PostMapping("/{id}/delete")
+    public String deleteShop(@PathVariable String id) {
+        shopService.deleteById(id);
+        return "redirect:/shop";
     }
 
-    @GetMapping("/{id}/revenue")
-    public ResponseEntity<Double> totalRevenue(@PathVariable String id) {
-        double rev = shopService.getTotalRevenue(id);
-        return ResponseEntity.ok(rev);
-    }
-
-    @GetMapping("/topByPurchases")
-    public ResponseEntity<Map<String, Long>> topByPurchaseCount(@RequestParam(defaultValue = "5") int limit) {
-        return ResponseEntity.ok(shopService.getTopShopsByPurchaseCount(limit));
-    }
-
-    @PatchMapping("/{id}/area")
-    public ResponseEntity<?> updateArea(@PathVariable String id, @RequestParam double area) {
-        boolean ok = shopService.updateArea(id, area);
-        return ok ? ResponseEntity.ok().build() : ResponseEntity.notFound().build();
-    }
-
-    @PatchMapping("/{id}/owner")
-    public ResponseEntity<?> updateOwner(@PathVariable String id, @RequestParam String owner) {
-        boolean ok = shopService.updateOwner(id, owner);
-        return ok ? ResponseEntity.ok().build() : ResponseEntity.notFound().build();
-    }
+    // The other methods for the REST API have been removed to keep this controller focused on the UI.
 }

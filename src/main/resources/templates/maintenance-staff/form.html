@@ -1,0 +1,32 @@
+<!--@thymesVar id="staff" type="model.MaintenanceStaff"-->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Create Maintenance Staff</title>
+</head>
+<body>
+
+<h1>Create New Maintenance Staff</h1>
+
+<form th:action="@{/maintenance-staff}" th:object="${staff}" method="post">
+    <div>
+        <label for="name">Name:</label>
+        <input type="text" id="name" th:field="*{name}" />
+    </div>
+    <div>
+        <label for="type">Type:</label>
+        <select id="type" th:field="*{type}">
+            <option value="Electrical">Electrical</option>
+            <option value="Cleaning">Cleaning</option>
+        </select>
+    </div>
+    <div>
+        <button type="submit">Save</button>
+    </div>
+</form>
+
+<a href="/maintenance-staff">Back to List</a>
+
+</body>
+</html>

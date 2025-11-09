@@ -1,8 +1,6 @@
-//abstracy
-
 package model;
 
-public class Staff {
+public abstract class Staff {
     private String id;
     private String name;
 
@@ -18,7 +16,4 @@ public class Staff {
 
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
-
-    public void setRole(String security) {
-    }
 }

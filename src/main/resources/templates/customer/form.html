@@ -1,0 +1,32 @@
+<!--@thymesVar id="customer" type="model.Customer"-->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Create Customer</title>
+</head>
+<body>
+
+<h1>Create New Customer</h1>
+
+<!-- The 'th:object' links this form to the 'customer' object from the model -->
+<form th:action="@{/customer}" th:object="${customer}" method="post">
+    <div>
+        <label for="name">Name:</label>
+        <!-- 'th:field' connects this input to the 'name' property of the 'customer' object -->
+        <input type="text" id="name" th:field="*{name}" />
+    </div>
+    <div>
+        <label for="currency">Currency:</label>
+        <!-- This connects to the 'currency' property -->
+        <input type="text" id="currency" th:field="*{currency}" />
+    </div>
+    <div>
+        <button type="submit">Save</button>
+    </div>
+</form>
+
+<a href="/customer">Back to List</a>
+
+</body>
+</html>
