@@ -1,31 +1,49 @@
 package model;
 
+import interfaces.Identifiable;
 import java.util.List;
 
-public class Customer {
+public class Customer implements Identifiable<String> {
     private String id;
     private String name;
     private String currency;
     private List<Purchase> purchases;
 
-    public Customer() {}
-
-    public Customer(String id, String name, String currency, List<Purchase> purchases) {
-        this.id = id;
-        this.name = name;
-        this.currency = currency;
-        this.purchases = purchases;
+    // --- CONSTRUCTORS ---
+    public Customer() {
     }
 
-    public String getId() { return id; }
-    public void setId(String id) { this.id = id; }
+    // --- GETTERS AND SETTERS ---
+    @Override // This annotation is important
+    public String getId() {
+        return id;
+    }
 
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
+    public void setId(String id) {
+        this.id = id;
+    }
 
-    public String getCurrency() { return currency; }
-    public void setCurrency(String currency) { this.currency = currency; }
+    public String getName() {
+        return name;
+    }
 
-    public List<Purchase> getPurchases() { return purchases; }
-    public void setPurchases(List<Purchase> purchases) { this.purchases = purchases; }
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(String currency) {
+        this.currency = currency;
+    }
+
+    public List<Purchase> getPurchases() {
+        return purchases;
+    }
+
+    public void setPurchases(List<Purchase> purchases) {
+        this.purchases = purchases;
+    }
 }

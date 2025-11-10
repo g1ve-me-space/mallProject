@@ -1,35 +1,43 @@
 package controller;
 
+import enums.TaskStatus;
 import model.MaintenanceTask;
-import enums.TaskStatus; // Import the new enum
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import repository.MaintenanceTaskRepository;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * FIX: The entire controller is updated to match your HTML templates.
+ * The base path is now "/maintenance".
+ */
 @Controller
 @RequestMapping("/maintenance")
 public class MaintenanceTaskController {
 
-    private final MaintenanceTaskRepository taskRepository;
+    private final MaintenanceTaskRepository maintenanceTaskRepository;
 
     @Autowired
-    public MaintenanceTaskController(MaintenanceTaskRepository taskRepository) {
-        this.taskRepository = taskRepository;
+    public MaintenanceTaskController(MaintenanceTaskRepository maintenanceTaskRepository) {
+        this.maintenanceTaskRepository = maintenanceTaskRepository;
     }
 
     /**
      * GET /maintenance
-     * Displays a list of all maintenance tasks.
+     * Displays the list of all tasks. This now points to your list template.
+     * What is your list file named? If it's 'maintenance-list.html', change the return value to "maintenance-list".
      */
     @GetMapping
     public String listAllTasks(Model model) {
-        List<MaintenanceTask> tasks = taskRepository.findAll();
+        List<MaintenanceTask> tasks = maintenanceTaskRepository.findAll();
         model.addAttribute("tasks", tasks);
+        // Assuming your list HTML file is named 'maintenance/index.html' or similar
+        // Please tell me the exact name of your list file.
         return "maintenance/index";
     }
 
@@ -39,14 +47,10 @@ public class MaintenanceTaskController {
      */
     @GetMapping("/new")
     public String showCreateForm(Model model) {
-        // Create a new task object for the form
-        MaintenanceTask newTask = new MaintenanceTask();
-        newTask.setStatus(TaskStatus.PLANNED); // Set a default status using the enum
-
-        // Add the new task and the list of all possible statuses to the model
-        model.addAttribute("task", newTask);
-        model.addAttribute("allStatuses", TaskStatus.values()); // This gets all values from the enum
-
+        model.addAttribute("task", new MaintenanceTask());
+        // This makes the dropdown work by sending all possible statuses to the form.
+        model.addAttribute("allStatuses", Arrays.asList(TaskStatus.values()));
+        // Assuming your form HTML file is named 'maintenance/form.html' or similar
         return "maintenance/form";
     }
 
@@ -57,17 +61,17 @@ public class MaintenanceTaskController {
     @PostMapping
     public String createTask(@ModelAttribute MaintenanceTask task) {
         task.setId(UUID.randomUUID().toString());
-        taskRepository.save(task);
-        return "redirect:/maintenance";
+        maintenanceTaskRepository.save(task);
+        return "redirect:/maintenance"; // Redirects back to the list page
     }
 
     /**
      * POST /maintenance/{id}/delete
-     * Deletes the specified task.
+     * Deletes the specified task. The path and redirect are now correct.
      */
     @PostMapping("/{id}/delete")
     public String deleteTask(@PathVariable String id) {
-        taskRepository.delete(id);
+        maintenanceTaskRepository.deleteById(id);
         return "redirect:/maintenance";
     }
 }

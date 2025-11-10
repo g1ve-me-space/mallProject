@@ -1,38 +1,10 @@
 package repository;
 
 import model.MaintenanceStaff;
-import enums.MaintenanceStaffType; // Import the new enum
+import org.springframework.stereotype.Repository;
 
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
-public class MaintenanceStaffRepository extends AbstractRepository<MaintenanceStaff> {
-
-    // Find maintenance staff by their specialty type (FIXED)
-    public List<MaintenanceStaff> findByType(MaintenanceStaffType type) {
-        return store.values().stream()
-                .filter(staff -> staff.getType() == type) // Direct enum comparison
-                .collect(Collectors.toList());
-    }
-
-    // Count staff by their specialty type (FIXED)
-    public Map<MaintenanceStaffType, Long> countByType() {
-        return store.values().stream()
-                .filter(staff -> staff.getType() != null)
-                .collect(Collectors.groupingBy(MaintenanceStaff::getType, Collectors.counting()));
-    }
-
-    // Alternative save method that uses the entity's own ID
-    public void save(MaintenanceStaff entity) {
-        if (entity.getId() == null || entity.getId().trim().isEmpty()) {
-            throw new IllegalArgumentException("MaintenanceStaff ID cannot be null or empty");
-        }
-        super.save(entity.getId(), entity);
-    }
-
-    @Override
-    public void delete(String id) {
-        // Implemented in AppConfig
-    }
+@Repository
+// Inherits all standard CRUD methods from InMemoryRepository.
+public class MaintenanceStaffRepository extends InMemoryRepository<MaintenanceStaff, String> {
+    // This body is intentionally left empty.
 }

@@ -21,10 +21,6 @@ public class MaintenanceStaffController {
         this.staffRepository = staffRepository;
     }
 
-    /**
-     * GET /maintenance-staff
-     * Displays a list of all maintenance staff.
-     */
     @GetMapping
     public String listAll(Model model) {
         List<MaintenanceStaff> staffList = staffRepository.findAll();
@@ -32,20 +28,12 @@ public class MaintenanceStaffController {
         return "maintenance-staff/index";
     }
 
-    /**
-     * GET /maintenance-staff/new
-     * Displays the form to create a new maintenance staff member.
-     */
     @GetMapping("/new")
     public String showCreateForm(Model model) {
         model.addAttribute("staff", new MaintenanceStaff());
         return "maintenance-staff/form";
     }
 
-    /**
-     * POST /maintenance-staff
-     * Processes the form submission for creating a new staff member.
-     */
     @PostMapping
     public String create(@ModelAttribute MaintenanceStaff staff) {
         staff.setId(UUID.randomUUID().toString());
@@ -54,12 +42,11 @@ public class MaintenanceStaffController {
     }
 
     /**
-     * POST /maintenance-staff/{id}/delete
-     * Deletes the specified staff member.
+     * FIX: The method call is changed from .delete(id) to .deleteById(id)
      */
     @PostMapping("/{id}/delete")
     public String delete(@PathVariable String id) {
-        staffRepository.delete(id);
+        staffRepository.deleteById(id);
         return "redirect:/maintenance-staff";
     }
 }

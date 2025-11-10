@@ -1,6 +1,9 @@
 package model;
 
-public abstract class Staff {
+import interfaces.Identifiable; // Import the interface
+
+// FIX: Add 'implements Identifiable<String>'
+public abstract class Staff implements Identifiable<String> {
     private String id;
     private String name;
 
@@ -11,6 +14,7 @@ public abstract class Staff {
         this.name = name;
     }
 
+    @Override // FIX: Add the Override annotation
     public String getId() { return id; }
     public void setId(String id) { this.id = id; }
 

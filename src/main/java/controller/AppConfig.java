@@ -8,55 +8,37 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import repository.*;
-import service.CustomerService;
-import service.FloorService;
-import service.ShopService;
+import service.*;
 
 @Configuration
 public class AppConfig {
     private static final Logger log = LoggerFactory.getLogger(AppConfig.class);
 
+    // --- REFACTORED REPOSITORIES ---
+    @Bean public ShopRepository shopRepository() { return new ShopRepository(); }
+    @Bean public FloorRepository floorRepository() { return new FloorRepository(); }
+    @Bean public MallRepository mallRepository() { return new MallRepository(); }
+    @Bean public PurchaseRepository purchaseRepository() { return new PurchaseRepository(); }
+    @Bean public MaintenanceTaskRepository maintenanceTaskRepository() { return new MaintenanceTaskRepository(); }
+    @Bean public ElectricalAssetRepository electricalAssetRepository() { return new ElectricalAssetRepository(); }
+    @Bean public CustomerRepository customerRepository() { return new CustomerRepository(); }
+    @Bean public MaintenanceStaffRepository maintenanceStaffRepository() { return new MaintenanceStaffRepository(); }
+    @Bean public SecurityStaffRepository securityStaffRepository() { return new SecurityStaffRepository(); }
+    /**
+     * FIX: Moved and simplified the StaffAssignmentRepository bean.
+     */
     @Bean
-    public ShopRepository shopRepository() {
-        return new ShopRepository();
+    public StaffAssignmentRepository staffAssignmentRepository() {
+        return new StaffAssignmentRepository();
     }
-    // In AppConfig.java
-    @Bean
-    public FloorRepository floorRepository() {
-        return new FloorRepository();
-    }
-    @Bean public CustomerRepository customerRepository() { return new CustomerRepository() {
-        @Override public void delete(String id) { store.remove(id); }
-    }; }
-    // In AppConfig.java
-    @Bean
-    public MallRepository mallRepository() {
-        return new MallRepository();
-    }
-    @Bean public PurchaseRepository purchaseRepository() { return new PurchaseRepository() {
-        @Override public void delete(String id) { store.remove(id); }
-    }; }
-    @Bean public MaintenanceTaskRepository maintenanceTaskRepository() { return new MaintenanceTaskRepository() {
-        @Override public void delete(String id) { store.remove(id); }
-    }; }
-    @Bean public ElectricalAssetRepository electricalAssetRepository() { return new ElectricalAssetRepository() {
-        @Override public void delete(String id) { store.remove(id); }
-    }; }
-    @Bean public MaintenanceStaffRepository maintenanceStaffRepository() { return new MaintenanceStaffRepository() {
-        @Override public void delete(String id) { store.remove(id); }
-    }; }
-    @Bean public StaffAssignmentRepository staffAssignmentRepository() { return new StaffAssignmentRepository() {
-        @Override public void delete(String id) { store.remove(id); }
-    }; }
-    @Bean public StaffRepository staffRepository() { return new StaffRepository() {
-        @Override public void delete(String id) { store.remove(id); }
-    }; }
-    @Bean public SecurityStaffRepository securityStaffRepository() { return new SecurityStaffRepository() {
-        @Override public void delete(String id) { store.remove(id); }
-    }; }
 
+
+    // --- UNCHANGED REPOSITORIES (OLD PATTERN) ---
+
+    // --- SERVICES ---
     @Bean public ShopService shopService() { return new ShopService(shopRepository()); }
     @Bean public FloorService floorService() { return new FloorService(floorRepository()); }
+    @Bean public ElectricalAssetService electricalAssetService() { return new ElectricalAssetService(electricalAssetRepository()); }
     @Bean public CustomerService customerService() { return new CustomerService(customerRepository()); }
 
     @Bean
@@ -75,6 +57,7 @@ public class AppConfig {
         return args -> {
             log.info("Seeding sample data (AppConfig) ...");
 
+            // Seeding data remains the same
             Shop shop1 = new Shop(); shop1.setId("shop-1"); shop1.setName("Demo Electronics Store"); shop1.setCategory("Electronics");
             Shop shop2 = new Shop(); shop2.setId("shop-2"); shop2.setName("The Book Nook"); shop2.setCategory("Books");
             Customer customer1 = new Customer(); customer1.setId("cust-1"); customer1.setName("Charlie"); customer1.setCurrency("USD");
@@ -92,12 +75,8 @@ public class AppConfig {
             ElectricalAsset asset1 = new ElectricalAsset("asset-1", floor1.getId(), AssetType.ESCALATOR, AssetStatus.WORKING);
             ElectricalAsset asset2 = new ElectricalAsset("asset-2", floor2.getId(), AssetType.LIFT, AssetStatus.DOWN);
             ElectricalAsset asset3 = new ElectricalAsset("asset-3", floor1.getId(), AssetType.AC, AssetStatus.WORKING);
-
-            // --- FIX: Use the MaintenanceStaffType enum instead of strings ---
             MaintenanceStaff maint1 = new MaintenanceStaff(); maint1.setId("maint-staff-1"); maint1.setName("Eve"); maint1.setType(MaintenanceStaffType.ELECTRICAL);
             MaintenanceStaff maint2 = new MaintenanceStaff(); maint2.setId("maint-staff-2"); maint2.setName("Frank"); maint2.setType(MaintenanceStaffType.CLEANING);
-            // -----------------------------------------------------------------
-
             SecurityStaff sec1 = new SecurityStaff(); sec1.setId("sec-staff-1"); sec1.setName("Grace"); sec1.setBadgeNo("S-101");
             SecurityStaff sec2 = new SecurityStaff(); sec2.setId("sec-staff-2"); sec2.setName("Heidi"); sec2.setBadgeNo("S-102");
 

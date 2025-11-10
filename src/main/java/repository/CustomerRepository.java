@@ -1,11 +1,18 @@
 package repository;
 
 import model.Customer;
-import java.util.*;
+import org.springframework.stereotype.Repository;
 
-public class CustomerRepository extends AbstractRepository<Customer> {
+import java.util.Comparator;
+import java.util.List;
+import java.util.Optional;
 
-    // Additional customer-specific query methods can be added here
+@Repository
+// FIX: The class now extends our new InMemoryRepository
+public class CustomerRepository extends InMemoryRepository<Customer, String> {
+
+    // --- YOUR CUSTOM FINDER METHODS ARE PRESERVED ---
+    // They continue to work because the underlying 'store' map still exists.
 
     public List<Customer> findByName(String name) {
         return store.values().stream()
@@ -20,31 +27,22 @@ public class CustomerRepository extends AbstractRepository<Customer> {
     }
 
     public Optional<Customer> findCustomerWithMostPurchases() {
+        // This assumes the Purchase list is managed elsewhere and set on the customer
         return store.values().stream()
                 .max(Comparator.comparingInt(customer ->
                         customer.getPurchases() != null ? customer.getPurchases().size() : 0));
     }
 
-    // Override save method to ensure ID consistency
+    /**
+     * FIX: Overriding the new 'save' method from InMemoryRepository.
+     * This preserves your important null-check logic.
+     */
     @Override
-    public void save(String id, Customer entity) {
-        // Ensure the entity's ID matches the key
-        if (!id.equals(entity.getId())) {
-            entity.setId(id);
-        }
-        super.save(id, entity);
-    }
-
-    @Override
-    public void delete(String id) {
-
-    }
-
-    // Alternative save method that uses the entity's own ID
     public void save(Customer entity) {
         if (entity.getId() == null || entity.getId().trim().isEmpty()) {
             throw new IllegalArgumentException("Customer ID cannot be null or empty");
         }
-        super.save(entity.getId(), entity);
+        // Calls the save method in the parent InMemoryRepository
+        super.save(entity);
     }
 }

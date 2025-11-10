@@ -37,30 +37,19 @@ public class StaffAssignmentController {
         this.floorRepository = floorRepository;
     }
 
-    /**
-     * GET /assignments
-     * Displays a list of all staff assignments.
-     */
     @GetMapping
     public String listAll(Model model) {
         model.addAttribute("assignments", assignmentRepository.findAll());
         return "assignments/index";
     }
 
-    /**
-     * GET /assignments/new
-     * Displays the form for creating a new assignment.
-     * It pre-populates the form with lists of all staff and floors.
-     */
     @GetMapping("/new")
     public String showCreateForm(Model model) {
-        // Combine maintenance and security staff into one list
         List<Staff> allStaff = new ArrayList<>();
         allStaff.addAll(maintenanceStaffRepository.findAll());
         allStaff.addAll(securityStaffRepository.findAll());
         allStaff.sort(Comparator.comparing(Staff::getName));
 
-        // Get all floors
         List<Floor> allFloors = floorRepository.findAll();
         allFloors.sort(Comparator.comparing(Floor::getNumber));
 
@@ -71,10 +60,6 @@ public class StaffAssignmentController {
         return "assignments/form";
     }
 
-    /**
-     * POST /assignments
-     * Processes the form submission for creating a new assignment.
-     */
     @PostMapping
     public String create(@ModelAttribute StaffAssignment assignment) {
         assignment.setId(UUID.randomUUID().toString());
@@ -83,12 +68,11 @@ public class StaffAssignmentController {
     }
 
     /**
-     * POST /assignments/{id}/delete
-     * Deletes the specified assignment.
+     * FIX: The method call is now .deleteById(id) to match the new repository.
      */
     @PostMapping("/{id}/delete")
     public String delete(@PathVariable String id) {
-        assignmentRepository.delete(id);
+        assignmentRepository.deleteById(id);
         return "redirect:/assignments";
     }
 }

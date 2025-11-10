@@ -3,32 +3,41 @@ package model;
 import enums.TaskStatus;
 import interfaces.Identifiable;
 
-public class MaintenanceTask implements Identifiable { // Make sure it still implements Identifiable
+public class MaintenanceTask implements Identifiable<String> {
+
     private String id;
     private String description;
-    private TaskStatus status; // Changed from String to TaskStatus
-    private String assignmentId;
+    private TaskStatus status;
+    // Add other fields if you have them (e.g., floorId, assignedTo)
 
-    public MaintenanceTask() {}
-
-    public MaintenanceTask(String id, String description, TaskStatus status, String assignmentId) {
-        this.id = id;
-        this.description = description;
-        this.status = status;
-        this.assignmentId = assignmentId;
+    // --- CONSTRUCTORS ---
+    public MaintenanceTask() {
     }
 
-    @Override // From Identifiable interface
-    public String getId() { return id; }
-    public void setId(String id) { this.id = id; }
+    // --- GETTERS AND SETTERS ---
 
-    public String getDescription() { return description; }
-    public void setDescription(String description) { this.description = description; }
+    @Override
+    public String getId() {
+        return id;
+    }
 
-    // Getter and setter now use the enum
-    public TaskStatus getStatus() { return status; }
-    public void setStatus(TaskStatus status) { this.status = status; }
+    public void setId(String id) {
+        this.id = id;
+    }
 
-    public String getAssignmentId() { return assignmentId; }
-    public void setAssignmentId(String assignmentId) { this.assignmentId = assignmentId; }
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public TaskStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(TaskStatus status) {
+        this.status = status;
+    }
 }

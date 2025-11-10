@@ -58,9 +58,12 @@ public class ElectricalAssetController {
         return "redirect:/electrical";
     }
 
+    /**
+     * FIX: The method call is changed from .delete(id) to .deleteById(id)
+     */
     @PostMapping("/{id}/delete")
     public String deleteAsset(@PathVariable String id) {
-        electricalRepository.delete(id);
+        electricalRepository.deleteById(id);
         return "redirect:/electrical";
     }
 }

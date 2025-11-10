@@ -1,15 +1,21 @@
 package model;
 
+// It must extend the base Staff class
 public class SecurityStaff extends Staff {
+
     private String badgeNo;
 
-    public SecurityStaff() {}
-
-    public SecurityStaff(String id, String name, String badgeNo) {
-        super(id, name);
-        this.badgeNo = badgeNo;
+    public SecurityStaff() {
+        super();
     }
 
-    public String getBadgeNo() { return badgeNo; }
-    public void setBadgeNo(String badgeNo) { this.badgeNo = badgeNo; }
+    // getId, setId, getName, and setName are inherited from Staff.
+
+    public String getBadgeNo() {
+        return badgeNo;
+    }
+
+    public void setBadgeNo(String badgeNo) {
+        this.badgeNo = badgeNo;
+    }
 }
