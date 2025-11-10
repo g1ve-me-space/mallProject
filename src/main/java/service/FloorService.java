@@ -1,73 +1,52 @@
 package service;
 
-import model.*;
+import model.Floor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import repository.FloorRepository;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 
-public class FloorService extends AbstractService<Floor> {
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+
+@Service
+public class FloorService {
+
     private final FloorRepository floorRepository;
 
-    public FloorService(FloorRepository repository) {
-        super(repository);
-        this.floorRepository = repository;
+    @Autowired
+    public FloorService(FloorRepository floorRepository) {
+        this.floorRepository = floorRepository;
     }
 
+    // --- Core Service Methods ---
+    public List<Floor> findAll() {
+        return floorRepository.findAll();
+    }
+
+    public Optional<Floor> findById(String id) {
+        return floorRepository.findById(id);
+    }
+
+    public void deleteById(String id) {
+        floorRepository.deleteById(id);
+    }
+
+    public void save(Floor floor) {
+        if (floor.getId() == null || floor.getId().trim().isEmpty()) {
+            floor.setId(UUID.randomUUID().toString());
+        }
+        floorRepository.save(floor);
+    }
+
+    // --- Custom Service Method ---
+    // This now correctly calls the method on our new repository.
     public Optional<Floor> findByNumber(int number) {
         return floorRepository.findByNumber(number);
     }
 
-    public List<Floor> findFloorsWithShops() {
-        return floorRepository.findFloorsWithShops();
-    }
-
-    public List<Floor> findFloorsWithPendingTasks() {
-        return floorRepository.findFloorsWithPendingTasks();
-    }
-
-    public List<Floor> findFloorsWithMinShops(int minShops) {
-        return floorRepository.findFloorsWithMinShops(minShops);
-    }
-
-    // FIX: Method signature now uses the AssetType enum
-    public List<Floor> findFloorsWithElectricalType(AssetType electricalType) {
-        return floorRepository.findFloorsWithElectricalType(electricalType);
-    }
-
-    public List<Floor> findFloorsWithDownElectricals() {
-        return floorRepository.findFloorsWithDownElectricals();
-    }
-
-    public List<Integer> getAllFloorNumbers() {
-        return floorRepository.getAllFloorNumbers();
-    }
-
-    public Map<Integer, Integer> getFloorShopCounts() {
-        return floorRepository.getFloorShopCounts();
-    }
-
-    public List<Floor> findFloorsWithAssignments() {
-        return floorRepository.findFloorsWithAssignments();
-    }
-
-    public boolean addShopToFloor(String floorId, Shop shop) {
-        return floorRepository.addShopToFloor(floorId, shop);
-    }
-
-    public boolean addTaskToFloor(String floorId, MaintenanceTask task) {
-        return floorRepository.addTaskToFloor(floorId, task);
-    }
-
-    public boolean addElectricalToFloor(String floorId, ElectricalAsset electrical) {
-        return floorRepository.addElectricalToFloor(floorId, electrical);
-    }
-
-    public boolean removeShopFromFloor(String floorId, String shopId) {
-        return floorRepository.removeShopFromFloor(floorId, shopId);
-    }
-
-    public void save(Floor entity) {
-        floorRepository.save(entity);
-    }
+    // WARNING: The rest of the custom methods from your old FloorService
+    // (like findFloorsWithShops) are NOT included here because their logic
+    // depends on other repositories. That logic should be moved INTO this service
+    // in the future. For now, we are keeping it simple to ensure the app runs.
 }

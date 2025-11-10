@@ -1,5 +1,7 @@
 package model;
 
+import interfaces.Identifiable;
+
 public class MaintenanceTask implements Identifiable { // Make sure it still implements Identifiable
     private String id;
     private String description;

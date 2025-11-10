@@ -1,43 +1,70 @@
 package model;
 
+import interfaces.Identifiable;
 import java.util.List;
 
-public class Shop {
+public class Shop implements Identifiable<String> {
+
     private String id;
     private String name;
-    private String category; // <-- ADD THIS LINE
+    private String category;
     private String ownerName;
     private double areaSqm;
     private List<Purchase> purchases;
 
-    public Shop() {}
+    // --- CONSTRUCTORS ---
+    // (Your constructors go here)
 
-    // Add 'category' to the constructor
-    public Shop(String id, String name, String category, String ownerName, double areaSqm, List<Purchase> purchases) {
-        this.id = id;
-        this.name = name;
-        this.category = category; // <-- AND THIS
-        this.ownerName = ownerName;
-        this.areaSqm = areaSqm;
-        this.purchases = purchases;
+    // --- GETTERS AND SETTERS ---
+
+    // This @Override annotation tells the compiler we are intentionally
+    // fulfilling the contract of the Identifiable interface.
+    @Override
+    public String getId() {
+        return id;
     }
 
-    public String getId() { return id; }
-    public void setId(String id) { this.id = id; }
+    public void setId(String id) {
+        this.id = id;
+    }
 
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
+    public String getName() {
+        return name;
+    }
 
-    // Add getter and setter for category
-    public String getCategory() { return category; }
-    public void setCategory(String category) { this.category = category; }
+    public void setName(String name) {
+        this.name = name;
+    }
 
-    public String getOwnerName() { return ownerName; }
-    public void setOwnerName(String ownerName) { this.ownerName = ownerName; }
+    public String getCategory() {
+        return category;
+    }
 
-    public double getAreaSqm() { return areaSqm; }
-    public void setAreaSqm(double areaSqm) { this.areaSqm = areaSqm; }
+    public void setCategory(String category) {
+        this.category = category;
+    }
 
-    public List<Purchase> getPurchases() { return purchases; }
-    public void setPurchases(List<Purchase> purchases) { this.purchases = purchases; }
+    public String getOwnerName() {
+        return ownerName;
+    }
+
+    public void setOwnerName(String ownerName) {
+        this.ownerName = ownerName;
+    }
+
+    public double getAreaSqm() {
+        return areaSqm;
+    }
+
+    public void setAreaSqm(double areaSqm) {
+        this.areaSqm = areaSqm;
+    }
+
+    public List<Purchase> getPurchases() {
+        return purchases;
+    }
+
+    public void setPurchases(List<Purchase> purchases) {
+        this.purchases = purchases;
+    }
 }

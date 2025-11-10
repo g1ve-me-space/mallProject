@@ -15,18 +15,23 @@ import service.ShopService;
 public class AppConfig {
     private static final Logger log = LoggerFactory.getLogger(AppConfig.class);
 
-    @Bean public ShopRepository shopRepository() { return new ShopRepository() {
-        @Override public void delete(String id) { store.remove(id); }
-    }; }
-    @Bean public FloorRepository floorRepository() { return new FloorRepository() {
-        @Override public void delete(String id) { store.remove(id); }
-    }; }
+    @Bean
+    public ShopRepository shopRepository() {
+        return new ShopRepository();
+    }
+    // In AppConfig.java
+    @Bean
+    public FloorRepository floorRepository() {
+        return new FloorRepository();
+    }
     @Bean public CustomerRepository customerRepository() { return new CustomerRepository() {
         @Override public void delete(String id) { store.remove(id); }
     }; }
-    @Bean public MallRepository mallRepository() { return new MallRepository() {
-        @Override public void delete(String id) { store.remove(id); }
-    }; }
+    // In AppConfig.java
+    @Bean
+    public MallRepository mallRepository() {
+        return new MallRepository();
+    }
     @Bean public PurchaseRepository purchaseRepository() { return new PurchaseRepository() {
         @Override public void delete(String id) { store.remove(id); }
     }; }
