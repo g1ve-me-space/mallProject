@@ -1,105 +1,62 @@
 package repository;
 
+import model.AssetStatus;
+import model.AssetType;
 import model.ElectricalAsset;
-import java.util.*;
-import java.util.stream.Collectors;  // Add this import
+
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class ElectricalAssetRepository extends AbstractRepository<ElectricalAsset> {
 
-    // Find all electrical assets by floor ID
     public List<ElectricalAsset> findByFloorId(String floorId) {
         return store.values().stream()
                 .filter(asset -> asset.getFloorId() != null && asset.getFloorId().equals(floorId))
                 .collect(Collectors.toList());
     }
 
-    // Find all electrical assets by type
-    public List<ElectricalAsset> findByType(String type) {
+    public List<ElectricalAsset> findByType(AssetType type) { // Use enum
         return store.values().stream()
-                .filter(asset -> asset.getType() != null && asset.getType().equalsIgnoreCase(type))
+                .filter(asset -> asset.getType() == type) // Direct enum comparison
                 .collect(Collectors.toList());
     }
 
-    // Find all electrical assets by status
-    public List<ElectricalAsset> findByStatus(String status) {
+    public List<ElectricalAsset> findByStatus(AssetStatus status) { // Use enum
         return store.values().stream()
-                .filter(asset -> asset.getStatus() != null && asset.getStatus().equalsIgnoreCase(status))
+                .filter(asset -> asset.getStatus() == status) // Direct enum comparison
                 .collect(Collectors.toList());
     }
 
-    // Find all working electrical assets
     public List<ElectricalAsset> findWorkingAssets() {
-        return findByStatus("Working");
+        return findByStatus(AssetStatus.WORKING);
     }
 
-    // Find all down/not-working electrical assets
     public List<ElectricalAsset> findDownAssets() {
-        return findByStatus("Down");
+        return findByStatus(AssetStatus.DOWN);
     }
 
-    // Find electrical assets by type and status
-    public List<ElectricalAsset> findByTypeAndStatus(String type, String status) {
-        return store.values().stream()
-                .filter(asset -> asset.getType() != null && asset.getType().equalsIgnoreCase(type) &&
-                        asset.getStatus() != null && asset.getStatus().equalsIgnoreCase(status))
-                .collect(Collectors.toList());
-    }
-
-    // Count electrical assets by floor
-    public Map<String, Long> countAssetsByFloor() {
-        return store.values().stream()
-                .filter(asset -> asset.getFloorId() != null)
-                .collect(Collectors.groupingBy(ElectricalAsset::getFloorId, Collectors.counting()));
-    }
-
-    // Count electrical assets by type
-    public Map<String, Long> countAssetsByType() {
-        return store.values().stream()
-                .filter(asset -> asset.getType() != null)
-                .collect(Collectors.groupingBy(ElectricalAsset::getType, Collectors.counting()));
-    }
-
-    // Update status of an electrical asset
-    public boolean updateStatus(String assetId, String newStatus) {
+    public boolean updateStatus(String assetId, AssetStatus newStatus) { // Use enum
         Optional<ElectricalAsset> assetOpt = findById(assetId);
         if (assetOpt.isPresent()) {
             ElectricalAsset asset = assetOpt.get();
             asset.setStatus(newStatus);
-            save(asset.getId(), asset);
+            save(asset);
             return true;
         }
         return false;
     }
 
-    // Mark an asset as working
-    public boolean markAsWorking(String assetId) {
-        return updateStatus(assetId, "Working");
-    }
-
-    // Mark an asset as down
-    public boolean markAsDown(String assetId) {
-        return updateStatus(assetId, "Down");
-    }
-
-    // Override save method to ensure ID consistency
-    @Override
-    public void save(String id, ElectricalAsset entity) {
-        if (!id.equals(entity.getId())) {
-            entity.setId(id);
-        }
-        super.save(id, entity);
-    }
-
-    @Override
-    public void delete(String id) {
-
-    }
-
-    // Alternative save method that uses the entity's own ID
     public void save(ElectricalAsset entity) {
         if (entity.getId() == null || entity.getId().trim().isEmpty()) {
             throw new IllegalArgumentException("ElectricalAsset ID cannot be null or empty");
         }
         super.save(entity.getId(), entity);
+    }
+
+    @Override
+    public void delete(String id) {
+        // Implemented in AppConfig
     }
 }

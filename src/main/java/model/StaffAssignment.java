@@ -4,11 +4,12 @@ public class StaffAssignment {
     private String id;
     private String floorId;
     private String staffId;
-    private String shift; // Morning / Evening / Night
+    private Shift shift; // Changed from String to the Shift enum
 
     public StaffAssignment() {}
 
-    public StaffAssignment(String id, String floorId, String staffId, String shift) {
+    // Constructor updated to accept the Shift enum
+    public StaffAssignment(String id, String floorId, String staffId, Shift shift) {
         this.id = id;
         this.floorId = floorId;
         this.staffId = staffId;
@@ -24,6 +25,7 @@ public class StaffAssignment {
     public String getStaffId() { return staffId; }
     public void setStaffId(String staffId) { this.staffId = staffId; }
 
-    public String getShift() { return shift; }
-    public void setShift(String shift) { this.shift = shift; }
+    // Getter and Setter updated to use the Shift enum
+    public Shift getShift() { return shift; }
+    public void setShift(Shift shift) { this.shift = shift; }
 }

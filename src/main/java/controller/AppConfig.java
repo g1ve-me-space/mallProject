@@ -15,53 +15,40 @@ import service.ShopService;
 public class AppConfig {
     private static final Logger log = LoggerFactory.getLogger(AppConfig.class);
 
-    // Repositories
     @Bean public ShopRepository shopRepository() { return new ShopRepository() {
-        @Override
-        public void delete(String id) { store.remove(id); }
+        @Override public void delete(String id) { store.remove(id); }
     }; }
     @Bean public FloorRepository floorRepository() { return new FloorRepository() {
-        @Override
-        public void delete(String id) { store.remove(id); }
+        @Override public void delete(String id) { store.remove(id); }
     }; }
     @Bean public CustomerRepository customerRepository() { return new CustomerRepository() {
-        @Override
-        public void delete(String id) { store.remove(id); }
+        @Override public void delete(String id) { store.remove(id); }
     }; }
     @Bean public MallRepository mallRepository() { return new MallRepository() {
-        @Override
-        public void delete(String id) { store.remove(id); }
+        @Override public void delete(String id) { store.remove(id); }
     }; }
     @Bean public PurchaseRepository purchaseRepository() { return new PurchaseRepository() {
-        @Override
-        public void delete(String id) { store.remove(id); }
+        @Override public void delete(String id) { store.remove(id); }
     }; }
     @Bean public MaintenanceTaskRepository maintenanceTaskRepository() { return new MaintenanceTaskRepository() {
-        @Override
-        public void delete(String id) { store.remove(id); }
+        @Override public void delete(String id) { store.remove(id); }
     }; }
     @Bean public ElectricalAssetRepository electricalAssetRepository() { return new ElectricalAssetRepository() {
-        @Override
-        public void delete(String id) { store.remove(id); }
+        @Override public void delete(String id) { store.remove(id); }
     }; }
     @Bean public MaintenanceStaffRepository maintenanceStaffRepository() { return new MaintenanceStaffRepository() {
-        @Override
-        public void delete(String id) { store.remove(id); }
+        @Override public void delete(String id) { store.remove(id); }
     }; }
     @Bean public StaffAssignmentRepository staffAssignmentRepository() { return new StaffAssignmentRepository() {
-        @Override
-        public void delete(String id) { store.remove(id); }
+        @Override public void delete(String id) { store.remove(id); }
     }; }
     @Bean public StaffRepository staffRepository() { return new StaffRepository() {
-        @Override
-        public void delete(String id) { store.remove(id); }
+        @Override public void delete(String id) { store.remove(id); }
     }; }
     @Bean public SecurityStaffRepository securityStaffRepository() { return new SecurityStaffRepository() {
-        @Override
-        public void delete(String id) { store.remove(id); }
+        @Override public void delete(String id) { store.remove(id); }
     }; }
 
-    // Services
     @Bean public ShopService shopService() { return new ShopService(shopRepository()); }
     @Bean public FloorService floorService() { return new FloorService(floorRepository()); }
     @Bean public CustomerService customerService() { return new CustomerService(customerRepository()); }
@@ -82,7 +69,6 @@ public class AppConfig {
         return args -> {
             log.info("Seeding sample data (AppConfig) ...");
 
-            // --- Define all objects first ---
             Shop shop1 = new Shop(); shop1.setId("shop-1"); shop1.setName("Demo Electronics Store"); shop1.setCategory("Electronics");
             Shop shop2 = new Shop(); shop2.setId("shop-2"); shop2.setName("The Book Nook"); shop2.setCategory("Books");
             Customer customer1 = new Customer(); customer1.setId("cust-1"); customer1.setName("Charlie"); customer1.setCurrency("USD");
@@ -94,22 +80,21 @@ public class AppConfig {
             Purchase p1 = new Purchase("purchase-1", customer1.getId(), shop1.getId(), 1299.99);
             Purchase p2 = new Purchase("purchase-2", customer2.getId(), shop2.getId(), 29.50);
             Purchase p3 = new Purchase("purchase-3", customer1.getId(), shop2.getId(), 15.00);
-
-            // --- FIX: USE TaskStatus ENUM INSTEAD OF STRINGS ---
             MaintenanceTask task1 = new MaintenanceTask(); task1.setId("task-1"); task1.setDescription("Inspect HVAC system on Floor 1"); task1.setStatus(TaskStatus.PLANNED);
             MaintenanceTask task2 = new MaintenanceTask(); task2.setId("task-2"); task2.setDescription("Replace light bulbs in main entrance"); task2.setStatus(TaskStatus.ACTIVE);
             MaintenanceTask task3 = new MaintenanceTask(); task3.setId("task-3"); task3.setDescription("Clean central atrium windows"); task3.setStatus(TaskStatus.DONE);
-            // ----------------------------------------------------
+            ElectricalAsset asset1 = new ElectricalAsset("asset-1", floor1.getId(), AssetType.ESCALATOR, AssetStatus.WORKING);
+            ElectricalAsset asset2 = new ElectricalAsset("asset-2", floor2.getId(), AssetType.LIFT, AssetStatus.DOWN);
+            ElectricalAsset asset3 = new ElectricalAsset("asset-3", floor1.getId(), AssetType.AC, AssetStatus.WORKING);
 
-            ElectricalAsset asset1 = new ElectricalAsset("asset-1", floor1.getId(), "Escalator", "Working");
-            ElectricalAsset asset2 = new ElectricalAsset("asset-2", floor2.getId(), "Lift", "Down");
-            ElectricalAsset asset3 = new ElectricalAsset("asset-3", floor1.getId(), "AC", "Working");
-            MaintenanceStaff maint1 = new MaintenanceStaff(); maint1.setId("maint-staff-1"); maint1.setName("Eve"); maint1.setType("Electrical");
-            MaintenanceStaff maint2 = new MaintenanceStaff(); maint2.setId("maint-staff-2"); maint2.setName("Frank"); maint2.setType("Cleaning");
+            // --- FIX: Use the MaintenanceStaffType enum instead of strings ---
+            MaintenanceStaff maint1 = new MaintenanceStaff(); maint1.setId("maint-staff-1"); maint1.setName("Eve"); maint1.setType(MaintenanceStaffType.ELECTRICAL);
+            MaintenanceStaff maint2 = new MaintenanceStaff(); maint2.setId("maint-staff-2"); maint2.setName("Frank"); maint2.setType(MaintenanceStaffType.CLEANING);
+            // -----------------------------------------------------------------
+
             SecurityStaff sec1 = new SecurityStaff(); sec1.setId("sec-staff-1"); sec1.setName("Grace"); sec1.setBadgeNo("S-101");
             SecurityStaff sec2 = new SecurityStaff(); sec2.setId("sec-staff-2"); sec2.setName("Heidi"); sec2.setBadgeNo("S-102");
 
-            // --- Save all objects to their repositories ---
             shopRepo.save(shop1); shopRepo.save(shop2);
             customerRepo.save(customer1); customerRepo.save(customer2);
             mallRepo.save(mall1); mallRepo.save(mall2);
@@ -120,11 +105,11 @@ public class AppConfig {
             maintenanceStaffRepo.save(maint1); maintenanceStaffRepo.save(maint2);
             securityStaffRepo.save(sec1); securityStaffRepo.save(sec2);
 
-            StaffAssignment assign1 = new StaffAssignment("assign-1", maint1.getId(), floor1.getId(), "Morning");
+            StaffAssignment assign1 = new StaffAssignment("assign-1", maint1.getId(), floor1.getId(), Shift.MORNING);
             assignmentRepo.save(assign1);
-            StaffAssignment assign2 = new StaffAssignment("assign-2", sec1.getId(), floor2.getId(), "Evening");
+            StaffAssignment assign2 = new StaffAssignment("assign-2", sec1.getId(), floor2.getId(), Shift.EVENING);
             assignmentRepo.save(assign2);
-            StaffAssignment assign3 = new StaffAssignment("assign-3", maint2.getId(), floor1.getId(), "Night");
+            StaffAssignment assign3 = new StaffAssignment("assign-3", maint2.getId(), floor1.getId(), Shift.NIGHT);
             assignmentRepo.save(assign3);
 
             log.info("Seeding finished.");

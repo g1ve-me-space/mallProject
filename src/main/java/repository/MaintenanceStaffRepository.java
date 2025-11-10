@@ -1,36 +1,41 @@
 package repository;
 
 import model.MaintenanceStaff;
+import model.MaintenanceStaffType; // Import the new enum
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
-public class MaintenanceStaffRepository {
+public class MaintenanceStaffRepository extends AbstractRepository<MaintenanceStaff> {
 
-    protected final Map<String, MaintenanceStaff> store = new ConcurrentHashMap<>();
-
-    public List<MaintenanceStaff> findAll() {
-        return new ArrayList<>(store.values());
+    // Find maintenance staff by their specialty type (FIXED)
+    public List<MaintenanceStaff> findByType(MaintenanceStaffType type) {
+        return store.values().stream()
+                .filter(staff -> staff.getType() == type) // Direct enum comparison
+                .collect(Collectors.toList());
     }
 
-    public Optional<MaintenanceStaff> findById(String id) {
-        return Optional.ofNullable(store.get(id));
+    // Count staff by their specialty type (FIXED)
+    public Map<MaintenanceStaffType, Long> countByType() {
+        return store.values().stream()
+                .filter(staff -> staff.getType() != null)
+                .collect(Collectors.groupingBy(MaintenanceStaff::getType, Collectors.counting()));
     }
 
-    public void save(MaintenanceStaff item) {
-        if (item.getId() == null || item.getId().isEmpty()) {
-            // In a real app, you'd probably want a more robust way to generate IDs
-            throw new IllegalArgumentException("Entity ID cannot be null or empty.");
+    // Alternative save method that uses the entity's own ID
+    public void save(MaintenanceStaff entity) {
+        if (entity.getId() == null || entity.getId().trim().isEmpty()) {
+            throw new IllegalArgumentException("MaintenanceStaff ID cannot be null or empty");
         }
-        store.put(item.getId(), item);
+        super.save(entity.getId(), entity);
     }
 
-    // The delete method will be handled in the AppConfig bean definition,
-    // just like all the other repositories.
+    @Override
     public void delete(String id) {
-        throw new UnsupportedOperationException("Delete must be implemented in the bean definition.");
+        // Implemented in AppConfig
     }
 }

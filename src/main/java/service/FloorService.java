@@ -1,16 +1,13 @@
 package service;
 
-import model.Floor;
-import model.Shop;
-import model.MaintenanceTask;
-import model.ElectricalAsset;
+import model.*;
 import repository.FloorRepository;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 public class FloorService extends AbstractService<Floor> {
-    private FloorRepository floorRepository;
+    private final FloorRepository floorRepository;
 
     public FloorService(FloorRepository repository) {
         super(repository);
@@ -33,7 +30,8 @@ public class FloorService extends AbstractService<Floor> {
         return floorRepository.findFloorsWithMinShops(minShops);
     }
 
-    public List<Floor> findFloorsWithElectricalType(String electricalType) {
+    // FIX: Method signature now uses the AssetType enum
+    public List<Floor> findFloorsWithElectricalType(AssetType electricalType) {
         return floorRepository.findFloorsWithElectricalType(electricalType);
     }
 

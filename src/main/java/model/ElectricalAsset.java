@@ -3,12 +3,12 @@ package model;
 public class ElectricalAsset {
     private String id;
     private String floorId;
-    private String type;   // Lift / AC / Light / Escalator
-    private String status; // Working / Down
+    private AssetType type;
+    private AssetStatus status;
 
     public ElectricalAsset() {}
 
-    public ElectricalAsset(String id, String floorId, String type, String status) {
+    public ElectricalAsset(String id, String floorId, AssetType type, AssetStatus status) {
         this.id = id;
         this.floorId = floorId;
         this.type = type;
@@ -21,10 +21,9 @@ public class ElectricalAsset {
     public String getFloorId() { return floorId; }
     public void setFloorId(String floorId) { this.floorId = floorId; }
 
-    public String getType() { return type; }
-    public void setType(String type) { this.type = type; }
+    public AssetType getType() { return type; }
+    public void setType(AssetType type) { this.type = type; }
 
-    public String getStatus() { return status; }
-    public void setStatus(String status) { this.status = status; }
+    public AssetStatus getStatus() { return status; }
+    public void setStatus(AssetStatus status) { this.status = status; }
 }
-

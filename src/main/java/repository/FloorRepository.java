@@ -1,10 +1,6 @@
 package repository;
 
-import model.Floor;
-import model.Shop;
-import model.MaintenanceTask;
-import model.ElectricalAsset;
-import model.StaffAssignment;
+import model.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -24,12 +20,13 @@ public class FloorRepository extends AbstractRepository<Floor> {
                 .collect(Collectors.toList());
     }
 
-    // Find all floors with pending maintenance tasks
+    // Find all floors with pending maintenance tasks (FIXED)
     public List<Floor> findFloorsWithPendingTasks() {
         return store.values().stream()
                 .filter(floor -> floor.getTasks() != null &&
                         floor.getTasks().stream().anyMatch(task ->
-                                "Planned".equals(task.getStatus()) || "Active".equals(task.getStatus())))
+                                // Use TaskStatus enum for comparison
+                                task.getStatus() == TaskStatus.PLANNED || task.getStatus() == TaskStatus.ACTIVE))
                 .collect(Collectors.toList());
     }
 
@@ -40,21 +37,23 @@ public class FloorRepository extends AbstractRepository<Floor> {
                 .collect(Collectors.toList());
     }
 
-    // Find floors with electrical assets of specific type
-    public List<Floor> findFloorsWithElectricalType(String electricalType) {
+    // Find floors with electrical assets of specific type (FIXED)
+    public List<Floor> findFloorsWithElectricalType(AssetType electricalType) { // Parameter is now AssetType
         return store.values().stream()
                 .filter(floor -> floor.getElectricals() != null &&
                         floor.getElectricals().stream().anyMatch(electrical ->
-                                electrical.getType() != null && electrical.getType().equalsIgnoreCase(electricalType)))
+                                // Use direct enum comparison
+                                electrical.getType() == electricalType))
                 .collect(Collectors.toList());
     }
 
-    // Find floors with down electrical assets
+    // Find floors with down electrical assets (FIXED)
     public List<Floor> findFloorsWithDownElectricals() {
         return store.values().stream()
                 .filter(floor -> floor.getElectricals() != null &&
                         floor.getElectricals().stream().anyMatch(electrical ->
-                                "Down".equals(electrical.getStatus())))
+                                // Use AssetStatus enum for comparison
+                                electrical.getStatus() == AssetStatus.DOWN))
                 .collect(Collectors.toList());
     }
 
@@ -186,7 +185,7 @@ public class FloorRepository extends AbstractRepository<Floor> {
 
     @Override
     public void delete(String id) {
-
+        // Implemented in AppConfig
     }
 
     // Alternative save method that uses the entity's own ID

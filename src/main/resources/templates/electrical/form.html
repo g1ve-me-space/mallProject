@@ -1,42 +1,48 @@
+<!--@thymesVar id="asset" type="model.ElectricalAsset"-->
+<!--@thymesVar id="allFloors" type="java.util.List<model.Floor>"-->
+<!--@thymesVar id="allTypes" type="java.util.List<model.AssetType>"-->
+<!--@thymesVar id="allStatuses" type="java.util.List<model.AssetStatus>"-->
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>All Electrical Assets</title>
+    <title>Create Electrical Asset</title>
 </head>
 <body>
-
-<h1>Electrical Assets</h1>
-
-<a href="/electrical/new">Add New Asset</a>
-
-<table border="1">
-    <thead>
-    <tr>
-        <th>ID</th>
-        <th>Floor ID</th>
-        <th>Type</th>
-        <th>Status</th>
-        <th>Actions</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="asset : ${assets}">
-        <td th:text="${asset.id}">-</td>
-        <td th:text="${asset.floorId}">-</td>
-        <td th:text="${asset.type}">-</td>
-        <td th:text="${asset.status}">-</td>
-        <td>
-            <form th:action="@{'/electrical/' + ${asset.id} + '/delete'}" method="post" style="display:inline;">
-                <button type="submit">Delete</button>
-            </form>
-        </td>
-    </tr>
-    </tbody>
-</table>
-
+<h1>Create New Electrical Asset</h1>
+<form th:action="@{/electrical}" th:object="${asset}" method="post">
+    <div>
+        <label for="floorId">Floor:</label>
+        <select id="floorId" th:field="*{floorId}">
+            <option value="">-- Select a Floor --</option>
+            <option th:each="floor : ${allFloors}"
+                    th:value="${floor.id}"
+                    th:text="'Floor ' + ${floor.number}"></option>
+        </select>
+    </div>
+    <div>
+        <label for="type">Type:</label>
+        <select id="type" th:field="*{type}">
+            <option value="">-- Select a Type --</option>
+            <option th:each="t : ${allTypes}"
+                    th:value="${t}"
+                    th:text="${t.toString()}"></option>
+        </select>
+    </div>
+    <div>
+        <label for="status">Status:</label>
+        <select id="status" th:field="*{status}">
+            <option value="">-- Select a Status --</option>
+            <option th:each="s : ${allStatuses}"
+                    th:value="${s}"
+                    th:text="${s.toString()}"></option>
+        </select>
+    </div>
+    <div>
+        <button type="submit">Save Asset</button>
+    </div>
+</form>
 <br>
-<a href="/">Back to Home</a>
-
+<a href="/electrical">Back to List</a>
 </body>
 </html>

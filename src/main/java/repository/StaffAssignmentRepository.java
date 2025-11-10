@@ -1,5 +1,6 @@
 package repository;
 
+import model.Shift;
 import model.StaffAssignment;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -20,42 +21,42 @@ public class StaffAssignmentRepository extends AbstractRepository<StaffAssignmen
                 .collect(Collectors.toList());
     }
 
-    // Find assignments by shift
-    public List<StaffAssignment> findByShift(String shift) {
+    // Find assignments by shift (FIXED)
+    public List<StaffAssignment> findByShift(Shift shift) { // Parameter is Shift enum
         return store.values().stream()
-                .filter(assignment -> assignment.getShift() != null && assignment.getShift().equalsIgnoreCase(shift))
+                .filter(assignment -> assignment.getShift() == shift) // Direct enum comparison
                 .collect(Collectors.toList());
     }
 
-    // Find morning shift assignments
+    // Find morning shift assignments (FIXED)
     public List<StaffAssignment> findMorningAssignments() {
-        return findByShift("Morning");
+        return findByShift(Shift.MORNING);
     }
 
-    // Find evening shift assignments
+    // Find evening shift assignments (FIXED)
     public List<StaffAssignment> findEveningAssignments() {
-        return findByShift("Evening");
+        return findByShift(Shift.EVENING);
     }
 
-    // Find night shift assignments
+    // Find night shift assignments (FIXED)
     public List<StaffAssignment> findNightAssignments() {
-        return findByShift("Night");
+        return findByShift(Shift.NIGHT);
     }
 
-    // Find assignments by floor and shift
-    public List<StaffAssignment> findByFloorAndShift(String floorId, String shift) {
+    // Find assignments by floor and shift (FIXED)
+    public List<StaffAssignment> findByFloorAndShift(String floorId, Shift shift) { // Parameter is Shift enum
         return store.values().stream()
                 .filter(assignment -> assignment.getFloorId() != null && assignment.getFloorId().equals(floorId) &&
-                        assignment.getShift() != null && assignment.getShift().equalsIgnoreCase(shift))
+                        assignment.getShift() == shift) // Direct enum comparison
                 .collect(Collectors.toList());
     }
 
-    // Update assignment shift
-    public boolean updateShift(String assignmentId, String newShift) {
+    // Update assignment shift (FIXED)
+    public boolean updateShift(String assignmentId, Shift newShift) { // Parameter is Shift enum
         Optional<StaffAssignment> assignmentOpt = findById(assignmentId);
         if (assignmentOpt.isPresent()) {
             StaffAssignment assignment = assignmentOpt.get();
-            assignment.setShift(newShift);
+            assignment.setShift(newShift); // Setter uses enum
             save(assignment.getId(), assignment);
             return true;
         }
@@ -84,8 +85,8 @@ public class StaffAssignmentRepository extends AbstractRepository<StaffAssignmen
                 ));
     }
 
-    // Get staff assignments count by shift
-    public Map<String, Long> getAssignmentCountByShift() {
+    // Get staff assignments count by shift (FIXED)
+    public Map<Shift, Long> getAssignmentCountByShift() { // Returns Map<Shift, Long>
         return store.values().stream()
                 .filter(assignment -> assignment.getShift() != null)
                 .collect(Collectors.groupingBy(
@@ -110,12 +111,12 @@ public class StaffAssignmentRepository extends AbstractRepository<StaffAssignmen
                 ));
     }
 
-    // Check if staff is assigned to a floor during a shift
-    public boolean isStaffAssignedToFloor(String staffId, String floorId, String shift) {
+    // Check if staff is assigned to a floor during a shift (FIXED)
+    public boolean isStaffAssignedToFloor(String staffId, String floorId, Shift shift) { // Parameter is Shift enum
         return store.values().stream()
                 .anyMatch(assignment -> assignment.getStaffId() != null && assignment.getStaffId().equals(staffId) &&
                         assignment.getFloorId() != null && assignment.getFloorId().equals(floorId) &&
-                        assignment.getShift() != null && assignment.getShift().equalsIgnoreCase(shift));
+                        assignment.getShift() == shift); // Direct enum comparison
     }
 
     // Get all staff IDs with assignments
@@ -134,7 +135,6 @@ public class StaffAssignmentRepository extends AbstractRepository<StaffAssignmen
                 .collect(Collectors.toSet());
     }
 
-    // Override save method to ensure ID consistency
     @Override
     public void save(String id, StaffAssignment entity) {
         if (!id.equals(entity.getId())) {
@@ -145,10 +145,9 @@ public class StaffAssignmentRepository extends AbstractRepository<StaffAssignmen
 
     @Override
     public void delete(String id) {
-
+        // Implemented in AppConfig
     }
 
-    // Alternative save method that uses the entity's own ID
     public void save(StaffAssignment entity) {
         if (entity.getId() == null || entity.getId().trim().isEmpty()) {
             throw new IllegalArgumentException("StaffAssignment ID cannot be null or empty");

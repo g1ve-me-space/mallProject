@@ -4,11 +4,12 @@ import java.util.List;
 
 public class MaintenanceStaff extends Staff {
     private List<StaffAssignment> assignments;
-    private String type; // Electrical / Cleaning
+    private MaintenanceStaffType type; // Changed from String to the enum
 
     public MaintenanceStaff() {}
 
-    public MaintenanceStaff(String id, String name, List<StaffAssignment> assignments, String type) {
+    // Constructor updated to accept the enum
+    public MaintenanceStaff(String id, String name, List<StaffAssignment> assignments, MaintenanceStaffType type) {
         super(id, name);
         this.assignments = assignments;
         this.type = type;
@@ -17,6 +18,7 @@ public class MaintenanceStaff extends Staff {
     public List<StaffAssignment> getAssignments() { return assignments; }
     public void setAssignments(List<StaffAssignment> assignments) { this.assignments = assignments; }
 
-    public String getType() { return type; }
-    public void setType(String type) { this.type = type; }
+    // Getter and Setter updated to use the enum
+    public MaintenanceStaffType getType() { return type; }
+    public void setType(MaintenanceStaffType type) { this.type = type; }
 }
