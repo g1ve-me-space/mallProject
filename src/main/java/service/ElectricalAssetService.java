@@ -1,7 +1,7 @@
 package service;
 
-import model.AssetStatus;
-import model.AssetType;
+import enums.AssetStatus;
+import enums.AssetType;
 import model.ElectricalAsset;
 import repository.ElectricalAssetRepository;
 import java.util.List;

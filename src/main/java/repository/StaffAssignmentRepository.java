@@ -1,6 +1,6 @@
 package repository;
 
-import model.Shift;
+import enums.Shift;
 import model.StaffAssignment;
 import java.util.*;
 import java.util.stream.Collectors;

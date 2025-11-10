@@ -1,7 +1,7 @@
 package controller;
 
-import model.AssetStatus;
-import model.AssetType;
+import enums.AssetStatus;
+import enums.AssetType;
 import model.ElectricalAsset;
 import model.Floor;
 import org.springframework.beans.factory.annotation.Autowired;

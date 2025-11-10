@@ -1,14 +1,13 @@
-package model;
+package enums;
 
-public enum AssetType {
-    LIFT("Lift"),
-    AC("AC"),
-    LIGHT("Light"),
-    ESCALATOR("Escalator");
+public enum Shift {
+    MORNING("Morning"),
+    EVENING("Evening"),
+    NIGHT("Night");
 
     private final String displayName;
 
-    AssetType(String displayName) {
+    Shift(String displayName) {
         this.displayName = displayName;
     }
 

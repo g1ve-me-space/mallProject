@@ -1,5 +1,7 @@
 package model;
 
+import enums.MaintenanceStaffType;
+
 import java.util.List;
 
 public class MaintenanceStaff extends Staff {

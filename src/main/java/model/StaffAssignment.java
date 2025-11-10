@@ -1,5 +1,7 @@
 package model;
 
+import enums.Shift;
+
 public class StaffAssignment {
     private String id;
     private String floorId;

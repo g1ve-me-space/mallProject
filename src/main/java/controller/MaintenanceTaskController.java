@@ -1,7 +1,7 @@
 package controller;
 
 import model.MaintenanceTask;
-import model.TaskStatus; // Import the new enum
+import enums.TaskStatus; // Import the new enum
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

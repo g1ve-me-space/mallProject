@@ -1,13 +1,13 @@
-package model;
+package enums;
 
-public enum Shift {
-    MORNING("Morning"),
-    EVENING("Evening"),
-    NIGHT("Night");
+public enum TaskStatus {
+    PLANNED("Planned"),
+    ACTIVE("Active"),
+    DONE("Done");
 
     private final String displayName;
 
-    Shift(String displayName) {
+    TaskStatus(String displayName) {
         this.displayName = displayName;
     }
 

@@ -1,13 +1,10 @@
 package repository;
 
 import model.MaintenanceStaff;
-import model.MaintenanceStaffType; // Import the new enum
+import enums.MaintenanceStaffType; // Import the new enum
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 public class MaintenanceStaffRepository extends AbstractRepository<MaintenanceStaff> {

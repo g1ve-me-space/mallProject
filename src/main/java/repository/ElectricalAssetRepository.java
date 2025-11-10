@@ -1,11 +1,10 @@
 package repository;
 
-import model.AssetStatus;
-import model.AssetType;
+import enums.AssetStatus;
+import enums.AssetType;
 import model.ElectricalAsset;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 

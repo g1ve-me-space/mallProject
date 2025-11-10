@@ -1,7 +1,7 @@
 package repository;
 
 import model.MaintenanceTask;
-import model.TaskStatus; // Import the enum
+import enums.TaskStatus; // Import the enum
 
 import java.util.ArrayList;
 import java.util.List;

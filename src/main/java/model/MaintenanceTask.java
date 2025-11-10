@@ -1,5 +1,6 @@
 package model;
 
+import enums.TaskStatus;
 import interfaces.Identifiable;
 
 public class MaintenanceTask implements Identifiable { // Make sure it still implements Identifiable

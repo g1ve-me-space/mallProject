@@ -1,13 +1,12 @@
-package model;
+package enums;
 
-public enum TaskStatus {
-    PLANNED("Planned"),
-    ACTIVE("Active"),
-    DONE("Done");
+public enum AssetStatus {
+    WORKING("Working"),
+    DOWN("Down");
 
     private final String displayName;
 
-    TaskStatus(String displayName) {
+    AssetStatus(String displayName) {
         this.displayName = displayName;
     }
 

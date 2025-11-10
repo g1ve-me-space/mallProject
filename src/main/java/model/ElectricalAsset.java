@@ -1,5 +1,8 @@
 package model;
 
+import enums.AssetStatus;
+import enums.AssetType;
+
 public class ElectricalAsset {
     private String id;
     private String floorId;

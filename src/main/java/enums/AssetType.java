@@ -1,12 +1,14 @@
-package model;
+package enums;
 
-public enum AssetStatus {
-    WORKING("Working"),
-    DOWN("Down");
+public enum AssetType {
+    LIFT("Lift"),
+    AC("AC"),
+    LIGHT("Light"),
+    ESCALATOR("Escalator");
 
     private final String displayName;
 
-    AssetStatus(String displayName) {
+    AssetType(String displayName) {
         this.displayName = displayName;
     }
 
