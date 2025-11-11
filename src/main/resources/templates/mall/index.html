@@ -17,6 +17,7 @@
         <th>Name</th>
         <th>City</th>
         <th>Actions</th>
+        <th>Address</th>
     </tr>
     </thead>
     <tbody>
@@ -25,6 +26,7 @@
         <td th:text="${mall.id}">-</td>
         <td th:text="${mall.name}">-</td>
         <td th:text="${mall.city}">-</td>
+        <td th:text="${mall.address}">-</td>
         <td>
             <!-- Form to handle the deletion of a mall -->
             <form th:action="@{'/mall/' + ${mall.id} + '/delete'}" method="post" style="display:inline;">

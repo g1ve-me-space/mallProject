@@ -17,6 +17,7 @@
         <th>Name</th>
         <th>Currency</th>
         <th>Actions</th>
+        <th>Email</th>
     </tr>
     </thead>
     <tbody>
@@ -25,6 +26,7 @@
         <td th:text="${customer.id}">-</td>
         <td th:text="${customer.name}">-</td>
         <td th:text="${customer.currency}">-</td>
+        <td th:text="${customer.email}">-</td>
         <td>
             <!-- Form to handle the deletion of a customer -->
             <form th:action="@{'/customer/' + ${customer.id} + '/delete'}" method="post" style="display:inline;">

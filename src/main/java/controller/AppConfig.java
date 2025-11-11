@@ -14,7 +14,7 @@ import service.*;
 public class AppConfig {
     private static final Logger log = LoggerFactory.getLogger(AppConfig.class);
 
-    // --- REFACTORED REPOSITORIES ---
+    // --- REPOSITORIES ---
     @Bean public ShopRepository shopRepository() { return new ShopRepository(); }
     @Bean public FloorRepository floorRepository() { return new FloorRepository(); }
     @Bean public MallRepository mallRepository() { return new MallRepository(); }
@@ -23,17 +23,8 @@ public class AppConfig {
     @Bean public ElectricalAssetRepository electricalAssetRepository() { return new ElectricalAssetRepository(); }
     @Bean public CustomerRepository customerRepository() { return new CustomerRepository(); }
     @Bean public MaintenanceStaffRepository maintenanceStaffRepository() { return new MaintenanceStaffRepository(); }
+    @Bean public StaffAssignmentRepository staffAssignmentRepository() { return new StaffAssignmentRepository(); }
     @Bean public SecurityStaffRepository securityStaffRepository() { return new SecurityStaffRepository(); }
-    /**
-     * FIX: Moved and simplified the StaffAssignmentRepository bean.
-     */
-    @Bean
-    public StaffAssignmentRepository staffAssignmentRepository() {
-        return new StaffAssignmentRepository();
-    }
-
-
-    // --- UNCHANGED REPOSITORIES (OLD PATTERN) ---
 
     // --- SERVICES ---
     @Bean public ShopService shopService() { return new ShopService(shopRepository()); }
@@ -55,15 +46,46 @@ public class AppConfig {
             StaffAssignmentRepository assignmentRepo
     ) {
         return args -> {
-            log.info("Seeding sample data (AppConfig) ...");
+            log.info("Seeding sample data with new attributes...");
 
-            // Seeding data remains the same
-            Shop shop1 = new Shop(); shop1.setId("shop-1"); shop1.setName("Demo Electronics Store"); shop1.setCategory("Electronics");
-            Shop shop2 = new Shop(); shop2.setId("shop-2"); shop2.setName("The Book Nook"); shop2.setCategory("Books");
-            Customer customer1 = new Customer(); customer1.setId("cust-1"); customer1.setName("Charlie"); customer1.setCurrency("USD");
-            Customer customer2 = new Customer(); customer2.setId("cust-2"); customer2.setName("Diana"); customer2.setCurrency("EUR");
-            Mall mall1 = new Mall(); mall1.setId("mall-1"); mall1.setName("City Center Plaza"); mall1.setCity("Metropolis");
-            Mall mall2 = new Mall(); mall2.setId("mall-2"); mall2.setName("Lakeside Shopping"); mall2.setCity("Star City");
+            // --- Add new data for the new fields ---
+            Shop shop1 = new Shop();
+            shop1.setId("shop-1");
+            shop1.setName("Demo Electronics Store");
+            shop1.setCategory("Electronics");
+            shop1.setPhoneNumber("555-0101"); // NEW
+
+            Shop shop2 = new Shop();
+            shop2.setId("shop-2");
+            shop2.setName("The Book Nook");
+            shop2.setCategory("Books");
+            shop2.setPhoneNumber("555-0102"); // NEW
+
+            Customer customer1 = new Customer();
+            customer1.setId("cust-1");
+            customer1.setName("Charlie");
+            customer1.setCurrency("USD");
+            customer1.setEmail("charlie@example.com"); // NEW
+
+            Customer customer2 = new Customer();
+            customer2.setId("cust-2");
+            customer2.setName("Diana");
+            customer2.setCurrency("EUR");
+            customer2.setEmail("diana@example.com"); // NEW
+
+            Mall mall1 = new Mall();
+            mall1.setId("mall-1");
+            mall1.setName("City Center Plaza");
+            mall1.setCity("Metropolis");
+            mall1.setAddress("123 Main St, Metropolis"); // NEW
+
+            Mall mall2 = new Mall();
+            mall2.setId("mall-2");
+            mall2.setName("Lakeside Shopping");
+            mall2.setCity("Star City");
+            mall2.setAddress("456 Lake Rd, Star City"); // NEW
+
+            // --- The rest of the seeding data is unchanged ---
             Floor floor1 = new Floor(); floor1.setId("floor-1"); floor1.setNumber(0);
             Floor floor2 = new Floor(); floor2.setId("floor-2"); floor2.setNumber(1);
             Purchase p1 = new Purchase("purchase-1", customer1.getId(), shop1.getId(), 1299.99);
