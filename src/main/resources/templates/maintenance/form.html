@@ -20,7 +20,7 @@
         <!-- This dropdown is now built dynamically from the TaskStatus enum -->
         <select id="status" th:field="*{status}">
             <option th:each="s : ${allStatuses}"
-                    th:value="${s}"
+                    th:value="${s.name()}"
                     th:text="${s.toString()}">
                 ...
             </option>

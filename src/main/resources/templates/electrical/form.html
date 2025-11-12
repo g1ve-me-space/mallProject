@@ -25,7 +25,7 @@
         <select id="type" th:field="*{type}">
             <option value="">-- Select a Type --</option>
             <option th:each="t : ${allTypes}"
-                    th:value="${t}"
+                    th:value="${t.name()}"
                     th:text="${t.toString()}"></option>
         </select>
     </div>
@@ -34,7 +34,7 @@
         <select id="status" th:field="*{status}">
             <option value="">-- Select a Status --</option>
             <option th:each="s : ${allStatuses}"
-                    th:value="${s}"
+                    th:value="${s.name()}"
                     th:text="${s.toString()}"></option>
         </select>
     </div>
