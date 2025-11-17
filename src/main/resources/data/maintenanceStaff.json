@@ -1,0 +1,45 @@
+[ {
+  "id" : "maint-staff-1",
+  "name" : "Eve",
+  "type" : "ELECTRICAL"
+}, {
+  "id" : "maint-staff-2",
+  "name" : "Frank",
+  "type" : "CLEANING"
+}, {
+  "id" : "maint-staff-3",
+  "name" : "Carla",
+  "type" : "ELECTRICAL"
+}, {
+  "id" : "maint-staff-4",
+  "name" : "Liam",
+  "type" : "CLEANING"
+}, {
+  "id" : "maint-staff-5",
+  "name" : "Max",
+  "type" : "ELECTRICAL"
+}, {
+  "id" : "maint-staff-6",
+  "name" : "Julia",
+  "type" : "CLEANING"
+}, {
+  "id" : "maint-staff-7",
+  "name" : "Tom",
+  "type" : "ELECTRICAL"
+}, {
+  "id" : "maint-staff-8",
+  "name" : "Sara",
+  "type" : "CLEANING"
+}, {
+  "id" : "maint-staff-9",
+  "name" : "Anna",
+  "type" : "ELECTRICAL"
+}, {
+  "id" : "maint-staff-10",
+  "name" : "Leo",
+  "type" : "CLEANING"
+}, {
+  "id" : "31ab75a3-0337-4849-a841-214ae1a097d9",
+  "name" : "d",
+  "type" : "ELECTRICAL"
+} ]
