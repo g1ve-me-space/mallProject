@@ -1,0 +1,41 @@
+[ {
+  "id" : "task-1",
+  "description" : "Replace ceiling tiles on floor 1",
+  "status" : "PLANNED"
+}, {
+  "id" : "task-2",
+  "description" : "Fix elevator lights",
+  "status" : "ACTIVE"
+}, {
+  "id" : "task-3",
+  "description" : "Restock restroom supplies",
+  "status" : "DONE"
+}, {
+  "id" : "task-4",
+  "description" : "Deep clean main entrance",
+  "status" : "PLANNED"
+}, {
+  "id" : "task-5",
+  "description" : "Check fire alarms on floor 3",
+  "status" : "ACTIVE"
+}, {
+  "id" : "task-6",
+  "description" : "Repair AC in food court",
+  "status" : "DONE"
+}, {
+  "id" : "task-7",
+  "description" : "Paint maintenance office",
+  "status" : "PLANNED"
+}, {
+  "id" : "task-8",
+  "description" : "Replace broken seating",
+  "status" : "ACTIVE"
+}, {
+  "id" : "task-9",
+  "description" : "Clear debris from parking lot",
+  "status" : "DONE"
+}, {
+  "id" : "task-10",
+  "description" : "Check emergency exits",
+  "status" : "PLANNED"
+} ]
