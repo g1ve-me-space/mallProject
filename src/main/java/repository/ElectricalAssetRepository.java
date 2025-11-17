@@ -1,10 +1,14 @@
 package repository;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import model.ElectricalAsset;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
-// Inherits all standard CRUD methods from InMemoryRepository.
-public class ElectricalAssetRepository extends InMemoryRepository<ElectricalAsset, String> {
-    // This body is intentionally left empty.
+public class ElectricalAssetRepository extends InFileRepository<ElectricalAsset> {
+    public ElectricalAssetRepository() {
+        super("electricalAsset.json", new TypeReference<List<ElectricalAsset>>() {});
+    }
 }

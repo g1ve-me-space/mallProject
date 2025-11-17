@@ -3,31 +3,25 @@ package service;
 import enums.AssetStatus;
 import enums.AssetType;
 import model.ElectricalAsset;
-import org.springframework.stereotype.Service; // Import the Service annotation
-import org.springframework.beans.factory.annotation.Autowired; // Import Autowired
+import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Autowired;
 import repository.ElectricalAssetRepository;
 
 import java.util.List;
-import java.util.Optional; // Import Optional
-import java.util.UUID; // Import UUID
+import java.util.Optional;
 import java.util.stream.Collectors;
 
-/**
- * FIX: This service no longer extends the old AbstractService.
- * It is now a standalone service consistent with our new architecture.
- */
-@Service // Add the @Service annotation so Spring can manage it
+@Service
 public class ElectricalAssetService {
 
     private final ElectricalAssetRepository electricalAssetRepository;
 
-    @Autowired // Add Autowired for dependency injection
+    @Autowired
     public ElectricalAssetService(ElectricalAssetRepository repository) {
-        // The call to super() is removed
         this.electricalAssetRepository = repository;
     }
 
-    // --- Standard methods (previously inherited from AbstractService) ---
+    // --- Standard CRUD methods ---
     public List<ElectricalAsset> findAll() {
         return electricalAssetRepository.findAll();
     }
@@ -41,10 +35,7 @@ public class ElectricalAssetService {
     }
 
     public void save(ElectricalAsset entity) {
-        // You might want to add ID generation logic here if it's not always set
-        if (entity.getId() == null || entity.getId().trim().isEmpty()) {
-            entity.setId(UUID.randomUUID().toString());
-        }
+        // Let repository handle ID assignment.
         electricalAssetRepository.save(entity);
     }
 
