@@ -1,0 +1,56 @@
+[ {
+  "id" : "p1",
+  "customerId" : "c1",
+  "shopId" : "s1",
+  "amount" : 100.0
+}, {
+  "id" : "p2",
+  "customerId" : "c2",
+  "shopId" : "s2",
+  "amount" : 23.5
+}, {
+  "id" : "p3",
+  "customerId" : "c3",
+  "shopId" : "s1",
+  "amount" : 45.1
+}, {
+  "id" : "p4",
+  "customerId" : "c1",
+  "shopId" : "s2",
+  "amount" : 499.99
+}, {
+  "id" : "p5",
+  "customerId" : "c2",
+  "shopId" : "s3",
+  "amount" : 15.0
+}, {
+  "id" : "p6",
+  "customerId" : "c3",
+  "shopId" : "s2",
+  "amount" : 30.0
+}, {
+  "id" : "p7",
+  "customerId" : "c1",
+  "shopId" : "s3",
+  "amount" : 18.75
+}, {
+  "id" : "p8",
+  "customerId" : "c2",
+  "shopId" : "s1",
+  "amount" : 1000.0
+}, {
+  "id" : "p9",
+  "customerId" : "c3",
+  "shopId" : "s3",
+  "amount" : 76.8
+}, {
+  "id" : "p10",
+  "customerId" : "c1",
+  "shopId" : "s2",
+  "amount" : 57.2
+}, {
+  "id" : "107022a9-83d1-4a5c-a1ac-a6865ddc9095",
+  "customerId" : "d",
+  "shopId" : "d",
+  "amount" : -0.03
+} ]

@@ -1,11 +1,14 @@
 package repository;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import model.Purchase;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
-// Inherits all standard CRUD methods from InMemoryRepository.
-// Its body is empty because it requires no custom business logic.
-public class PurchaseRepository extends InMemoryRepository<Purchase, String> {
-    // This body is intentionally left empty.
+public class PurchaseRepository extends InFileRepository<Purchase> {
+    public PurchaseRepository() {
+        super("purchase.json", new TypeReference<List<Purchase>>() {});
+    }
 }
