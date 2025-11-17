@@ -1,0 +1,19 @@
+[ {
+  "id" : "a1b2c3d4-e5f6-7890-1234-567890abcdef",
+  "name" : "City Center Mall",
+  "city" : "Metropolis",
+  "address" : "123 Main St",
+  "floors" : [ ]
+}, {
+  "id" : "b2c3d4e5-f6a7-8901-2345-67890abcdef1",
+  "name" : "Riverside Galleria",
+  "city" : "Star City",
+  "address" : "456 River Rd",
+  "floors" : [ ]
+}, {
+  "id" : "c7608d6d-1e3a-49c1-b4fa-5552230d4740",
+  "name" : "d",
+  "city" : "d",
+  "address" : null,
+  "floors" : [ ]
+} ]
