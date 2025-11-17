@@ -49,7 +49,6 @@ public class CustomerController {
     @PostMapping
     public String createCustomer(@ModelAttribute Customer customer) {
         // Generate a unique String ID before saving
-        customer.setId(UUID.randomUUID().toString());
         customerService.save(customer);
         return "redirect:/customer"; // Redirects back to the list page
     }

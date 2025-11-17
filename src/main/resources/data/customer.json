@@ -1,0 +1,61 @@
+[ {
+  "id" : "cust-1",
+  "name" : "Charlie",
+  "currency" : "USD",
+  "email" : "charlie@example.com",
+  "purchases" : [ ]
+}, {
+  "id" : "cust-2",
+  "name" : "Diana",
+  "currency" : "EUR",
+  "email" : "diana@example.com",
+  "purchases" : [ ]
+}, {
+  "id" : "cust-3",
+  "name" : "Bob",
+  "currency" : "GBP",
+  "email" : "bob@example.com",
+  "purchases" : [ ]
+}, {
+  "id" : "cust-4",
+  "name" : "Alice",
+  "currency" : "JPY",
+  "email" : "alice@example.com",
+  "purchases" : [ ]
+}, {
+  "id" : "cust-5",
+  "name" : "Emma",
+  "currency" : "USD",
+  "email" : "emma@example.com",
+  "purchases" : [ ]
+}, {
+  "id" : "cust-6",
+  "name" : "Lucas",
+  "currency" : "EUR",
+  "email" : "lucas@example.com",
+  "purchases" : [ ]
+}, {
+  "id" : "cust-7",
+  "name" : "Noah",
+  "currency" : "GBP",
+  "email" : "noah@example.com",
+  "purchases" : [ ]
+}, {
+  "id" : "cust-8",
+  "name" : "Olivia",
+  "currency" : "USD",
+  "email" : "olivia@example.com",
+  "purchases" : [ ]
+}, {
+  "id" : "cust-9",
+  "name" : "Mia",
+  "currency" : "JPY",
+  "email" : "mia@example.com",
+  "purchases" : [ ]
+}, {
+  "id" : "be51a89d-a826-437f-bade-52fbd6aa5149",
+  "name" : "d",
+  "currency" : "dd",
+  "email" : null,
+  "purchases" : [ ]
+} ]
