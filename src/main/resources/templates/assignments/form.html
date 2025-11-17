@@ -1,6 +1,7 @@
 <!--@thymesVar id="assignment" type="model.StaffAssignment"-->
 <!--@thymesVar id="allStaff" type="java.util.List<model.Staff>"-->
 <!--@thymesVar id="allFloors" type="java.util.List<model.Floor>"-->
+<!--@thymesVar id="allShifts" type="java.util.List<enums.Shift>"-->
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
@@ -12,34 +13,37 @@
 <h1>Create New Assignment</h1>
 
 <form th:action="@{/assignments}" th:object="${assignment}" method="post">
+
     <div>
         <label for="staffId">Staff Member:</label>
         <select id="staffId" th:field="*{staffId}">
+            <option value="">-- Select Staff --</option>
             <option th:each="staff : ${allStaff}"
                     th:value="${staff.id}"
-                    th:text="${staff.name + ' (ID: ' + staff.id + ')'}">
-                Select Staff
-            </option>
+                    th:text="${staff.name + ' (ID: ' + staff.id + ')'}"></option>
         </select>
     </div>
+
     <div>
         <label for="floorId">Floor:</label>
         <select id="floorId" th:field="*{floorId}">
+            <option value="">-- Select Floor --</option>
             <option th:each="floor : ${allFloors}"
                     th:value="${floor.id}"
-                    th:text="${'Floor #' + floor.number + ' (ID: ' + floor.id + ')'}">
-                Select Floor
-            </option>
+                    th:text="${'Floor #' + floor.number + ' (ID: ' + floor.id + ')'}"></option>
         </select>
     </div>
+
     <div>
         <label for="shift">Shift:</label>
         <select id="shift" th:field="*{shift}">
-            <option value="Morning">Morning</option>
-            <option value="Evening">Evening</option>
-            <option value="Night">Night</option>
+            <option value="">-- Select Shift --</option>
+            <option th:each="s : ${allShifts}"
+                    th:value="${s.name()}"
+                    th:text="${s.toString()}"></option>
         </select>
     </div>
+
     <div>
         <button type="submit">Save Assignment</button>
     </div>

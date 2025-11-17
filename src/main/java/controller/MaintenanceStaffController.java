@@ -6,6 +6,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import repository.MaintenanceStaffRepository;
+import enums.MaintenanceStaffType;
+
 
 import java.util.List;
 import java.util.UUID;
@@ -31,8 +33,10 @@ public class MaintenanceStaffController {
     @GetMapping("/new")
     public String showCreateForm(Model model) {
         model.addAttribute("staff", new MaintenanceStaff());
+        model.addAttribute("allStaffTypes", MaintenanceStaffType.values());
         return "maintenance-staff/form";
     }
+
 
     @PostMapping
     public String create(@ModelAttribute MaintenanceStaff staff) {

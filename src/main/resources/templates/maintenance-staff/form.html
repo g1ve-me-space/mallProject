@@ -1,4 +1,5 @@
 <!--@thymesVar id="staff" type="model.MaintenanceStaff"-->
+<!--@thymesVar id="allStaffTypes" type="java.util.List<enums.MaintenanceStaffType>"-->
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
@@ -12,15 +13,19 @@
 <form th:action="@{/maintenance-staff}" th:object="${staff}" method="post">
     <div>
         <label for="name">Name:</label>
-        <input type="text" id="name" th:field="*{name}" />
+        <input type="text" id="name" th:field="*{name}">
     </div>
+
     <div>
         <label for="type">Type:</label>
         <select id="type" th:field="*{type}">
-            <option value="Electrical">Electrical</option>
-            <option value="Cleaning">Cleaning</option>
+            <option value="">-- Select Type --</option>
+            <option th:each="t : ${allStaffTypes}"
+                    th:value="${t.name()}"
+                    th:text="${t.toString()}"></option>
         </select>
     </div>
+
     <div>
         <button type="submit">Save</button>
     </div>

@@ -11,6 +11,7 @@ import repository.FloorRepository;
 import repository.MaintenanceStaffRepository;
 import repository.SecurityStaffRepository;
 import repository.StaffAssignmentRepository;
+import enums.Shift;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -56,6 +57,7 @@ public class StaffAssignmentController {
         model.addAttribute("assignment", new StaffAssignment());
         model.addAttribute("allStaff", allStaff);
         model.addAttribute("allFloors", allFloors);
+        model.addAttribute("allShifts", Shift.values());
 
         return "assignments/form";
     }
