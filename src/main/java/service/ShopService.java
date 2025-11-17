@@ -3,11 +3,10 @@ package service;
 import model.Shop;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import repository.ShopRepository; // It now uses our new, concrete class
+import repository.ShopRepository;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 public class ShopService {
@@ -30,15 +29,12 @@ public class ShopService {
     }
 
     public void deleteById(String id) {
-        // We now call deleteById to match the new Repository interface
         shopRepository.deleteById(id);
     }
 
     public void save(Shop shop) {
-        // Adding business logic: Ensure a new shop gets an ID.
-        if (shop.getId() == null || shop.getId().trim().isEmpty()) {
-            shop.setId(UUID.randomUUID().toString());
-        }
+        // Do NOT set the ID here.
+        // The repository will assign an ID if missing (new shop).
         shopRepository.save(shop);
     }
 

@@ -53,4 +53,9 @@
   "customerId" : "d",
   "shopId" : "d",
   "amount" : -0.03
+}, {
+  "id" : "53d1014a-c815-47b5-b2fb-08f72613f8e9",
+  "customerId" : "d",
+  "shopId" : "ddd",
+  "amount" : 33.0
 } ]

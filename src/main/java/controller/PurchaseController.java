@@ -37,7 +37,6 @@ public class PurchaseController {
 
     @PostMapping
     public String createPurchase(@ModelAttribute Purchase purchase) {
-        purchase.setId(UUID.randomUUID().toString());
         purchaseRepository.save(purchase);
         return "redirect:/purchase";
     }

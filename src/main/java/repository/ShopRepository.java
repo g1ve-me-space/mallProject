@@ -1,23 +1,26 @@
 package repository;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import model.Shop;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
-// It inherits findAll, findById, save, deleteById, count, existsById from InMemoryRepository.
-public class ShopRepository extends InMemoryRepository<Shop, String> {
+public class ShopRepository extends InFileRepository<Shop> {
+
+    public ShopRepository() {
+        super("shop.json", new TypeReference<List<Shop>>() {});
+    }
 
     /**
      * Finds a shop by its exact name, case-insensitively.
-     * This is a core business method for this repository.
      * @param name The name of the shop to find.
      * @return an Optional containing the shop if found.
      */
     public Optional<Shop> findByName(String name) {
-        // The 'store' map is inherited from the parent InMemoryRepository.
-        return store.values().stream()
+        return findAll().stream()
                 .filter(shop -> shop.getName().equalsIgnoreCase(name))
                 .findFirst();
     }
