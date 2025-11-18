@@ -66,4 +66,29 @@ public class ElectricalAssetController {
         electricalRepository.deleteById(id);
         return "redirect:/electrical";
     }
+
+    @GetMapping("/{id}/edit")
+    public String showEditForm(@PathVariable String id, Model model) {
+        ElectricalAsset asset = electricalRepository.findById(id).orElse(null);
+        if (asset == null) {
+            return "redirect:/electrical";
+        }
+        List<Floor> allFloors = floorRepository.findAll();
+        allFloors.sort(Comparator.comparing(Floor::getNumber));
+
+        model.addAttribute("asset", asset);
+        model.addAttribute("allFloors", allFloors);
+        model.addAttribute("allTypes", AssetType.values());
+        model.addAttribute("allStatuses", AssetStatus.values());
+
+        return "electrical/form";
+    }
+
+    @PostMapping("/{id}/edit")
+    public String updateAsset(@PathVariable String id, @ModelAttribute ElectricalAsset formAsset) {
+        // Make sure the path id is used (not a spoofed id from the form)
+        formAsset.setId(id);
+        electricalRepository.save(formAsset);
+        return "redirect:/electrical";
+    }
 }

@@ -1,4 +1,4 @@
-/*
+/* staff-assignment
 [
   {
     "id": "assign-1",
@@ -61,4 +61,15 @@
     "shift": "NIGHT"
   }
 ]
+
+
+    @GetMapping("/{id}/edit")
+    public String editForm(@PathVariable String id, Model model) {
+        Optional<ElectricalAsset> opt = service.findById(id);
+        if (opt.isEmpty()) {
+            return "redirect:/electrical-assets";
+        }
+        model.addAttribute("asset", opt.get());
+        return "electrical-assets/form";
+    }
 */

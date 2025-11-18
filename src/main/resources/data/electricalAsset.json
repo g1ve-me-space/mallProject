@@ -48,9 +48,4 @@
   "floorId" : "floor-2",
   "type" : "ESCALATOR",
   "status" : "WORKING"
-}, {
-  "id" : "54f4af7c-1ea2-4d7c-8bc2-5eaacea5d611",
-  "floorId" : "47a04439-0fae-42f7-94a6-45dc3dbb60ad",
-  "type" : "AC",
-  "status" : "DOWN"
 } ]

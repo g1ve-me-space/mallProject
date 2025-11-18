@@ -64,10 +64,4 @@
   "currency" : "ddddddddddd",
   "email" : null,
   "purchases" : [ ]
-}, {
-  "id" : "4adca356-f9cc-42a8-9815-3d74225e8913",
-  "name" : "ngga",
-  "currency" : "money",
-  "email" : "nigga@gail.com",
-  "purchases" : [ ]
 } ]
