@@ -34,4 +34,10 @@
   "city" : "d",
   "address" : null,
   "floors" : [ ]
+}, {
+  "id" : "d5b0592c-a158-47d1-96f5-2e9a3ee4b13b",
+  "name" : "ma cac pe mine",
+  "city" : "nigga",
+  "address" : "ddd",
+  "floors" : [ ]
 } ]
