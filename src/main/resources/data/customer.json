@@ -11,12 +11,6 @@
   "email" : "diana@example.com",
   "purchases" : [ ]
 }, {
-  "id" : "cust-3",
-  "name" : "Bob",
-  "currency" : "GBP",
-  "email" : "bob@example.com",
-  "purchases" : [ ]
-}, {
   "id" : "cust-4",
   "name" : "Alice",
   "currency" : "JPY",
@@ -53,15 +47,9 @@
   "email" : "mia@example.com",
   "purchases" : [ ]
 }, {
-  "id" : "be51a89d-a826-437f-bade-52fbd6aa5149",
-  "name" : "d",
-  "currency" : "dd",
-  "email" : null,
-  "purchases" : [ ]
-}, {
-  "id" : "ee17db8f-a415-4a03-a835-357c086e4de1",
-  "name" : "wwww",
-  "currency" : "ddddddddddd",
-  "email" : null,
+  "id" : "e2892a79-45f7-4706-adac-061dca8bab1f",
+  "name" : "a",
+  "currency" : "a",
+  "email" : "a",
   "purchases" : [ ]
 } ]
