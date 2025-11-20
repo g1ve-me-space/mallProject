@@ -86,7 +86,6 @@ public class ElectricalAssetController {
 
     @PostMapping("/{id}/edit")
     public String updateAsset(@PathVariable String id, @ModelAttribute ElectricalAsset formAsset) {
-        // Make sure the path id is used (not a spoofed id from the form)
         formAsset.setId(id);
         electricalRepository.save(formAsset);
         return "redirect:/electrical";
