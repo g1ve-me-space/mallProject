@@ -1,31 +1,35 @@
-<!--@thymesVar id="customer" type="model.Customer"-->
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Create Customer</title>
+    <style> .error { color: red; font-size: 0.9em; } </style>
 </head>
 <body>
 
 <h1>Create New Customer</h1>
 
-<!-- The 'th:object' links this form to the 'customer' object from the model -->
 <form th:action="@{/customer}" th:object="${customer}" method="post">
+
     <div>
         <label for="name">Name:</label>
-        <!-- 'th:field' connects this input to the 'name' property of the 'customer' object -->
         <input type="text" id="name" th:field="*{name}" />
+        <span class="error" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></span>
     </div>
+
     <div>
         <label for="currency">Currency:</label>
-        <!-- This connects to the 'currency' property -->
         <input type="text" id="currency" th:field="*{currency}" />
+        <span class="error" th:if="${#fields.hasErrors('currency')}" th:errors="*{currency}"></span>
     </div>
+
     <div>
         <label for="email">Email:</label>
-        <!-- This connects to the 'currency' property -->
         <input type="text" id="email" th:field="*{email}" />
+        <span class="error" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></span>
     </div>
+
+    <br>
     <div>
         <button type="submit">Save</button>
     </div>

@@ -9,7 +9,7 @@ import repository.ElectricalAssetRepository;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
+import java.util.UUID;
 
 @Service
 public class ElectricalAssetService {
@@ -21,7 +21,6 @@ public class ElectricalAssetService {
         this.electricalAssetRepository = repository;
     }
 
-    // --- Standard CRUD methods ---
     public List<ElectricalAsset> findAll() {
         return electricalAssetRepository.findAll();
     }
@@ -35,26 +34,24 @@ public class ElectricalAssetService {
     }
 
     public void save(ElectricalAsset entity) {
-        // Let repository handle ID assignment.
+        if (entity.getId() == null || entity.getId().trim().isEmpty()) {
+            entity.setId(UUID.randomUUID().toString());
+        }
         electricalAssetRepository.save(entity);
     }
 
     // --- Custom filter methods ---
+
     public List<ElectricalAsset> findByFloorId(String floorId) {
-        return electricalAssetRepository.findAll().stream()
-                .filter(asset -> floorId.equals(asset.getFloorId()))
-                .collect(Collectors.toList());
+        // ⚠️ FIX: Apelăm noua metodă cu underscore din Repository
+        return electricalAssetRepository.findByFloor_Id(floorId);
     }
 
     public List<ElectricalAsset> findByType(AssetType type) {
-        return electricalAssetRepository.findAll().stream()
-                .filter(asset -> type.equals(asset.getType()))
-                .collect(Collectors.toList());
+        return electricalAssetRepository.findByType(type);
     }
 
     public List<ElectricalAsset> findByStatus(AssetStatus status) {
-        return electricalAssetRepository.findAll().stream()
-                .filter(asset -> status.equals(asset.getStatus()))
-                .collect(Collectors.toList());
+        return electricalAssetRepository.findByStatus(status);
     }
 }

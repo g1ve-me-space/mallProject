@@ -7,6 +7,7 @@ import repository.ShopRepository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID; // Import necesar pentru generarea ID-urilor
 
 @Service
 public class ShopService {
@@ -18,7 +19,7 @@ public class ShopService {
         this.shopRepository = shopRepository;
     }
 
-    // --- Core service methods that call the repository ---
+    // --- Core service methods ---
 
     public List<Shop> findAll() {
         return shopRepository.findAll();
@@ -33,14 +34,17 @@ public class ShopService {
     }
 
     public void save(Shop shop) {
-        // Do NOT set the ID here.
-        // The repository will assign an ID if missing (new shop).
+        // ⚠️ FIX: Generăm manual ID-ul dacă este nou (JPA nu face asta automat pentru String)
+        if (shop.getId() == null || shop.getId().trim().isEmpty()) {
+            shop.setId(UUID.randomUUID().toString());
+        }
         shopRepository.save(shop);
     }
 
-    // --- Custom service method that exposes the repository's custom method ---
+    // --- Custom method ---
 
     public Optional<Shop> findByName(String name) {
-        return shopRepository.findByName(name);
+        // Folosim metoda nouă din JPA Repository (definită la pasul anterior)
+        return shopRepository.findByNameIgnoreCase(name);
     }
 }

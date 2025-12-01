@@ -1,13 +1,24 @@
 package model;
 
 import interfaces.Identifiable;
+import jakarta.persistence.*;
 
+@Entity
+@Table(name = "shops")
 public class Shop implements Identifiable<String> {
 
+    @Id
     private String id;
+
     private String name;
     private String category;
-    private String phoneNumber; // <-- NEW
+
+    // Câmpul corect
+    private String phoneNumber;
+
+    @ManyToOne
+    @JoinColumn(name = "floor_id")
+    private Floor floor;
 
     public Shop() {}
 
@@ -23,7 +34,15 @@ public class Shop implements Identifiable<String> {
     public String getCategory() { return category; }
     public void setCategory(String category) { this.category = category; }
 
-    // --- New Getter & Setter ---
-    public String getPhoneNumber() { return phoneNumber; }
-    public void setPhoneNumber(String phoneNumber) { this.phoneNumber = phoneNumber; }
+    // ✅ Aceasta este partea care lipsea sau avea alt nume
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    public Floor getFloor() { return floor; }
+    public void setFloor(Floor floor) { this.floor = floor; }
 }

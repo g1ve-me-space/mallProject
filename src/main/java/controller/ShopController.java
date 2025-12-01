@@ -1,69 +1,62 @@
 package controller;
 
+import model.Floor;
 import model.Shop;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import repository.FloorRepository;
+import repository.ShopRepository;
 import service.ShopService;
 
 import java.util.List;
-import java.util.UUID; // A better way to generate unique string IDs
+import java.util.UUID;
 
-@Controller // Changed from @RestController
-@RequestMapping("/shop") // Changed from /api/shops to match the UI path
+@Controller
+@RequestMapping("/shop")
 public class ShopController {
 
     private final ShopService shopService;
+    private final FloorRepository floorRepository; // Avem nevoie de asta pentru Dropdown
 
     @Autowired
-    public ShopController(ShopService shopService) {
+    public ShopController(ShopService shopService, FloorRepository floorRepository) {
         this.shopService = shopService;
+        this.floorRepository = floorRepository;
     }
 
-    /**
-     * GET /shop
-     * Displays a list of all shops. This method now returns a template name.
-     */
     @GetMapping
     public String listAllShops(Model model) {
-        List<Shop> shops = shopService.findAll();
-        model.addAttribute("shops", shops);
-        return "shop/index"; // Renders templates/shop/index.html
+        model.addAttribute("shops", shopService.findAll());
+        return "shop/index";
     }
 
-    /**
-     * GET /shop/new
-     * Displays the form to create a new shop. This is a new method.
-     */
     @GetMapping("/new")
     public String showCreateForm(Model model) {
         model.addAttribute("shop", new Shop());
-        return "shop/form"; // Renders templates/shop/form.html
+        // ⚠️ TRIMITEM LISTA DE ETAJE CĂTRE HTML
+        model.addAttribute("floors", floorRepository.findAll());
+        return "shop/form";
     }
 
-    /**
-     * POST /shop
-     * Processes the form submission for creating a new shop.
-     * Changed from @RequestBody to @ModelAttribute for web forms.
-     */
     @PostMapping
-    public String createShop(@ModelAttribute Shop shop) {
-        // Since we are using String IDs, we must generate a unique one before saving.
-        shop.setId(UUID.randomUUID().toString());
+    public String createShop(@ModelAttribute Shop shop,
+                             @RequestParam(value = "floorId", required = false) String floorId) {
+
+        // Legăm magazinul de etajul ales din Dropdown
+        if (floorId != null && !floorId.isEmpty()) {
+            Floor floor = floorRepository.findById(floorId).orElse(null);
+            shop.setFloor(floor);
+        }
+
         shopService.save(shop);
-        return "redirect:/shop"; // Redirects to the list page
+        return "redirect:/shop";
     }
 
-    /**
-     * POST /shop/{id}/delete
-     * Deletes the specified shop. This is a new method for the UI.
-     */
     @PostMapping("/{id}/delete")
     public String deleteShop(@PathVariable String id) {
         shopService.deleteById(id);
         return "redirect:/shop";
     }
-
-    // The other methods for the REST API have been removed to keep this controller focused on the UI.
 }

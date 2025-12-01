@@ -1,10 +1,16 @@
 package model;
 
-import interfaces.Identifiable; // Import the interface
+import interfaces.Identifiable;
+import jakarta.persistence.*; // Importuri JPA esențiale
 
-// FIX: Add 'implements Identifiable<String>'
+@Entity
+@Table(name = "staff")
+@Inheritance(strategy = InheritanceType.JOINED) // ⚠️ Aceasta definește strategia de moștenire
 public abstract class Staff implements Identifiable<String> {
+
+    @Id
     private String id;
+
     private String name;
 
     public Staff() {}
@@ -14,7 +20,7 @@ public abstract class Staff implements Identifiable<String> {
         this.name = name;
     }
 
-    @Override // FIX: Add the Override annotation
+    @Override
     public String getId() { return id; }
     public void setId(String id) { this.id = id; }
 

@@ -1,94 +1,82 @@
 package controller;
 
-import enums.AssetStatus;
-import enums.AssetType;
+import jakarta.validation.Valid;
 import model.ElectricalAsset;
 import model.Floor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import repository.ElectricalAssetRepository;
 import repository.FloorRepository;
+import service.ElectricalAssetService;
 
-import java.util.Comparator;
-import java.util.List;
 import java.util.UUID;
 
 @Controller
 @RequestMapping("/electrical")
 public class ElectricalAssetController {
 
-    private final ElectricalAssetRepository electricalRepository;
-    private final FloorRepository floorRepository;
+    private final ElectricalAssetService electricalAssetService;
+    private final FloorRepository floorRepository; // Pentru Dropdown
 
     @Autowired
-    public ElectricalAssetController(ElectricalAssetRepository electricalRepository, FloorRepository floorRepository) {
-        this.electricalRepository = electricalRepository;
+    public ElectricalAssetController(ElectricalAssetService electricalAssetService, FloorRepository floorRepository) {
+        this.electricalAssetService = electricalAssetService;
         this.floorRepository = floorRepository;
     }
 
     @GetMapping
-    public String listAllAssets(Model model) {
-        List<ElectricalAsset> assets = electricalRepository.findAll();
-        model.addAttribute("assets", assets);
+    public String listAll(Model model) {
+        model.addAttribute("assets", electricalAssetService.findAll());
         return "electrical/index";
     }
 
     @GetMapping("/new")
     public String showCreateForm(Model model) {
-        ElectricalAsset newAsset = new ElectricalAsset();
-        newAsset.setStatus(AssetStatus.WORKING);
-
-        List<Floor> allFloors = floorRepository.findAll();
-        allFloors.sort(Comparator.comparing(Floor::getNumber));
-
-        model.addAttribute("asset", newAsset);
-        model.addAttribute("allFloors", allFloors);
-        model.addAttribute("allTypes", AssetType.values());
-        model.addAttribute("allStatuses", AssetStatus.values());
-
+        model.addAttribute("electricalAsset", new ElectricalAsset());
+        // Trimitem lista de etaje către HTML
+        model.addAttribute("floors", floorRepository.findAll());
         return "electrical/form";
     }
 
     @PostMapping
-    public String createAsset(@ModelAttribute ElectricalAsset asset) {
-        asset.setId(UUID.randomUUID().toString());
-        electricalRepository.save(asset);
+    public String createAsset(@Valid @ModelAttribute ElectricalAsset electricalAsset,
+                              BindingResult bindingResult,
+                              @RequestParam(value = "floorId", required = false) String floorId,
+                              Model model) {
+
+        // 1. VALIDARE MANUALĂ PENTRU DROPDOWN (ETAJ)
+        if (floorId == null || floorId.isEmpty()) {
+            // Dacă nu a ales nimic, băgăm o eroare manuală în "sacul" bindingResult
+            // "floor" este numele câmpului, "error.floor" e un cod intern, iar ultimul e mesajul
+            bindingResult.rejectValue("floor", "error.floor", "Trebuie să selectezi un etaj!");
+        }
+
+        // 2. VERIFICĂM DACĂ EXISTĂ ERORI (Fie de la @NotNull din Model, fie cea manuală de mai sus)
+        if (bindingResult.hasErrors()) {
+            // Reîncărcăm lista pentru dropdown, altfel dispare la eroare
+            model.addAttribute("floors", floorRepository.findAll());
+            return "electrical/form";
+        }
+
+        // 3. LOGICA DE SALVARE (Se execută doar dacă nu sunt erori)
+        if (electricalAsset.getId() == null || electricalAsset.getId().isEmpty()) {
+            electricalAsset.setId(UUID.randomUUID().toString());
+        }
+
+        // Găsim etajul și îl setăm
+        Floor floor = floorRepository.findById(floorId).orElse(null);
+        electricalAsset.setFloor(floor);
+
+        electricalAssetService.save(electricalAsset);
         return "redirect:/electrical";
     }
 
-    /**
-     * FIX: The method call is changed from .delete(id) to .deleteById(id)
-     */
     @PostMapping("/{id}/delete")
     public String deleteAsset(@PathVariable String id) {
-        electricalRepository.deleteById(id);
-        return "redirect:/electrical";
-    }
-
-    @GetMapping("/{id}/edit")
-    public String showEditForm(@PathVariable String id, Model model) {
-        ElectricalAsset asset = electricalRepository.findById(id).orElse(null);
-        if (asset == null) {
-            return "redirect:/electrical";
-        }
-        List<Floor> allFloors = floorRepository.findAll();
-        allFloors.sort(Comparator.comparing(Floor::getNumber));
-
-        model.addAttribute("asset", asset);
-        model.addAttribute("allFloors", allFloors);
-        model.addAttribute("allTypes", AssetType.values());
-        model.addAttribute("allStatuses", AssetStatus.values());
-
-        return "electrical/form";
-    }
-
-    @PostMapping("/{id}/edit")
-    public String updateAsset(@PathVariable String id, @ModelAttribute ElectricalAsset formAsset) {
-        // Make sure the path id is used (not a spoofed id from the form)
-        formAsset.setId(id);
-        electricalRepository.save(formAsset);
+        electricalAssetService.deleteById(id);
         return "redirect:/electrical";
     }
 }
