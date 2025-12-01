@@ -1,48 +1,54 @@
-<!--@thymesVar id="asset" type="model.ElectricalAsset"-->
-<!--@thymesVar id="allFloors" type="java.util.List<model.Floor>"-->
-<!--@thymesVar id="allTypes" type="java.util.List<enums.AssetType>"-->
-<!--@thymesVar id="allStatuses" type="java.util.List<enums.AssetStatus>"-->
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Create Electrical Asset</title>
+    <style> .error { color: red; font-size: 0.9em; display: block; margin-top: 5px; } </style>
 </head>
 <body>
+
 <h1>Create New Electrical Asset</h1>
-<form th:action="@{/electrical}" th:object="${asset}" method="post">
+
+<form th:action="@{/electrical}" th:object="${electricalAsset}" method="post">
+
     <div>
-        <label for="floorId">Floor:</label>
-        <select id="floorId" th:field="*{floorId}">
-            <option value="">-- Select a Floor --</option>
-            <option th:each="floor : ${allFloors}"
-                    th:value="${floor.id}"
-                    th:text="'Floor ' + ${floor.number}"></option>
+        <label>Type:</label>
+        <select th:field="*{type}">
+            <option value="">-- Select Type --</option> <option value="LIFT">Lift</option>
+            <option value="AC">AC</option>
+            <option value="LIGHT">Light</option>
+            <option value="ESCALATOR">Escalator</option>
         </select>
+        <span class="error" th:if="${#fields.hasErrors('type')}" th:errors="*{type}"></span>
     </div>
+
     <div>
-        <label for="type">Type:</label>
-        <select id="type" th:field="*{type}">
-            <option value="">-- Select a Type --</option>
-            <option th:each="t : ${allTypes}"
-                    th:value="${t.name()}"
-                    th:text="${t.toString()}"></option>
+        <label>Status:</label>
+        <select th:field="*{status}">
+            <option value="">-- Select Status --</option>
+            <option value="WORKING">Working</option>
+            <option value="DOWN">Down</option>
         </select>
+        <span class="error" th:if="${#fields.hasErrors('status')}" th:errors="*{status}"></span>
     </div>
+
     <div>
-        <label for="status">Status:</label>
-        <select id="status" th:field="*{status}">
-            <option value="">-- Select a Status --</option>
-            <option th:each="s : ${allStatuses}"
-                    th:value="${s.name()}"
-                    th:text="${s.toString()}"></option>
+        <label for="floorId">Located on Floor:</label>
+        <select id="floorId" name="floorId">
+            <option value="">-- Choose a Floor --</option>
+            <option th:each="fl : ${floors}"
+                    th:value="${fl.id}"
+                    th:text="'Etaj ' + ${fl.number} + ' (' + ${fl.mall.name} + ')'">
+            </option>
         </select>
+        <span class="error" th:if="${#fields.hasErrors('floor')}" th:errors="*{floor}"></span>
     </div>
-    <div>
-        <button type="submit">Save Asset</button>
-    </div>
+
+    <br>
+    <button type="submit">Save</button>
 </form>
-<br>
+
 <a href="/electrical">Back to List</a>
+
 </body>
 </html>

@@ -1,13 +1,10 @@
 package repository;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import model.SecurityStaff;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
-
 @Repository
-// Inherits all standard methods from our new InMemoryRepository
-public class SecurityStaffRepository extends InFileRepository<SecurityStaff> {
-    public SecurityStaffRepository() {super("securityStaff.json", new TypeReference<List<SecurityStaff>>() {});}
+public interface SecurityStaffRepository extends JpaRepository<SecurityStaff, String> {
+    // Totul este automat. Nu mai ai nevoie de codul vechi.
 }

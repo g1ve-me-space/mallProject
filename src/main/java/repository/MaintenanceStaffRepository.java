@@ -1,14 +1,10 @@
 package repository;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import model.MaintenanceStaff;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
-
 @Repository
-public class MaintenanceStaffRepository extends InFileRepository<MaintenanceStaff> {
-    public MaintenanceStaffRepository() {
-        super("maintenanceStaff.json", new TypeReference<List<MaintenanceStaff>>() {});
-    }
+public interface MaintenanceStaffRepository extends JpaRepository<MaintenanceStaff, String> {
+    // Totul este automat. Nu mai ai nevoie de constructor sau logică de fișiere.
 }

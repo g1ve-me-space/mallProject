@@ -1,14 +1,10 @@
 package repository;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import model.Purchase;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
-
 @Repository
-public class PurchaseRepository extends InFileRepository<Purchase> {
-    public PurchaseRepository() {
-        super("purchase.json", new TypeReference<List<Purchase>>() {});
-    }
+public interface PurchaseRepository extends JpaRepository<Purchase, String> {
+    // Metodele standard (save, findAll, delete) sunt incluse automat.
 }

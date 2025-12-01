@@ -1,23 +1,29 @@
-<!--@thymesVar id="staff" type="model.SecurityStaff"-->
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Create Security Staff</title>
+    <style> .error { color: red; font-size: 0.9em; display:block; } </style>
 </head>
 <body>
 
 <h1>Create New Security Staff</h1>
 
 <form th:action="@{/security-staff}" th:object="${staff}" method="post">
+
     <div>
         <label for="name">Name:</label>
         <input type="text" id="name" th:field="*{name}" />
+        <span class="error" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></span>
     </div>
+
     <div>
         <label for="badgeNo">Badge Number:</label>
         <input type="text" id="badgeNo" th:field="*{badgeNo}" />
+        <span class="error" th:if="${#fields.hasErrors('badgeNo')}" th:errors="*{badgeNo}"></span>
     </div>
+
+    <br>
     <div>
         <button type="submit">Save</button>
     </div>

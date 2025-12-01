@@ -1,12 +1,9 @@
-<!--@thymesVar id="assignment" type="model.StaffAssignment"-->
-<!--@thymesVar id="allStaff" type="java.util.List<model.Staff>"-->
-<!--@thymesVar id="allFloors" type="java.util.List<model.Floor>"-->
-<!--@thymesVar id="allShifts" type="java.util.List<enums.Shift>"-->
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Create Staff Assignment</title>
+    <style> .error { color: red; font-size: 0.9em; display:block; } </style>
 </head>
 <body>
 
@@ -16,22 +13,24 @@
 
     <div>
         <label for="staffId">Staff Member:</label>
-        <select id="staffId" th:field="*{staffId}">
+        <select id="staffId" name="staffId">
             <option value="">-- Select Staff --</option>
             <option th:each="staff : ${allStaff}"
                     th:value="${staff.id}"
-                    th:text="${staff.name + ' (ID: ' + staff.id + ')'}"></option>
+                    th:text="${staff.name}"></option>
         </select>
+        <span class="error" th:if="${#fields.hasErrors('staff')}" th:errors="*{staff}"></span>
     </div>
 
     <div>
         <label for="floorId">Floor:</label>
-        <select id="floorId" th:field="*{floorId}">
+        <select id="floorId" name="floorId">
             <option value="">-- Select Floor --</option>
             <option th:each="floor : ${allFloors}"
                     th:value="${floor.id}"
-                    th:text="${'Floor #' + floor.number + ' (ID: ' + floor.id + ')'}"></option>
+                    th:text="${'Floor #' + floor.number}"></option>
         </select>
+        <span class="error" th:if="${#fields.hasErrors('floor')}" th:errors="*{floor}"></span>
     </div>
 
     <div>
@@ -39,11 +38,13 @@
         <select id="shift" th:field="*{shift}">
             <option value="">-- Select Shift --</option>
             <option th:each="s : ${allShifts}"
-                    th:value="${s.name()}"
-                    th:text="${s.toString()}"></option>
+                    th:value="${s}"
+                    th:text="${s}"></option>
         </select>
+        <span class="error" th:if="${#fields.hasErrors('shift')}" th:errors="*{shift}"></span>
     </div>
 
+    <br>
     <div>
         <button type="submit">Save Assignment</button>
     </div>

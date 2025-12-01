@@ -1,19 +1,20 @@
-<!--@thymesVar id="staff" type="model.MaintenanceStaff"-->
-<!--@thymesVar id="allStaffTypes" type="java.util.List<enums.MaintenanceStaffType>"-->
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Create Maintenance Staff</title>
+    <style> .error { color: red; font-size: 0.9em; display:block; } </style>
 </head>
 <body>
 
 <h1>Create New Maintenance Staff</h1>
 
 <form th:action="@{/maintenance-staff}" th:object="${staff}" method="post">
+
     <div>
         <label for="name">Name:</label>
         <input type="text" id="name" th:field="*{name}">
+        <span class="error" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></span>
     </div>
 
     <div>
@@ -21,11 +22,13 @@
         <select id="type" th:field="*{type}">
             <option value="">-- Select Type --</option>
             <option th:each="t : ${allStaffTypes}"
-                    th:value="${t.name()}"
-                    th:text="${t.toString()}"></option>
+                    th:value="${t}"
+                    th:text="${t}"></option>
         </select>
+        <span class="error" th:if="${#fields.hasErrors('type')}" th:errors="*{type}"></span>
     </div>
 
+    <br>
     <div>
         <button type="submit">Save</button>
     </div>

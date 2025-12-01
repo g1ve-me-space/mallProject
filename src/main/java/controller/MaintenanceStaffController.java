@@ -1,13 +1,14 @@
 package controller;
 
+import jakarta.validation.Valid; // Import
 import model.MaintenanceStaff;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult; // Import
 import org.springframework.web.bind.annotation.*;
 import repository.MaintenanceStaffRepository;
 import enums.MaintenanceStaffType;
-
 
 import java.util.List;
 import java.util.UUID;
@@ -25,8 +26,7 @@ public class MaintenanceStaffController {
 
     @GetMapping
     public String listAll(Model model) {
-        List<MaintenanceStaff> staffList = staffRepository.findAll();
-        model.addAttribute("staffList", staffList);
+        model.addAttribute("staffList", staffRepository.findAll());
         return "maintenance-staff/index";
     }
 
@@ -37,17 +37,23 @@ public class MaintenanceStaffController {
         return "maintenance-staff/form";
     }
 
-
     @PostMapping
-    public String create(@ModelAttribute MaintenanceStaff staff) {
-        staff.setId(UUID.randomUUID().toString());
+    public String create(@Valid @ModelAttribute("staff") MaintenanceStaff staff,
+                         BindingResult bindingResult,
+                         Model model) {
+
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("allStaffTypes", MaintenanceStaffType.values());
+            return "maintenance-staff/form";
+        }
+
+        if (staff.getId() == null || staff.getId().isEmpty()) {
+            staff.setId(UUID.randomUUID().toString());
+        }
         staffRepository.save(staff);
         return "redirect:/maintenance-staff";
     }
 
-    /**
-     * FIX: The method call is changed from .delete(id) to .deleteById(id)
-     */
     @PostMapping("/{id}/delete")
     public String delete(@PathVariable String id) {
         staffRepository.deleteById(id);

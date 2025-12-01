@@ -1,24 +1,44 @@
-<!--@thymesVar id="shop" type="model.Shop"-->
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Create Shop</title>
+    <style> .error { color: red; font-size: 0.9em; } </style>
 </head>
 <body>
 
 <h1>Create New Shop</h1>
 
-<!-- Form to create a new shop, submits to POST /shop -->
 <form th:action="@{/shop}" th:object="${shop}" method="post">
+
     <div>
         <label for="name">Name:</label>
         <input type="text" id="name" th:field="*{name}" />
+        <span class="error" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></span>
     </div>
+
     <div>
         <label for="category">Category:</label>
         <input type="text" id="category" th:field="*{category}" />
     </div>
+
+    <div>
+        <label for="phoneNumber">Phone Number:</label>
+        <input type="text" id="phoneNumber" th:field="*{phoneNumber}" />
+    </div>
+
+    <div>
+        <label for="floorId">Located on Floor:</label>
+        <select id="floorId" name="floorId">
+            <option value="">-- Choose a Floor --</option>
+            <option th:each="fl : ${floors}"
+                    th:value="${fl.id}"
+                    th:text="'Etaj ' + ${fl.number}">
+            </option>
+        </select>
+    </div>
+
+    <br>
     <div>
         <button type="submit">Save</button>
     </div>

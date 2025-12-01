@@ -1,26 +1,34 @@
 package model;
 
 import interfaces.Identifiable;
+import jakarta.persistence.*; // Importuri pentru baza de date
 
+@Entity
+@Table(name = "purchases")
 public class Purchase implements Identifiable<String> {
 
+    @Id
     private String id;
-    private String customerId;
-    private String shopId;
+
+    // RELAȚIA 1: O cumpărătură este făcută de un singur Client
+    @ManyToOne
+    @JoinColumn(name = "customer_id") // Cheia străină în tabel
+    private Customer customer;
+
+    // RELAȚIA 2: O cumpărătură este făcută într-un singur Magazin
+    @ManyToOne
+    @JoinColumn(name = "shop_id") // Cheia străină în tabel
+    private Shop shop;
+
     private double amount;
 
-    /**
-     * FIX: Add a no-argument constructor.
-     * Spring MVC needs this to create a new Purchase object for the form.
-     */
     public Purchase() {
     }
 
-    // Your existing constructor
-    public Purchase(String id, String customerId, String shopId, double amount) {
+    public Purchase(String id, Customer customer, Shop shop, double amount) {
         this.id = id;
-        this.customerId = customerId;
-        this.shopId = shopId;
+        this.customer = customer;
+        this.shop = shop;
         this.amount = amount;
     }
 
@@ -35,20 +43,22 @@ public class Purchase implements Identifiable<String> {
         this.id = id;
     }
 
-    public String getCustomerId() {
-        return customerId;
+    // Modificat: lucrăm cu obiectul Customer, nu cu String
+    public Customer getCustomer() {
+        return customer;
     }
 
-    public void setCustomerId(String customerId) {
-        this.customerId = customerId;
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
     }
 
-    public String getShopId() {
-        return shopId;
+    // Modificat: lucrăm cu obiectul Shop, nu cu String
+    public Shop getShop() {
+        return shop;
     }
 
-    public void setShopId(String shopId) {
-        this.shopId = shopId;
+    public void setShop(Shop shop) {
+        this.shop = shop;
     }
 
     public double getAmount() {
