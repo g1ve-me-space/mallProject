@@ -1,44 +1,36 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>All Customers</title>
-</head>
+<head><title>Customers List</title></head>
 <body>
-
-<h1>Customers</h1>
-
-<a href="/customer/new">Add New Customer</a>
+<h1>Customers List</h1>
+<a href="/customer/new"><button>Create New</button></a>
+<br><br>
 
 <table border="1">
     <thead>
     <tr>
         <th>ID</th>
         <th>Name</th>
-        <th>Currency</th>
         <th>Email</th>
+        <th>Currency</th>
         <th>Actions</th>
     </tr>
     </thead>
     <tbody>
-    <!-- Loop through the list of customers passed from the controller -->
-    <tr th:each="customer : ${customers}">
-        <td th:text="${customer.id}">-</td>
-        <td th:text="${customer.name}">-</td>
-        <td th:text="${customer.currency}">-</td>
-        <td th:text="${customer.email}">-</td>
+    <tr th:each="cust : ${customers}">
+        <td th:text="${cust.id}"></td>
+        <td th:text="${cust.name}"></td>
+        <td th:text="${cust.email}"></td>
+        <td th:text="${cust.currency}"></td>
         <td>
-            <!-- Form to handle the deletion of a customer -->
-            <form th:action="@{'/customer/' + ${customer.id} + '/delete'}" method="post" style="display:inline;">
+            <a th:href="@{'/customer/' + ${cust.id} + '/edit'}"><button>Edit</button></a>
+
+            <form th:action="@{'/customer/' + ${cust.id} + '/delete'}" method="post" style="display:inline;">
                 <button type="submit">Delete</button>
             </form>
         </td>
     </tr>
     </tbody>
 </table>
-
-<br>
-<a href="/shop">Back to Shops</a>
-
 </body>
 </html>

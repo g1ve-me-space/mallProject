@@ -2,37 +2,37 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Create Customer</title>
-    <style> .error { color: red; font-size: 0.9em; } </style>
+    <title>Customer Form</title>
+    <style> .error { color: red; font-size: 0.9em; display: block; } </style>
 </head>
 <body>
 
-<h1>Create New Customer</h1>
+<h1>Customer Form</h1>
 
 <form th:action="@{/customer}" th:object="${customer}" method="post">
 
+    <input type="hidden" th:field="*{id}" />
+
     <div>
-        <label for="name">Name:</label>
-        <input type="text" id="name" th:field="*{name}" />
+        <label>Name:</label>
+        <input type="text" th:field="*{name}" />
         <span class="error" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></span>
     </div>
 
     <div>
-        <label for="currency">Currency:</label>
-        <input type="text" id="currency" th:field="*{currency}" />
+        <label>Currency:</label>
+        <input type="text" th:field="*{currency}" />
         <span class="error" th:if="${#fields.hasErrors('currency')}" th:errors="*{currency}"></span>
     </div>
 
     <div>
-        <label for="email">Email:</label>
-        <input type="text" id="email" th:field="*{email}" />
+        <label>Email:</label>
+        <input type="text" th:field="*{email}" />
         <span class="error" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></span>
     </div>
 
     <br>
-    <div>
-        <button type="submit">Save</button>
-    </div>
+    <button type="submit">Save</button>
 </form>
 
 <a href="/customer">Back to List</a>

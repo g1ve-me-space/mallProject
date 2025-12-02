@@ -10,7 +10,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import repository.ElectricalAssetRepository;
 import repository.FloorRepository;
-import service.ElectricalAssetService;
+import service.ElectricalAssetService; // Asigură-te că service-ul există sau folosește repository direct
 
 import java.util.UUID;
 
@@ -18,65 +18,75 @@ import java.util.UUID;
 @RequestMapping("/electrical")
 public class ElectricalAssetController {
 
-    private final ElectricalAssetService electricalAssetService;
-    private final FloorRepository floorRepository; // Pentru Dropdown
+    private final ElectricalAssetRepository assetRepository; // Folosim repo direct pentru simplitate
+    private final FloorRepository floorRepository;
 
     @Autowired
-    public ElectricalAssetController(ElectricalAssetService electricalAssetService, FloorRepository floorRepository) {
-        this.electricalAssetService = electricalAssetService;
+    public ElectricalAssetController(ElectricalAssetRepository assetRepository, FloorRepository floorRepository) {
+        this.assetRepository = assetRepository;
         this.floorRepository = floorRepository;
     }
 
     @GetMapping
-    public String listAll(Model model) {
-        model.addAttribute("assets", electricalAssetService.findAll());
+    public String listAll(Model model, @RequestParam(value = "floorId", required = false) String floorId) {
+        model.addAttribute("floors", floorRepository.findAll()); // Pentru filtrul din UI
+
+        if (floorId != null && !floorId.isEmpty()) {
+            model.addAttribute("assets", assetRepository.findByFloor_Id(floorId));
+            model.addAttribute("selectedFloorId", floorId);
+        } else {
+            model.addAttribute("assets", assetRepository.findAll());
+        }
         return "electrical/index";
     }
 
     @GetMapping("/new")
     public String showCreateForm(Model model) {
         model.addAttribute("electricalAsset", new ElectricalAsset());
-        // Trimitem lista de etaje către HTML
         model.addAttribute("floors", floorRepository.findAll());
         return "electrical/form";
     }
 
-    @PostMapping
-    public String createAsset(@Valid @ModelAttribute ElectricalAsset electricalAsset,
-                              BindingResult bindingResult,
-                              @RequestParam(value = "floorId", required = false) String floorId,
-                              Model model) {
+    @GetMapping("/{id}/edit")
+    public String showEditForm(@PathVariable String id, Model model) {
+        ElectricalAsset asset = assetRepository.findById(id).orElse(null);
+        if (asset != null) {
+            model.addAttribute("electricalAsset", asset);
+            model.addAttribute("floors", floorRepository.findAll());
+            return "electrical/form";
+        }
+        return "redirect:/electrical";
+    }
 
-        // 1. VALIDARE MANUALĂ PENTRU DROPDOWN (ETAJ)
+    @PostMapping
+    public String createOrUpdate(@Valid @ModelAttribute ElectricalAsset electricalAsset,
+                                 BindingResult bindingResult,
+                                 @RequestParam(value = "floorId", required = false) String floorId,
+                                 Model model) {
+
         if (floorId == null || floorId.isEmpty()) {
-            // Dacă nu a ales nimic, băgăm o eroare manuală în "sacul" bindingResult
-            // "floor" este numele câmpului, "error.floor" e un cod intern, iar ultimul e mesajul
             bindingResult.rejectValue("floor", "error.floor", "Trebuie să selectezi un etaj!");
         }
 
-        // 2. VERIFICĂM DACĂ EXISTĂ ERORI (Fie de la @NotNull din Model, fie cea manuală de mai sus)
         if (bindingResult.hasErrors()) {
-            // Reîncărcăm lista pentru dropdown, altfel dispare la eroare
             model.addAttribute("floors", floorRepository.findAll());
             return "electrical/form";
         }
 
-        // 3. LOGICA DE SALVARE (Se execută doar dacă nu sunt erori)
         if (electricalAsset.getId() == null || electricalAsset.getId().isEmpty()) {
             electricalAsset.setId(UUID.randomUUID().toString());
         }
 
-        // Găsim etajul și îl setăm
         Floor floor = floorRepository.findById(floorId).orElse(null);
         electricalAsset.setFloor(floor);
 
-        electricalAssetService.save(electricalAsset);
+        assetRepository.save(electricalAsset);
         return "redirect:/electrical";
     }
 
     @PostMapping("/{id}/delete")
     public String deleteAsset(@PathVariable String id) {
-        electricalAssetService.deleteById(id);
+        assetRepository.deleteById(id);
         return "redirect:/electrical";
     }
 }

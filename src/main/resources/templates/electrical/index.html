@@ -1,32 +1,30 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>All Electrical Assets</title>
-</head>
+<head><title>Electrical Assets</title></head>
 <body>
+<h1>Electrical Assets List</h1>
+<a href="/electrical/new"><button>Create New</button></a>
+<br><br>
 
-<h1>Electrical Assets</h1>
-
-<a href="/electrical/new">Add New Asset</a>
+<form action="/electrical" method="get" style="margin-bottom: 20px;">
+    <label>Filter by Floor:</label>
+    <select name="floorId" onchange="this.form.submit()">
+        <option value="">-- All Floors --</option>
+        <option th:each="fl : ${floors}" th:value="${fl.id}" th:text="'Etaj ' + ${fl.number}" th:selected="${fl.id == selectedFloorId}"></option>
+    </select>
+    <a href="/electrical"><button type="button">Clear</button></a>
+</form>
 
 <table border="1">
-    <thead>
-    <tr>
-        <th>ID</th>
-        <th>Floor ID</th>
-        <th>Type</th>
-        <th>Status</th>
-        <th>Actions</th>
-    </tr>
-    </thead>
+    <thead><tr><th>ID</th><th>Type</th><th>Status</th><th>Floor</th><th>Actions</th></tr></thead>
     <tbody>
     <tr th:each="asset : ${assets}">
-        <td th:text="${asset.id}">-</td>
-        <td th:text="${asset.floorId}">-</td>
-        <td th:text="${asset.type}">-</td>
-        <td th:text="${asset.status}">-</td>
+        <td th:text="${asset.id}"></td>
+        <td th:text="${asset.type}"></td>
+        <td th:text="${asset.status}"></td>
+        <td th:text="${asset.floor != null ? asset.floor.number : 'N/A'}"></td>
         <td>
+            <a th:href="@{'/electrical/' + ${asset.id} + '/edit'}"><button>Edit</button></a>
             <form th:action="@{'/electrical/' + ${asset.id} + '/delete'}" method="post" style="display:inline;">
                 <button type="submit">Delete</button>
             </form>
@@ -34,9 +32,5 @@
     </tr>
     </tbody>
 </table>
-
-<br>
-<a href="/">Back to Home</a>
-
 </body>
 </html>

@@ -2,14 +2,16 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Create Mall</title>
-    <style> .error { color: red; font-size: 0.9em; } </style>
+    <title>Mall Form</title>
+    <style> .error { color: red; font-size: 0.9em; display: block; } </style>
 </head>
 <body>
 
-<h1>Create New Mall</h1>
+<h1>Mall Form</h1>
 
 <form th:action="@{/mall}" th:object="${mall}" method="post">
+
+    <input type="hidden" th:field="*{id}" />
 
     <div>
         <label>Name:</label>

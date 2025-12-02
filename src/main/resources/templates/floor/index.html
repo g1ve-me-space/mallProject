@@ -1,40 +1,33 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>All Floors</title>
-</head>
+<head><title>Floors List</title></head>
 <body>
-
-<h1>Floors</h1>
-
-<a href="/floor/new">Add New Floor</a>
+<h1>Floors List</h1>
+<a href="/floor/new"><button>Create New</button></a>
+<br><br>
 
 <table border="1">
     <thead>
     <tr>
         <th>ID</th>
-        <th>Number</th> <!-- Corrected from 'Floor Number' -->
+        <th>Number</th>
+        <th>Mall Name</th>
         <th>Actions</th>
     </tr>
     </thead>
     <tbody>
-    <!-- Loop through the list of floors passed from the controller -->
-    <tr th:each="floor : ${floors}">
-        <td th:text="${floor.id}">-</td>
-        <td th:text="${floor.number}">-</td> <!-- Corrected to use 'number' -->
+    <tr th:each="fl : ${floors}">
+        <td th:text="${fl.id}"></td>
+        <td th:text="${fl.number}"></td>
+        <td th:text="${fl.mall != null ? fl.mall.name : 'No Mall'}"></td>
         <td>
-            <!-- Form to handle the deletion of a floor -->
-            <form th:action="@{'/floor/' + ${floor.id} + '/delete'}" method="post" style="display:inline;">
+            <a th:href="@{'/floor/' + ${fl.id} + '/edit'}"><button>Edit</button></a>
+            <form th:action="@{'/floor/' + ${fl.id} + '/delete'}" method="post" style="display:inline;">
                 <button type="submit">Delete</button>
             </form>
         </td>
     </tr>
     </tbody>
 </table>
-
-<br>
-<a href="/mall">Back to Malls</a>
-
 </body>
 </html>

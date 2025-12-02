@@ -2,14 +2,16 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Create Floor</title>
-    <style> .error { color: red; font-size: 0.9em; } </style>
+    <title>Floor Form</title>
+    <style> .error { color: red; font-size: 0.9em; display: block; } </style>
 </head>
 <body>
 
-<h1>Create New Floor</h1>
+<h1>Floor Form</h1>
 
 <form th:action="@{/floor}" th:object="${floor}" method="post">
+
+    <input type="hidden" th:field="*{id}" />
 
     <div>
         <label>Floor Number:</label>
@@ -18,13 +20,13 @@
     </div>
 
     <div>
-        <label>Mall:</label>
+        <label>Located in Mall:</label>
         <select name="mallId">
-            <option value="">-- Select Mall --</option>
+            <option value="">-- Choose Mall --</option>
             <option th:each="m : ${malls}"
                     th:value="${m.id}"
-                    th:text="${m.name} + ' (' + ${m.city} + ')'">
-            </option>
+                    th:text="${m.name} + ' (' + ${m.city} + ')'"
+                    th:selected="${floor.mall != null and floor.mall.id == m.id}"></option>
         </select>
     </div>
 

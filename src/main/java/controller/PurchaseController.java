@@ -1,17 +1,18 @@
 package controller;
 
+import jakarta.validation.Valid;
 import model.Customer;
 import model.Purchase;
 import model.Shop;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import repository.CustomerRepository;
 import repository.PurchaseRepository;
 import repository.ShopRepository;
 
-import java.util.List;
 import java.util.UUID;
 
 @Controller
@@ -20,64 +21,86 @@ public class PurchaseController {
 
     private final PurchaseRepository purchaseRepository;
     private final ShopRepository shopRepository;
-    // CustomerRepository va fi roșu până îl creăm la pasul următor
     private final CustomerRepository customerRepository;
 
     @Autowired
-    public PurchaseController(PurchaseRepository purchaseRepository,
-                              ShopRepository shopRepository,
-                              CustomerRepository customerRepository) {
+    public PurchaseController(PurchaseRepository purchaseRepository, ShopRepository shopRepository, CustomerRepository customerRepository) {
         this.purchaseRepository = purchaseRepository;
         this.shopRepository = shopRepository;
         this.customerRepository = customerRepository;
     }
 
+    // --- LIST & FILTER ---
     @GetMapping
-    public String listAllPurchases(Model model) {
-        List<Purchase> purchases = purchaseRepository.findAll();
-        model.addAttribute("purchases", purchases);
+    public String listAll(Model model, @RequestParam(value = "customerId", required = false) String customerId) {
+        model.addAttribute("customers", customerRepository.findAll()); // Pentru filtrul din UI
+
+        if (customerId != null && !customerId.isEmpty()) {
+            model.addAttribute("purchases", purchaseRepository.findByCustomer_Id(customerId));
+            model.addAttribute("selectedCustomerId", customerId);
+        } else {
+            model.addAttribute("purchases", purchaseRepository.findAll());
+        }
         return "purchase/index";
     }
 
+    // --- CREATE FORM ---
     @GetMapping("/new")
     public String showCreateForm(Model model) {
         model.addAttribute("purchase", new Purchase());
-
-        // Trimitem listele către HTML pentru a popula dropdown-urile (<select>)
+        // Trimitem ambele liste pentru dropdown-uri
         model.addAttribute("customers", customerRepository.findAll());
         model.addAttribute("shops", shopRepository.findAll());
-
         return "purchase/form";
     }
 
-    @PostMapping
-    public String createPurchase(@ModelAttribute Purchase purchase,
-                                 @RequestParam(value = "customerId", required = false) String customerId,
-                                 @RequestParam(value = "shopId", required = false) String shopId) {
+    // --- EDIT FORM ---
+    @GetMapping("/{id}/edit")
+    public String showEditForm(@PathVariable String id, Model model) {
+        Purchase purchase = purchaseRepository.findById(id).orElse(null);
+        if (purchase != null) {
+            model.addAttribute("purchase", purchase);
+            model.addAttribute("customers", customerRepository.findAll());
+            model.addAttribute("shops", shopRepository.findAll());
+            return "purchase/form";
+        }
+        return "redirect:/purchase";
+    }
 
-        // 1. Generăm ID pentru cumpărătură
+    // --- SAVE ---
+    @PostMapping
+    public String createOrUpdate(@Valid @ModelAttribute Purchase purchase,
+                                 BindingResult bindingResult,
+                                 @RequestParam(value = "customerId", required = false) String customerId,
+                                 @RequestParam(value = "shopId", required = false) String shopId,
+                                 Model model) {
+
+        // Validări manuale pentru relații
+        if (customerId == null || customerId.isEmpty()) bindingResult.rejectValue("customer", "error.customer", "Required!");
+        if (shopId == null || shopId.isEmpty()) bindingResult.rejectValue("shop", "error.shop", "Required!");
+
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("customers", customerRepository.findAll());
+            model.addAttribute("shops", shopRepository.findAll());
+            return "purchase/form";
+        }
+
         if (purchase.getId() == null || purchase.getId().isEmpty()) {
             purchase.setId(UUID.randomUUID().toString());
         }
 
-        // 2. Găsim obiectele reale din baza de date pe baza ID-urilor venite din formular
-        if (customerId != null) {
-            Customer c = customerRepository.findById(customerId).orElse(null);
-            purchase.setCustomer(c);
-        }
+        Customer c = customerRepository.findById(customerId).orElse(null);
+        Shop s = shopRepository.findById(shopId).orElse(null);
 
-        if (shopId != null) {
-            Shop s = shopRepository.findById(shopId).orElse(null);
-            purchase.setShop(s);
-        }
+        purchase.setCustomer(c);
+        purchase.setShop(s);
 
-        // 3. Salvăm
         purchaseRepository.save(purchase);
         return "redirect:/purchase";
     }
 
     @PostMapping("/{id}/delete")
-    public String deletePurchase(@PathVariable String id) {
+    public String delete(@PathVariable String id) {
         purchaseRepository.deleteById(id);
         return "redirect:/purchase";
     }

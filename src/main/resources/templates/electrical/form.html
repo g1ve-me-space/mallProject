@@ -2,25 +2,24 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Create Electrical Asset</title>
-    <style> .error { color: red; font-size: 0.9em; display: block; margin-top: 5px; } </style>
+    <title>Electrical Asset Form</title>
+    <style> .error { color: red; font-size: 0.9em; display: block; } </style>
 </head>
 <body>
-
-<h1>Create New Electrical Asset</h1>
-
+<h1>Electrical Asset Form</h1>
 <form th:action="@{/electrical}" th:object="${electricalAsset}" method="post">
 
-    <div>
-        <label>Type:</label>
-        <select th:field="*{type}">
-            <option value="">-- Select Type --</option> <option value="LIFT">Lift</option>
-            <option value="AC">AC</option>
-            <option value="LIGHT">Light</option>
-            <option value="ESCALATOR">Escalator</option>
-        </select>
-        <span class="error" th:if="${#fields.hasErrors('type')}" th:errors="*{type}"></span>
-    </div>
+    <input type="hidden" th:field="*{id}" /> <div>
+    <label>Type:</label>
+    <select th:field="*{type}">
+        <option value="">-- Select Type --</option>
+        <option value="LIFT">Lift</option>
+        <option value="AC">AC</option>
+        <option value="LIGHT">Light</option>
+        <option value="ESCALATOR">Escalator</option>
+    </select>
+    <span class="error" th:if="${#fields.hasErrors('type')}" th:errors="*{type}"></span>
+</div>
 
     <div>
         <label>Status:</label>
@@ -33,22 +32,19 @@
     </div>
 
     <div>
-        <label for="floorId">Located on Floor:</label>
-        <select id="floorId" name="floorId">
-            <option value="">-- Choose a Floor --</option>
+        <label>Floor:</label>
+        <select name="floorId">
+            <option value="">-- Choose Floor --</option>
             <option th:each="fl : ${floors}"
                     th:value="${fl.id}"
-                    th:text="'Etaj ' + ${fl.number} + ' (' + ${fl.mall.name} + ')'">
-            </option>
+                    th:text="'Etaj ' + ${fl.number}"
+                    th:selected="${electricalAsset.floor != null and electricalAsset.floor.id == fl.id}"></option>
         </select>
         <span class="error" th:if="${#fields.hasErrors('floor')}" th:errors="*{floor}"></span>
     </div>
 
-    <br>
-    <button type="submit">Save</button>
+    <br><button type="submit">Save</button>
 </form>
-
-<a href="/electrical">Back to List</a>
-
+<a href="/electrical">Back</a>
 </body>
 </html>

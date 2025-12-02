@@ -2,47 +2,49 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Create Purchase</title>
-    <style> .error { color: red; font-size: 0.9em; } </style>
+    <title>Purchase Form</title>
+    <style> .error { color: red; font-size: 0.9em; display: block; } </style>
 </head>
 <body>
 
-<h1>Create New Purchase</h1>
+<h1>Purchase Form</h1>
 
 <form th:action="@{/purchase}" th:object="${purchase}" method="post">
 
+    <input type="hidden" th:field="*{id}" />
+
     <div>
-        <label for="customerId">Select Customer:</label>
-        <select id="customerId" name="customerId">
-            <option value="">-- Choose a Customer --</option>
-            <option th:each="cust : ${customers}"
-                    th:value="${cust.id}"
-                    th:text="${cust.name} + ' (' + ${cust.email} + ')'">
-            </option>
+        <label>Customer:</label>
+        <select name="customerId">
+            <option value="">-- Select Customer --</option>
+            <option th:each="c : ${customers}"
+                    th:value="${c.id}"
+                    th:text="${c.name}"
+                    th:selected="${purchase.customer != null and purchase.customer.id == c.id}"></option>
         </select>
+        <span class="error" th:if="${#fields.hasErrors('customer')}" th:errors="*{customer}"></span>
     </div>
 
     <div>
-        <label for="shopId">Select Shop:</label>
-        <select id="shopId" name="shopId">
-            <option value="">-- Choose a Shop --</option>
-            <option th:each="shp : ${shops}"
-                    th:value="${shp.id}"
-                    th:text="${shp.name}">
-            </option>
+        <label>Shop:</label>
+        <select name="shopId">
+            <option value="">-- Select Shop --</option>
+            <option th:each="s : ${shops}"
+                    th:value="${s.id}"
+                    th:text="${s.name}"
+                    th:selected="${purchase.shop != null and purchase.shop.id == s.id}"></option>
         </select>
+        <span class="error" th:if="${#fields.hasErrors('shop')}" th:errors="*{shop}"></span>
     </div>
 
     <div>
-        <label for="amount">Amount:</label>
-        <input type="number" step="0.01" id="amount" th:field="*{amount}" />
+        <label>Amount:</label>
+        <input type="number" step="0.01" th:field="*{amount}" />
         <span class="error" th:if="${#fields.hasErrors('amount')}" th:errors="*{amount}"></span>
     </div>
 
     <br>
-    <div>
-        <button type="submit">Save</button>
-    </div>
+    <button type="submit">Save</button>
 </form>
 
 <a href="/purchase">Back to List</a>

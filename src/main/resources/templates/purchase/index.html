@@ -1,42 +1,36 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>All Purchases</title>
-</head>
+<head><title>Purchases List</title></head>
 <body>
+<h1>Purchases List</h1>
+<a href="/purchase/new"><button>Create New</button></a>
+<br><br>
 
-<h1>Purchases</h1>
-
-<a href="/purchase/new">Add New Purchase</a>
+<form action="/purchase" method="get" style="margin-bottom: 20px;">
+    <label>Filter by Customer:</label>
+    <select name="customerId" onchange="this.form.submit()">
+        <option value="">-- All Customers --</option>
+        <option th:each="c : ${customers}" th:value="${c.id}" th:text="${c.name}" th:selected="${c.id == selectedCustomerId}"></option>
+    </select>
+    <a href="/purchase"><button type="button">Clear</button></a>
+</form>
 
 <table border="1">
-    <thead>
-    <tr>
-        <th>ID</th>
-        <th>Customer ID</th>
-        <th>Shop ID</th>
-        <th>Amount</th>
-        <th>Actions</th>
-    </tr>
-    </thead>
+    <thead><tr><th>ID</th><th>Customer</th><th>Shop</th><th>Amount</th><th>Actions</th></tr></thead>
     <tbody>
-    <tr th:each="purchase : ${purchases}">
-        <td th:text="${purchase.id}">-</td>
-        <td th:text="${purchase.customerId}">-</td>
-        <td th:text="${purchase.shopId}">-</td>
-        <td th:text="${purchase.amount}">-</td>
+    <tr th:each="p : ${purchases}">
+        <td th:text="${p.id}"></td>
+        <td th:text="${p.customer != null ? p.customer.name : 'N/A'}"></td>
+        <td th:text="${p.shop != null ? p.shop.name : 'N/A'}"></td>
+        <td th:text="${p.amount}"></td>
         <td>
-            <form th:action="@{'/purchase/' + ${purchase.id} + '/delete'}" method="post" style="display:inline;">
+            <a th:href="@{'/purchase/' + ${p.id} + '/edit'}"><button>Edit</button></a>
+            <form th:action="@{'/purchase/' + ${p.id} + '/delete'}" method="post" style="display:inline;">
                 <button type="submit">Delete</button>
             </form>
         </td>
     </tr>
     </tbody>
 </table>
-
-<br>
-<a href="/">Back to Home</a>
-
 </body>
 </html>

@@ -1,47 +1,46 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Create Shop</title>
-    <style> .error { color: red; font-size: 0.9em; } </style>
+    <title>Shop Form</title>
+    <style> .error { color: red; font-size: 0.9em; display: block; } </style>
 </head>
 <body>
 
-<h1>Create New Shop</h1>
+<h1>Shop Form</h1>
 
 <form th:action="@{/shop}" th:object="${shop}" method="post">
 
+    <input type="hidden" th:field="*{id}" /> <div>
+    <label>Name:</label>
+    <input type="text" th:field="*{name}" />
+    <span class="error" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></span>
+</div>
+
     <div>
-        <label for="name">Name:</label>
-        <input type="text" id="name" th:field="*{name}" />
-        <span class="error" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></span>
+        <label>Category:</label>
+        <input type="text" th:field="*{category}" />
     </div>
 
     <div>
-        <label for="category">Category:</label>
-        <input type="text" id="category" th:field="*{category}" />
+        <label>Phone Number:</label>
+        <input type="text" th:field="*{phoneNumber}" />
     </div>
 
     <div>
-        <label for="phoneNumber">Phone Number:</label>
-        <input type="text" id="phoneNumber" th:field="*{phoneNumber}" />
-    </div>
-
-    <div>
-        <label for="floorId">Located on Floor:</label>
-        <select id="floorId" name="floorId">
-            <option value="">-- Choose a Floor --</option>
+        <label>Floor:</label>
+        <select name="floorId">
+            <option value="">-- Choose Floor --</option>
             <option th:each="fl : ${floors}"
                     th:value="${fl.id}"
-                    th:text="'Etaj ' + ${fl.number}">
-            </option>
+                    th:text="'Etaj ' + ${fl.number}"
+                    th:selected="${shop.floor != null and shop.floor.id == fl.id}"></option>
         </select>
+        <span class="error" th:if="${#fields.hasErrors('floor')}" th:errors="*{floor}"></span>
     </div>
 
     <br>
-    <div>
-        <button type="submit">Save</button>
-    </div>
+    <button type="submit">Save</button>
 </form>
 
 <a href="/shop">Back to List</a>

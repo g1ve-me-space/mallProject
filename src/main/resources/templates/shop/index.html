@@ -1,34 +1,31 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>All Shops</title>
-</head>
+<head><title>Shops List</title></head>
 <body>
+<h1>Shops List</h1>
+<a href="/shop/new"><button>Create New</button></a>
+<br><br>
 
-<h1>Shops</h1>
-
-<a href="/shop/new">Add New Shop</a>
+<form action="/shop" method="get" style="margin-bottom: 20px;">
+    <label>Filter by Floor:</label>
+    <select name="floorId" onchange="this.form.submit()">
+        <option value="">-- All Floors --</option>
+        <option th:each="fl : ${floors}" th:value="${fl.id}" th:text="'Etaj ' + ${fl.number}" th:selected="${fl.id == selectedFloorId}"></option>
+    </select>
+    <a href="/shop"><button type="button">Clear</button></a>
+</form>
 
 <table border="1">
-    <thead>
-    <tr>
-        <th>ID</th>
-        <th>Name</th>
-        <th>Category</th>
-        <th>Phone Number</th> <!-- NEW COLUMN HEADER -->
-        <th>Actions</th>
-    </tr>
-    </thead>
+    <thead><tr><th>ID</th><th>Name</th><th>Category</th><th>Phone</th><th>Floor</th><th>Actions</th></tr></thead>
     <tbody>
-    <!-- Loop through the list of shops passed from the controller -->
     <tr th:each="shop : ${shops}">
-        <td th:text="${shop.id}">-</td>
-        <td th:text="${shop.name}">-</td>
-        <td th:text="${shop.category}">-</td>
-        <td th:text="${shop.phoneNumber}">-</td> <!-- NEW COLUMN DATA -->
+        <td th:text="${shop.id}"></td>
+        <td th:text="${shop.name}"></td>
+        <td th:text="${shop.category}"></td>
+        <td th:text="${shop.phoneNumber}"></td>
+        <td th:text="${shop.floor != null ? shop.floor.number : 'N/A'}"></td>
         <td>
-            <!-- Form to handle the deletion of a shop -->
+            <a th:href="@{'/shop/' + ${shop.id} + '/edit'}"><button>Edit</button></a>
             <form th:action="@{'/shop/' + ${shop.id} + '/delete'}" method="post" style="display:inline;">
                 <button type="submit">Delete</button>
             </form>
@@ -36,6 +33,5 @@
     </tr>
     </tbody>
 </table>
-
 </body>
 </html>
