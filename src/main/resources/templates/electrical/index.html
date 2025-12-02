@@ -8,7 +8,7 @@
 
 <h1>Electrical Assets</h1>
 
-<a href="/electrical/new">Add New Asset</a>
+<a th:href="@{/electrical/new}">Add New Asset</a>
 
 <table border="1">
     <thead>
@@ -26,8 +26,15 @@
         <td th:text="${asset.floorId}">-</td>
         <td th:text="${asset.type}">-</td>
         <td th:text="${asset.status}">-</td>
+        <!-- Replace the Edit link in the actions cell with this -->
         <td>
-            <form th:action="@{'/electrical/' + ${asset.id} + '/delete'}" method="post" style="display:inline;">
+            <!-- Edit as button (GET) -->
+            <form th:action="@{|/electrical/${asset.id}/edit|}" method="get" style="display:inline;margin-right:6px;">
+                <button type="submit">Edit</button>
+            </form>
+
+            <!-- Delete (your existing POST delete) -->
+            <form th:action="@{|/electrical/${asset.id}/delete|}" method="post" style="display:inline;">
                 <button type="submit">Delete</button>
             </form>
         </td>
@@ -36,7 +43,6 @@
 </table>
 
 <br>
-<a href="/">Back to Home</a>
-
+<a th:href="@{/}">Back to Home</a>
 </body>
 </html>

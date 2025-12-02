@@ -6,43 +6,89 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Create Electrical Asset</title>
+    <title th:text="${asset.id != null} ? 'Edit Electrical Asset' : 'Create Electrical Asset'">Electrical Asset</title>
 </head>
 <body>
-<h1>Create New Electrical Asset</h1>
-<form th:action="@{/electrical}" th:object="${asset}" method="post">
+<h1 th:text="${asset.id != null} ? 'Edit Electrical Asset' : 'Create New Electrical Asset'"></h1>
+
+<!-- Create form: posts to /electrical -->
+<form th:action="@{/electrical}" th:object="${asset}" method="post" th:if="${asset.id == null}">
     <div>
-        <label for="floorId">Floor:</label>
-        <select id="floorId" th:field="*{floorId}">
+        <label>Floor:</label>
+        <select th:field="*{floorId}">
             <option value="">-- Select a Floor --</option>
             <option th:each="floor : ${allFloors}"
                     th:value="${floor.id}"
                     th:text="'Floor ' + ${floor.number}"></option>
         </select>
     </div>
+
     <div>
-        <label for="type">Type:</label>
-        <select id="type" th:field="*{type}">
+        <label>Type:</label>
+        <select th:field="*{type}">
             <option value="">-- Select a Type --</option>
             <option th:each="t : ${allTypes}"
                     th:value="${t.name()}"
                     th:text="${t.toString()}"></option>
         </select>
     </div>
+
     <div>
-        <label for="status">Status:</label>
-        <select id="status" th:field="*{status}">
+        <label>Status:</label>
+        <select th:field="*{status}">
             <option value="">-- Select a Status --</option>
             <option th:each="s : ${allStatuses}"
                     th:value="${s.name()}"
                     th:text="${s.toString()}"></option>
         </select>
     </div>
+
     <div>
         <button type="submit">Save Asset</button>
     </div>
 </form>
+
+<!-- Edit form: posts to /electrical/{id}/edit -->
+<form th:action="@{/electrical/{id}/edit(id=${asset.id})}" th:object="${asset}" method="post" th:if="${asset.id != null}">
+    <!-- optional hidden id field (not required since path id is used) -->
+    <input type="hidden" th:field="*{id}" />
+
+    <div>
+        <label>Floor:</label>
+        <select th:field="*{floorId}">
+            <option value="">-- Select a Floor --</option>
+            <option th:each="floor : ${allFloors}"
+                    th:value="${floor.id}"
+                    th:text="'Floor ' + ${floor.number}"></option>
+        </select>
+    </div>
+
+    <div>
+        <label>Type:</label>
+        <select th:field="*{type}">
+            <option value="">-- Select a Type --</option>
+            <option th:each="t : ${allTypes}"
+                    th:value="${t.name()}"
+                    th:text="${t.toString()}"></option>
+        </select>
+    </div>
+
+    <div>
+        <label>Status:</label>
+        <select th:field="*{status}">
+            <option value="">-- Select a Status --</option>
+            <option th:each="s : ${allStatuses}"
+                    th:value="${s.name()}"
+                    th:text="${s.toString()}"></option>
+        </select>
+    </div>
+
+    <div>
+        <button type="submit">Save Asset</button>
+    </div>
+</form>
+
 <br>
-<a href="/electrical">Back to List</a>
+<a th:href="@{/electrical}">Back to List</a>
 </body>
 </html>
