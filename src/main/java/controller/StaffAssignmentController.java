@@ -1,16 +1,13 @@
 package controller;
 
-import model.Floor;
-import model.Staff;
-import model.StaffAssignment;
+import jakarta.validation.Valid; // Import
+import model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult; // Import
 import org.springframework.web.bind.annotation.*;
-import repository.FloorRepository;
-import repository.MaintenanceStaffRepository;
-import repository.SecurityStaffRepository;
-import repository.StaffAssignmentRepository;
+import repository.*;
 import enums.Shift;
 
 import java.util.ArrayList;
@@ -44,8 +41,8 @@ public class StaffAssignmentController {
         return "assignments/index";
     }
 
-    @GetMapping("/new")
-    public String showCreateForm(Model model) {
+    // Metodă ajutătoare pentru a repopula listele în caz de eroare
+    private void populateModel(Model model) {
         List<Staff> allStaff = new ArrayList<>();
         allStaff.addAll(maintenanceStaffRepository.findAll());
         allStaff.addAll(securityStaffRepository.findAll());
@@ -54,24 +51,56 @@ public class StaffAssignmentController {
         List<Floor> allFloors = floorRepository.findAll();
         allFloors.sort(Comparator.comparing(Floor::getNumber));
 
-        model.addAttribute("assignment", new StaffAssignment());
         model.addAttribute("allStaff", allStaff);
         model.addAttribute("allFloors", allFloors);
         model.addAttribute("allShifts", Shift.values());
+    }
 
+    @GetMapping("/new")
+    public String showCreateForm(Model model) {
+        model.addAttribute("assignment", new StaffAssignment());
+        populateModel(model);
         return "assignments/form";
     }
 
     @PostMapping
-    public String create(@ModelAttribute StaffAssignment assignment) {
-        assignment.setId(UUID.randomUUID().toString());
+    public String create(@Valid @ModelAttribute("assignment") StaffAssignment assignment,
+                         BindingResult bindingResult,
+                         @RequestParam(value = "staffId", required = false) String staffId,
+                         @RequestParam(value = "floorId", required = false) String floorId,
+                         Model model) {
+
+        // 1. Validare Manuală
+        if (staffId == null || staffId.isEmpty()) {
+            bindingResult.rejectValue("staff", "error.staff", "Trebuie să alegi un angajat!");
+        }
+        if (floorId == null || floorId.isEmpty()) {
+            bindingResult.rejectValue("floor", "error.floor", "Trebuie să alegi un etaj!");
+        }
+
+        // 2. Verificare Erori
+        if (bindingResult.hasErrors()) {
+            populateModel(model); // Reîncărcăm listele
+            return "assignments/form";
+        }
+
+        // 3. Salvare
+        if (assignment.getId() == null || assignment.getId().isEmpty()) {
+            assignment.setId(UUID.randomUUID().toString());
+        }
+
+        Floor f = floorRepository.findById(floorId).orElse(null);
+        assignment.setFloor(f);
+
+        Staff s = maintenanceStaffRepository.findById(staffId)
+                .map(Staff.class::cast)
+                .orElse(securityStaffRepository.findById(staffId).orElse(null));
+        assignment.setStaff(s);
+
         assignmentRepository.save(assignment);
         return "redirect:/assignments";
     }
 
-    /**
-     * FIX: The method call is now .deleteById(id) to match the new repository.
-     */
     @PostMapping("/{id}/delete")
     public String delete(@PathVariable String id) {
         assignmentRepository.deleteById(id);

@@ -1,13 +1,14 @@
 package controller;
 
+import jakarta.validation.Valid;
 import model.SecurityStaff;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import repository.SecurityStaffRepository;
 
-import java.util.List;
 import java.util.UUID;
 
 @Controller
@@ -23,8 +24,7 @@ public class SecurityStaffController {
 
     @GetMapping
     public String listAll(Model model) {
-        List<SecurityStaff> staffList = securityRepository.findAll();
-        model.addAttribute("staffList", staffList);
+        model.addAttribute("staffList", securityRepository.findAll());
         return "security-staff/index";
     }
 
@@ -35,15 +35,19 @@ public class SecurityStaffController {
     }
 
     @PostMapping
-    public String create(@ModelAttribute SecurityStaff staff) {
-        staff.setId(UUID.randomUUID().toString());
+    public String create(@Valid @ModelAttribute("staff") SecurityStaff staff, BindingResult bindingResult) {
+
+        if (bindingResult.hasErrors()) {
+            return "security-staff/form";
+        }
+
+        if (staff.getId() == null || staff.getId().isEmpty()) {
+            staff.setId(UUID.randomUUID().toString());
+        }
         securityRepository.save(staff);
         return "redirect:/security-staff";
     }
 
-    /**
-     * FIX: The method call is changed from .delete(id) to .deleteById(id)
-     */
     @PostMapping("/{id}/delete")
     public String delete(@PathVariable String id) {
         securityRepository.deleteById(id);

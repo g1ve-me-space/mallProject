@@ -1,24 +1,35 @@
-<!--@thymesVar id="floor" type="model.Floor"-->
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Create Floor</title>
+    <style> .error { color: red; font-size: 0.9em; } </style>
 </head>
 <body>
 
 <h1>Create New Floor</h1>
 
 <form th:action="@{/floor}" th:object="${floor}" method="post">
+
     <div>
-        <label for="number">Floor Number:</label>
-        <!-- Corrected to use 'number' to match Floor.java -->
-        <input type="number" id="number" th:field="*{number}" />
+        <label>Floor Number:</label>
+        <input type="number" th:field="*{number}" />
+        <span class="error" th:if="${#fields.hasErrors('number')}" th:errors="*{number}"></span>
     </div>
-    <!-- Removed the non-existent 'levelName' field -->
+
     <div>
-        <button type="submit">Save</button>
+        <label>Mall:</label>
+        <select name="mallId">
+            <option value="">-- Select Mall --</option>
+            <option th:each="m : ${malls}"
+                    th:value="${m.id}"
+                    th:text="${m.name} + ' (' + ${m.city} + ')'">
+            </option>
+        </select>
     </div>
+
+    <br>
+    <button type="submit">Save</button>
 </form>
 
 <a href="/floor">Back to List</a>
