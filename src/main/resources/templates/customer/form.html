@@ -1,41 +1,68 @@
+<!--@thymesVar id="customer" type="model.Customer"-->
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 <head>
     <meta charset="UTF-8">
-    <title>Create Customer</title>
-    <style> .error { color: red; font-size: 0.9em; } </style>
+    <title th:text="${customer.id != null} ? 'Edit Customer' : 'Create Customer'">Customer</title>
 </head>
 <body>
+<h1 th:text="${customer.id != null} ? 'Edit Customer' : 'Create New Customer'"></h1>
 
-<h1>Create New Customer</h1>
-
-<form th:action="@{/customer}" th:object="${customer}" method="post">
+<!-- CREATE form -->
+<form th:action="@{/customer}" th:object="${customer}" method="post" th:if="${customer.id == null}">
+    <input type="hidden" th:field="*{id}" />
 
     <div>
-        <label for="name">Name:</label>
-        <input type="text" id="name" th:field="*{name}" />
-        <span class="error" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></span>
+        <label>Name</label>
+        <input th:field="*{name}" />
+        <div th:if="${#fields.hasErrors('name')}" th:errors="*{name}" style="color:red"></div>
     </div>
 
     <div>
-        <label for="currency">Currency:</label>
-        <input type="text" id="currency" th:field="*{currency}" />
-        <span class="error" th:if="${#fields.hasErrors('currency')}" th:errors="*{currency}"></span>
+        <label>Currency</label>
+        <input th:field="*{currency}" />
+        <div th:if="${#fields.hasErrors('currency')}" th:errors="*{currency}" style="color:red"></div>
     </div>
 
     <div>
-        <label for="email">Email:</label>
-        <input type="text" id="email" th:field="*{email}" />
-        <span class="error" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></span>
+        <label>Email</label>
+        <input th:field="*{email}" />
+        <div th:if="${#fields.hasErrors('email')}" th:errors="*{email}" style="color:red"></div>
     </div>
 
-    <br>
     <div>
         <button type="submit">Save</button>
     </div>
 </form>
 
-<a href="/customer">Back to List</a>
+<!-- EDIT form -->
+<form th:action="@{/customer/{id}/edit(id=${customer.id})}" th:object="${customer}" method="post" th:if="${customer.id != null}">
+    <input type="hidden" th:field="*{id}" />
 
+    <div>
+        <label>Name</label>
+        <input th:field="*{name}" />
+        <div th:if="${#fields.hasErrors('name')}" th:errors="*{name}" style="color:red"></div>
+    </div>
+
+    <div>
+        <label>Currency</label>
+        <input th:field="*{currency}" />
+        <div th:if="${#fields.hasErrors('currency')}" th:errors="*{currency}" style="color:red"></div>
+    </div>
+
+    <div>
+        <label>Email</label>
+        <input th:field="*{email}" />
+        <div th:if="${#fields.hasErrors('email')}" th:errors="*{email}" style="color:red"></div>
+    </div>
+
+    <div>
+        <button type="submit">Save</button>
+    </div>
+</form>
+
+<br>
+<a th:href="@{/customer}">Back to List</a>
 </body>
 </html>

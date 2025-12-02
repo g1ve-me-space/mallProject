@@ -1,50 +1,82 @@
+<!--@thymesVar id="shop" type="model.Shop"-->
+<!--@thymesVar id="floors" type="java.util.List<model.Floor>"-->
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>Create Shop</title>
-    <style> .error { color: red; font-size: 0.9em; } </style>
+    <meta charset="UTF-8"/>
+    <title th:text="${shop.id != null} ? 'Edit Shop' : 'Create Shop'">Shop</title>
 </head>
 <body>
+<h1 th:text="${shop.id != null} ? 'Edit Shop' : 'Create New Shop'"></h1>
 
-<h1>Create New Shop</h1>
-
-<form th:action="@{/shop}" th:object="${shop}" method="post">
-
+<!-- CREATE form -->
+<form th:action="@{/shop}" th:object="${shop}" method="post" th:if="${shop.id == null}">
     <div>
-        <label for="name">Name:</label>
-        <input type="text" id="name" th:field="*{name}" />
-        <span class="error" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></span>
+        <label>Name</label>
+        <input th:field="*{name}" />
     </div>
 
     <div>
-        <label for="category">Category:</label>
-        <input type="text" id="category" th:field="*{category}" />
+        <label>Category</label>
+        <input th:field="*{category}" />
     </div>
 
     <div>
-        <label for="phoneNumber">Phone Number:</label>
-        <input type="text" id="phoneNumber" th:field="*{phoneNumber}" />
+        <label>Phone Number</label>
+        <input th:field="*{phoneNumber}" />
     </div>
 
     <div>
-        <label for="floorId">Located on Floor:</label>
-        <select id="floorId" name="floorId">
-            <option value="">-- Choose a Floor --</option>
-            <option th:each="fl : ${floors}"
-                    th:value="${fl.id}"
-                    th:text="'Etaj ' + ${fl.number}">
-            </option>
+        <label>Floor</label>
+        <select name="floorId">
+            <option value="">-- Select a Floor --</option>
+            <option th:each="f : ${floors}"
+                    th:value="${f.id}"
+                    th:text="'Floor ' + ${f.number}"></option>
         </select>
     </div>
 
-    <br>
     <div>
         <button type="submit">Save</button>
     </div>
 </form>
 
-<a href="/shop">Back to List</a>
+<!-- EDIT form -->
+<form th:action="@{/shop/{id}/edit(id=${shop.id})}" th:object="${shop}" method="post" th:if="${shop.id != null}">
+    <input type="hidden" th:field="*{id}" />
 
+    <div>
+        <label>Name</label>
+        <input th:field="*{name}" />
+    </div>
+
+    <div>
+        <label>Category</label>
+        <input th:field="*{category}" />
+    </div>
+
+    <div>
+        <label>Phone Number</label>
+        <input th:field="*{phoneNumber}" />
+    </div>
+
+    <div>
+        <label>Floor</label>
+        <select name="floorId">
+            <option value="">-- Select a Floor --</option>
+            <option th:each="f : ${floors}"
+                    th:value="${f.id}"
+                    th:text="'Floor ' + ${f.number}"
+                    th:selected="${shop.floor != null and shop.floor.id == f.id}"></option>
+        </select>
+    </div>
+
+    <div>
+        <button type="submit">Save</button>
+    </div>
+</form>
+
+<br>
+<a th:href="@{/shop}">Back to List</a>
 </body>
 </html>

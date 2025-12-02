@@ -9,6 +9,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import repository.SecurityStaffRepository;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @Controller
@@ -51,6 +52,33 @@ public class SecurityStaffController {
     @PostMapping("/{id}/delete")
     public String delete(@PathVariable String id) {
         securityRepository.deleteById(id);
+        return "redirect:/security-staff";
+    }
+
+    // ---------- ADDED: show edit form ----------
+    @GetMapping("/{id}/edit")
+    public String showEditForm(@PathVariable String id, Model model) {
+        Optional<SecurityStaff> opt = securityRepository.findById(id);
+        if (opt.isEmpty()) {
+            return "redirect:/security-staff";
+        }
+        model.addAttribute("staff", opt.get());
+        return "security-staff/form";
+    }
+
+    // ---------- ADDED: handle edit submit ----------
+    @PostMapping("/{id}/edit")
+    public String update(@PathVariable String id,
+                         @Valid @ModelAttribute("staff") SecurityStaff staff,
+                         BindingResult bindingResult) {
+
+        if (bindingResult.hasErrors()) {
+            return "security-staff/form";
+        }
+
+        // ensure path id is the source of truth
+        staff.setId(id);
+        securityRepository.save(staff);
         return "redirect:/security-staff";
     }
 }

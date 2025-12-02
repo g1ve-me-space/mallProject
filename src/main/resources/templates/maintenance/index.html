@@ -1,14 +1,13 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>All Maintenance Tasks</title>
+    <meta charset="UTF-8"/>
+    <title>Maintenance Tasks</title>
 </head>
 <body>
-
 <h1>Maintenance Tasks</h1>
 
-<a href="/maintenance/new">Add New Task</a>
+<a th:href="@{/maintenance/new}">Add New Task</a>
 
 <table border="1">
     <thead>
@@ -16,16 +15,24 @@
         <th>ID</th>
         <th>Description</th>
         <th>Status</th>
+        <th>Floor</th>
         <th>Actions</th>
     </tr>
     </thead>
     <tbody>
-    <tr th:each="task : ${tasks}">
-        <td th:text="${task.id}">-</td>
-        <td th:text="${task.description}">-</td>
-        <td th:text="${task.status}">-</td>
+    <tr th:each="t : ${tasks}">
+        <td th:text="${t.id}">-</td>
+        <td th:text="${t.description}">-</td>
+        <td th:text="${t.status}">-</td>
+        <td th:text="${t.floor != null ? 'Floor ' + t.floor.number : '-'}">-</td>
         <td>
-            <form th:action="@{'/maintenance/' + ${task.id} + '/delete'}" method="post" style="display:inline;">
+            <!-- Edit as GET button -->
+            <form th:action="@{|/maintenance/${t.id}/edit|}" method="get" style="display:inline;margin-right:6px;">
+                <button type="submit">Edit</button>
+            </form>
+
+            <!-- Delete as POST -->
+            <form th:action="@{|/maintenance/${t.id}/delete|}" method="post" style="display:inline;">
                 <button type="submit">Delete</button>
             </form>
         </td>
@@ -34,7 +41,6 @@
 </table>
 
 <br>
-<a href="/">Back to Home</a>
-
+<a th:href="@{/}">Back to Home</a>
 </body>
 </html>

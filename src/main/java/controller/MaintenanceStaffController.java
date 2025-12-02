@@ -11,6 +11,7 @@ import repository.MaintenanceStaffRepository;
 import enums.MaintenanceStaffType;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Controller
@@ -57,6 +58,36 @@ public class MaintenanceStaffController {
     @PostMapping("/{id}/delete")
     public String delete(@PathVariable String id) {
         staffRepository.deleteById(id);
+        return "redirect:/maintenance-staff";
+    }
+
+    // ---------- ADDED: show edit form ----------
+    @GetMapping("/{id}/edit")
+    public String showEditForm(@PathVariable String id, Model model) {
+        Optional<MaintenanceStaff> opt = staffRepository.findById(id);
+        if (opt.isEmpty()) {
+            return "redirect:/maintenance-staff";
+        }
+        model.addAttribute("staff", opt.get());
+        model.addAttribute("allStaffTypes", MaintenanceStaffType.values());
+        return "maintenance-staff/form";
+    }
+
+    // ---------- ADDED: handle edit submit ----------
+    @PostMapping("/{id}/edit")
+    public String update(@PathVariable String id,
+                         @Valid @ModelAttribute("staff") MaintenanceStaff staff,
+                         BindingResult bindingResult,
+                         Model model) {
+
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("allStaffTypes", MaintenanceStaffType.values());
+            return "maintenance-staff/form";
+        }
+
+        // ensure path id is the source of truth
+        staff.setId(id);
+        staffRepository.save(staff);
         return "redirect:/maintenance-staff";
     }
 }

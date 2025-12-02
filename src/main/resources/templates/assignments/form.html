@@ -1,56 +1,102 @@
+<!--@thymesVar id="assignment" type="model.StaffAssignment"-->
+<!--@thymesVar id="allStaff" type="java.util.List<model.Staff>"-->
+<!--@thymesVar id="allFloors" type="java.util.List<model.Floor>"-->
+<!--@thymesVar id="allShifts" type="java.util.List<enums.Shift>"-->
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>Create Staff Assignment</title>
-    <style> .error { color: red; font-size: 0.9em; display:block; } </style>
+    <meta charset="UTF-8"/>
+    <title th:text="${assignment.id != null} ? 'Edit Assignment' : 'Create Assignment'">Assignment</title>
 </head>
 <body>
+<h1 th:text="${assignment.id != null} ? 'Edit Assignment' : 'Create New Assignment'"></h1>
 
-<h1>Create New Assignment</h1>
-
-<form th:action="@{/assignments}" th:object="${assignment}" method="post">
-
+<!-- CREATE form -->
+<form th:action="@{/assignments}" th:object="${assignment}" method="post" th:if="${assignment.id == null}">
     <div>
-        <label for="staffId">Staff Member:</label>
-        <select id="staffId" name="staffId">
+        <label>Staff</label>
+        <select name="staffId">
             <option value="">-- Select Staff --</option>
-            <option th:each="staff : ${allStaff}"
-                    th:value="${staff.id}"
-                    th:text="${staff.name}"></option>
+            <option th:each="s : ${allStaff}"
+                    th:value="${s.id}"
+                    th:text="${s.name}"></option>
         </select>
-        <span class="error" th:if="${#fields.hasErrors('staff')}" th:errors="*{staff}"></span>
+        <div th:if="${#fields.hasErrors('staff')}" th:errors="*{staff}" style="color:red"></div>
     </div>
 
     <div>
-        <label for="floorId">Floor:</label>
-        <select id="floorId" name="floorId">
+        <label>Floor</label>
+        <select name="floorId">
             <option value="">-- Select Floor --</option>
-            <option th:each="floor : ${allFloors}"
-                    th:value="${floor.id}"
-                    th:text="${'Floor #' + floor.number}"></option>
+            <option th:each="f : ${allFloors}"
+                    th:value="${f.id}"
+                    th:text="'Floor ' + ${f.number}"></option>
         </select>
-        <span class="error" th:if="${#fields.hasErrors('floor')}" th:errors="*{floor}"></span>
+        <div th:if="${#fields.hasErrors('floor')}" th:errors="*{floor}" style="color:red"></div>
     </div>
 
     <div>
-        <label for="shift">Shift:</label>
-        <select id="shift" th:field="*{shift}">
+        <label>Shift</label>
+        <select th:field="*{shift}">
             <option value="">-- Select Shift --</option>
-            <option th:each="s : ${allShifts}"
-                    th:value="${s}"
-                    th:text="${s}"></option>
+            <option th:each="sh : ${allShifts}"
+                    th:value="${sh.name()}"
+                    th:text="${sh.toString()}"></option>
         </select>
-        <span class="error" th:if="${#fields.hasErrors('shift')}" th:errors="*{shift}"></span>
+        <div th:if="${#fields.hasErrors('shift')}" th:errors="*{shift}" style="color:red"></div>
     </div>
 
-    <br>
     <div>
-        <button type="submit">Save Assignment</button>
+        <button type="submit">Save</button>
     </div>
 </form>
 
-<a href="/assignments">Back to List</a>
+<!-- EDIT form -->
+<form th:action="@{/assignments/{id}/edit(id=${assignment.id})}" th:object="${assignment}" method="post" th:if="${assignment.id != null}">
+    <input type="hidden" th:field="*{id}" />
 
+    <div>
+        <label>Staff</label>
+        <select name="staffId">
+            <option value="">-- Select Staff --</option>
+            <option th:each="s : ${allStaff}"
+                    th:value="${s.id}"
+                    th:text="${s.name}"
+                    th:selected="${assignment.staff != null and assignment.staff.id == s.id}"></option>
+        </select>
+        <div th:if="${#fields.hasErrors('staff')}" th:errors="*{staff}" style="color:red"></div>
+    </div>
+
+    <div>
+        <label>Floor</label>
+        <select name="floorId">
+            <option value="">-- Select Floor --</option>
+            <option th:each="f : ${allFloors}"
+                    th:value="${f.id}"
+                    th:text="'Floor ' + ${f.number}"
+                    th:selected="${assignment.floor != null and assignment.floor.id == f.id}"></option>
+        </select>
+        <div th:if="${#fields.hasErrors('floor')}" th:errors="*{floor}" style="color:red"></div>
+    </div>
+
+    <div>
+        <label>Shift</label>
+        <select th:field="*{shift}">
+            <option value="">-- Select Shift --</option>
+            <option th:each="sh : ${allShifts}"
+                    th:value="${sh.name()}"
+                    th:text="${sh.toString()}"
+                    th:selected="${assignment.shift != null and assignment.shift.name() == sh.name()}"></option>
+        </select>
+        <div th:if="${#fields.hasErrors('shift')}" th:errors="*{shift}" style="color:red"></div>
+    </div>
+
+    <div>
+        <button type="submit">Save</button>
+    </div>
+</form>
+
+<br>
+<a th:href="@{/assignments}">Back to List</a>
 </body>
 </html>

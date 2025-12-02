@@ -1,33 +1,37 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>All Purchases</title>
+    <meta charset="UTF-8"/>
+    <title>Purchases</title>
 </head>
 <body>
-
 <h1>Purchases</h1>
 
-<a href="/purchase/new">Add New Purchase</a>
+<a th:href="@{/purchase/new}">Add New Purchase</a>
 
 <table border="1">
     <thead>
     <tr>
         <th>ID</th>
-        <th>Customer ID</th>
-        <th>Shop ID</th>
-        <th>Amount</th>
+        <th>Customer</th>
+        <th>Shop</th>
+        <!-- Add other Purchase columns here if needed -->
         <th>Actions</th>
     </tr>
     </thead>
     <tbody>
-    <tr th:each="purchase : ${purchases}">
-        <td th:text="${purchase.id}">-</td>
-        <td th:text="${purchase.customerId}">-</td>
-        <td th:text="${purchase.shopId}">-</td>
-        <td th:text="${purchase.amount}">-</td>
+    <tr th:each="p : ${purchases}">
+        <td th:text="${p.id}">-</td>
+        <td th:text="${p.customer != null ? p.customer.name : '-'}">-</td>
+        <td th:text="${p.shop != null ? p.shop.name : '-'}">-</td>
         <td>
-            <form th:action="@{'/purchase/' + ${purchase.id} + '/delete'}" method="post" style="display:inline;">
+            <!-- Edit as GET button -->
+            <form th:action="@{|/purchase/${p.id}/edit|}" method="get" style="display:inline;margin-right:6px;">
+                <button type="submit">Edit</button>
+            </form>
+
+            <!-- Delete as POST -->
+            <form th:action="@{|/purchase/${p.id}/delete|}" method="post" style="display:inline;">
                 <button type="submit">Delete</button>
             </form>
         </td>
@@ -36,7 +40,6 @@
 </table>
 
 <br>
-<a href="/">Back to Home</a>
-
+<a th:href="@{/}">Back to Home</a>
 </body>
 </html>

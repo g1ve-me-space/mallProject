@@ -1,40 +1,65 @@
+<!--@thymesVar id="staff" type="model.MaintenanceStaff"-->
+<!--@thymesVar id="allStaffTypes" type="java.util.List<enums.MaintenanceStaffType>"-->
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>Create Maintenance Staff</title>
-    <style> .error { color: red; font-size: 0.9em; display:block; } </style>
+    <meta charset="UTF-8"/>
+    <title th:text="${staff.id != null} ? 'Edit Maintenance Staff' : 'Create Maintenance Staff'">Maintenance Staff</title>
 </head>
 <body>
+<h1 th:text="${staff.id != null} ? 'Edit Maintenance Staff' : 'Create New Maintenance Staff'"></h1>
 
-<h1>Create New Maintenance Staff</h1>
-
-<form th:action="@{/maintenance-staff}" th:object="${staff}" method="post">
-
+<!-- CREATE form -->
+<form th:action="@{/maintenance-staff}" th:object="${staff}" method="post" th:if="${staff.id == null}">
     <div>
-        <label for="name">Name:</label>
-        <input type="text" id="name" th:field="*{name}">
-        <span class="error" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></span>
+        <label>Name</label>
+        <input th:field="*{name}" />
+        <div th:if="${#fields.hasErrors('name')}" th:errors="*{name}" style="color:red"></div>
     </div>
 
     <div>
-        <label for="type">Type:</label>
-        <select id="type" th:field="*{type}">
-            <option value="">-- Select Type --</option>
+        <label>Type</label>
+        <select th:field="*{type}">
+            <option value="">-- Select a Type --</option>
             <option th:each="t : ${allStaffTypes}"
-                    th:value="${t}"
-                    th:text="${t}"></option>
+                    th:value="${t.name()}"
+                    th:text="${t.toString()}"></option>
         </select>
-        <span class="error" th:if="${#fields.hasErrors('type')}" th:errors="*{type}"></span>
+        <div th:if="${#fields.hasErrors('type')}" th:errors="*{type}" style="color:red"></div>
     </div>
 
-    <br>
     <div>
         <button type="submit">Save</button>
     </div>
 </form>
 
-<a href="/maintenance-staff">Back to List</a>
+<!-- EDIT form -->
+<form th:action="@{/maintenance-staff/{id}/edit(id=${staff.id})}" th:object="${staff}" method="post" th:if="${staff.id != null}">
+    <input type="hidden" th:field="*{id}" />
 
+    <div>
+        <label>Name</label>
+        <input th:field="*{name}" />
+        <div th:if="${#fields.hasErrors('name')}" th:errors="*{name}" style="color:red"></div>
+    </div>
+
+    <div>
+        <label>Type</label>
+        <select th:field="*{type}">
+            <option value="">-- Select a Type --</option>
+            <option th:each="t : ${allStaffTypes}"
+                    th:value="${t.name()}"
+                    th:text="${t.toString()}"></option>
+        </select>
+        <div th:if="${#fields.hasErrors('type')}" th:errors="*{type}" style="color:red"></div>
+    </div>
+
+    <div>
+        <button type="submit">Save</button>
+    </div>
+</form>
+
+<br>
+<a th:href="@{/maintenance-staff}">Back to List</a>
 </body>
 </html>

@@ -1,14 +1,13 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>All Shops</title>
+    <meta charset="UTF-8"/>
+    <title>Shops</title>
 </head>
 <body>
-
 <h1>Shops</h1>
 
-<a href="/shop/new">Add New Shop</a>
+<a th:href="@{/shop/new}">Add New Shop</a>
 
 <table border="1">
     <thead>
@@ -16,20 +15,26 @@
         <th>ID</th>
         <th>Name</th>
         <th>Category</th>
-        <th>Phone Number</th> <!-- NEW COLUMN HEADER -->
+        <th>Phone</th>
+        <th>Floor</th>
         <th>Actions</th>
     </tr>
     </thead>
     <tbody>
-    <!-- Loop through the list of shops passed from the controller -->
     <tr th:each="shop : ${shops}">
         <td th:text="${shop.id}">-</td>
         <td th:text="${shop.name}">-</td>
         <td th:text="${shop.category}">-</td>
-        <td th:text="${shop.phoneNumber}">-</td> <!-- NEW COLUMN DATA -->
+        <td th:text="${shop.phoneNumber}">-</td>
+        <td th:text="${shop.floor != null ? 'Floor ' + shop.floor.number : '-'}">-</td>
         <td>
-            <!-- Form to handle the deletion of a shop -->
-            <form th:action="@{'/shop/' + ${shop.id} + '/delete'}" method="post" style="display:inline;">
+            <!-- Edit as GET button -->
+            <form th:action="@{|/shop/${shop.id}/edit|}" method="get" style="display:inline;margin-right:6px;">
+                <button type="submit">Edit</button>
+            </form>
+
+            <!-- Delete as POST -->
+            <form th:action="@{|/shop/${shop.id}/delete|}" method="post" style="display:inline;">
                 <button type="submit">Delete</button>
             </form>
         </td>
@@ -37,5 +42,7 @@
     </tbody>
 </table>
 
+<br>
+<a th:href="@{/}">Back to Home</a>
 </body>
 </html>

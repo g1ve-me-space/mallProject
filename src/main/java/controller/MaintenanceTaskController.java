@@ -10,7 +10,9 @@ import org.springframework.validation.BindingResult; // Import
 import org.springframework.web.bind.annotation.*;
 import repository.FloorRepository;
 import repository.MaintenanceTaskRepository;
+import enums.TaskStatus;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @Controller
@@ -36,6 +38,7 @@ public class MaintenanceTaskController {
     public String showForm(Model model) {
         model.addAttribute("task", new MaintenanceTask());
         model.addAttribute("floors", floorRepository.findAll());
+        model.addAttribute("allStatuses", TaskStatus.values()); // <-- added so form has status options
         return "maintenance/form";
     }
 
@@ -54,6 +57,7 @@ public class MaintenanceTaskController {
         if (bindingResult.hasErrors()) {
             // Retrimitem lista de etaje pentru a popula dropdown-ul
             model.addAttribute("floors", floorRepository.findAll());
+            model.addAttribute("allStatuses", TaskStatus.values()); // <-- re-send status options when showing errors
             return "maintenance/form";
         }
 
@@ -72,6 +76,49 @@ public class MaintenanceTaskController {
     @PostMapping("/{id}/delete")
     public String delete(@PathVariable String id) {
         taskRepository.deleteById(id);
+        return "redirect:/maintenance";
+    }
+
+    // ---------- ADDED: show edit form ----------
+    @GetMapping("/{id}/edit")
+    public String showEditForm(@PathVariable String id, Model model) {
+        Optional<MaintenanceTask> opt = taskRepository.findById(id);
+        if (opt.isEmpty()) {
+            return "redirect:/maintenance";
+        }
+        MaintenanceTask task = opt.get();
+        model.addAttribute("task", task);
+        model.addAttribute("floors", floorRepository.findAll());
+        model.addAttribute("allStatuses", TaskStatus.values());
+        return "maintenance/form";
+    }
+
+    // ---------- ADDED: handle edit submit ----------
+    @PostMapping("/{id}/edit")
+    public String updateTask(@PathVariable String id,
+                             @Valid @ModelAttribute("task") MaintenanceTask task,
+                             BindingResult bindingResult,
+                             @RequestParam(value = "floorId", required = false) String floorId,
+                             Model model) {
+
+        // Validate floor selection (same manual validation as create)
+        if (floorId == null || floorId.isEmpty()) {
+            bindingResult.rejectValue("floor", "error.floor", "Trebuie să selectezi un etaj!");
+        }
+
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("floors", floorRepository.findAll());
+            model.addAttribute("allStatuses", TaskStatus.values());
+            return "maintenance/form";
+        }
+
+        // ensure path id is the source of truth
+        task.setId(id);
+
+        Floor floor = floorRepository.findById(floorId).orElse(null);
+        task.setFloor(floor);
+
+        taskRepository.save(task);
         return "redirect:/maintenance";
     }
 }

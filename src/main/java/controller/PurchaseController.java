@@ -12,6 +12,7 @@ import repository.PurchaseRepository;
 import repository.ShopRepository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Controller
@@ -20,7 +21,6 @@ public class PurchaseController {
 
     private final PurchaseRepository purchaseRepository;
     private final ShopRepository shopRepository;
-    // CustomerRepository va fi roșu până îl creăm la pasul următor
     private final CustomerRepository customerRepository;
 
     @Autowired
@@ -42,11 +42,8 @@ public class PurchaseController {
     @GetMapping("/new")
     public String showCreateForm(Model model) {
         model.addAttribute("purchase", new Purchase());
-
-        // Trimitem listele către HTML pentru a popula dropdown-urile (<select>)
         model.addAttribute("customers", customerRepository.findAll());
         model.addAttribute("shops", shopRepository.findAll());
-
         return "purchase/form";
     }
 
@@ -55,23 +52,24 @@ public class PurchaseController {
                                  @RequestParam(value = "customerId", required = false) String customerId,
                                  @RequestParam(value = "shopId", required = false) String shopId) {
 
-        // 1. Generăm ID pentru cumpărătură
         if (purchase.getId() == null || purchase.getId().isEmpty()) {
             purchase.setId(UUID.randomUUID().toString());
         }
 
-        // 2. Găsim obiectele reale din baza de date pe baza ID-urilor venite din formular
-        if (customerId != null) {
+        if (customerId != null && !customerId.isEmpty()) {
             Customer c = customerRepository.findById(customerId).orElse(null);
             purchase.setCustomer(c);
+        } else {
+            purchase.setCustomer(null);
         }
 
-        if (shopId != null) {
+        if (shopId != null && !shopId.isEmpty()) {
             Shop s = shopRepository.findById(shopId).orElse(null);
             purchase.setShop(s);
+        } else {
+            purchase.setShop(null);
         }
 
-        // 3. Salvăm
         purchaseRepository.save(purchase);
         return "redirect:/purchase";
     }
@@ -79,6 +77,48 @@ public class PurchaseController {
     @PostMapping("/{id}/delete")
     public String deletePurchase(@PathVariable String id) {
         purchaseRepository.deleteById(id);
+        return "redirect:/purchase";
+    }
+
+    // ---------- ADDED: show edit form ----------
+    @GetMapping("/{id}/edit")
+    public String showEditForm(@PathVariable String id, Model model) {
+        Optional<Purchase> opt = purchaseRepository.findById(id);
+        if (opt.isEmpty()) {
+            return "redirect:/purchase";
+        }
+        Purchase purchase = opt.get();
+        model.addAttribute("purchase", purchase);
+        model.addAttribute("customers", customerRepository.findAll());
+        model.addAttribute("shops", shopRepository.findAll());
+        return "purchase/form";
+    }
+
+    // ---------- ADDED: handle edit submit ----------
+    @PostMapping("/{id}/edit")
+    public String updatePurchase(@PathVariable String id,
+                                 @ModelAttribute Purchase purchase,
+                                 @RequestParam(value = "customerId", required = false) String customerId,
+                                 @RequestParam(value = "shopId", required = false) String shopId) {
+
+        // ensure path id is the source of truth
+        purchase.setId(id);
+
+        if (customerId != null && !customerId.isEmpty()) {
+            Customer c = customerRepository.findById(customerId).orElse(null);
+            purchase.setCustomer(c);
+        } else {
+            purchase.setCustomer(null);
+        }
+
+        if (shopId != null && !shopId.isEmpty()) {
+            Shop s = shopRepository.findById(shopId).orElse(null);
+            purchase.setShop(s);
+        } else {
+            purchase.setShop(null);
+        }
+
+        purchaseRepository.save(purchase);
         return "redirect:/purchase";
     }
 }

@@ -1,35 +1,54 @@
+<!--@thymesVar id="staff" type="model.SecurityStaff"-->
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>Create Security Staff</title>
-    <style> .error { color: red; font-size: 0.9em; display:block; } </style>
+    <meta charset="UTF-8"/>
+    <title th:text="${staff.id != null} ? 'Edit Security Staff' : 'Create Security Staff'">Security Staff</title>
 </head>
 <body>
+<h1 th:text="${staff.id != null} ? 'Edit Security Staff' : 'Create New Security Staff'"></h1>
 
-<h1>Create New Security Staff</h1>
-
-<form th:action="@{/security-staff}" th:object="${staff}" method="post">
-
+<!-- CREATE form -->
+<form th:action="@{/security-staff}" th:object="${staff}" method="post" th:if="${staff.id == null}">
     <div>
-        <label for="name">Name:</label>
-        <input type="text" id="name" th:field="*{name}" />
-        <span class="error" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></span>
+        <label>Name</label>
+        <input th:field="*{name}" />
+        <div th:if="${#fields.hasErrors('name')}" th:errors="*{name}" style="color:red"></div>
     </div>
 
     <div>
-        <label for="badgeNo">Badge Number:</label>
-        <input type="text" id="badgeNo" th:field="*{badgeNo}" />
-        <span class="error" th:if="${#fields.hasErrors('badgeNo')}" th:errors="*{badgeNo}"></span>
+        <label>Badge Number</label>
+        <input th:field="*{badgeNo}" />
+        <div th:if="${#fields.hasErrors('badgeNo')}" th:errors="*{badgeNo}" style="color:red"></div>
     </div>
 
-    <br>
     <div>
         <button type="submit">Save</button>
     </div>
 </form>
 
-<a href="/security-staff">Back to List</a>
+<!-- EDIT form -->
+<form th:action="@{/security-staff/{id}/edit(id=${staff.id})}" th:object="${staff}" method="post" th:if="${staff.id != null}">
+    <input type="hidden" th:field="*{id}" />
 
+    <div>
+        <label>Name</label>
+        <input th:field="*{name}" />
+        <div th:if="${#fields.hasErrors('name')}" th:errors="*{name}" style="color:red"></div>
+    </div>
+
+    <div>
+        <label>Badge Number</label>
+        <input th:field="*{badgeNo}" />
+        <div th:if="${#fields.hasErrors('badgeNo')}" th:errors="*{badgeNo}" style="color:red"></div>
+    </div>
+
+    <div>
+        <button type="submit">Save</button>
+    </div>
+</form>
+
+<br>
+<a th:href="@{/security-staff}">Back to List</a>
 </body>
 </html>

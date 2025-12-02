@@ -1,14 +1,13 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>All Maintenance Staff</title>
+    <meta charset="UTF-8"/>
+    <title>Maintenance Staff</title>
 </head>
 <body>
-
 <h1>Maintenance Staff</h1>
 
-<a href="/maintenance-staff/new">Add New Staff Member</a>
+<a th:href="@{/maintenance-staff/new}">Add New Staff</a>
 
 <table border="1">
     <thead>
@@ -20,12 +19,18 @@
     </tr>
     </thead>
     <tbody>
-    <tr th:each="staff : ${staffList}">
-        <td th:text="${staff.id}">-</td>
-        <td th:text="${staff.name}">-</td>
-        <td th:text="${staff.type}">-</td>
+    <tr th:each="s : ${staffList}">
+        <td th:text="${s.id}">-</td>
+        <td th:text="${s.name}">-</td>
+        <td th:text="${s.type}">-</td>
         <td>
-            <form th:action="@{'/maintenance-staff/' + ${staff.id} + '/delete'}" method="post" style="display:inline;">
+            <!-- Edit as GET button -->
+            <form th:action="@{|/maintenance-staff/${s.id}/edit|}" method="get" style="display:inline;margin-right:6px;">
+                <button type="submit">Edit</button>
+            </form>
+
+            <!-- Delete as POST -->
+            <form th:action="@{|/maintenance-staff/${s.id}/delete|}" method="post" style="display:inline;">
                 <button type="submit">Delete</button>
             </form>
         </td>
@@ -34,7 +39,6 @@
 </table>
 
 <br>
-<a href="/">Back to Home</a>
-
+<a th:href="@{/}">Back to Home</a>
 </body>
 </html>

@@ -1,50 +1,89 @@
+<!--@thymesVar id="task" type="model.MaintenanceTask"-->
+<!--@thymesVar id="floors" type="java.util.List<model.Floor>"-->
+<!--@thymesVar id="allStatuses" type="java.util.List<enums.TaskStatus>"-->
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>Create Maintenance Task</title>
-    <style> .error { color: red; font-size: 0.9em; display:block; } </style>
+    <meta charset="UTF-8"/>
+    <title th:text="${task.id != null} ? 'Edit Maintenance Task' : 'Create Maintenance Task'">Maintenance Task</title>
 </head>
 <body>
+<h1 th:text="${task.id != null} ? 'Edit Maintenance Task' : 'Create New Maintenance Task'"></h1>
 
-<h1>Create Maintenance Task</h1>
-
-<form th:action="@{/maintenance}" th:object="${task}" method="post">
-
+<!-- CREATE form -->
+<form th:action="@{/maintenance}" th:object="${task}" method="post" th:if="${task.id == null}">
     <div>
-        <label>Description:</label>
-        <input type="text" th:field="*{description}" />
-        <span class="error" th:if="${#fields.hasErrors('description')}" th:errors="*{description}"></span>
+        <label>Description</label>
+        <input th:field="*{description}" />
+        <div th:if="${#fields.hasErrors('description')}" th:errors="*{description}" style="color:red"></div>
     </div>
 
     <div>
-        <label>Status:</label>
+        <label>Status</label>
         <select th:field="*{status}">
-            <option value="">-- Select Status --</option>
-            <option value="PLANNED">Planned</option>
-            <option value="ACTIVE">Active</option>
-            <option value="DONE">Done</option>
+            <option value="">-- Select a status --</option>
+            <option th:each="s : ${allStatuses}"
+                    th:value="${s.name()}"
+                    th:text="${s.toString()}"></option>
         </select>
-        <span class="error" th:if="${#fields.hasErrors('status')}" th:errors="*{status}"></span>
+        <div th:if="${#fields.hasErrors('status')}" th:errors="*{status}" style="color:red"></div>
     </div>
 
     <div>
-        <label>Floor:</label>
+        <label>Floor</label>
         <select name="floorId">
-            <option value="">-- Choose Floor --</option>
-            <option th:each="fl : ${floors}"
-                    th:value="${fl.id}"
-                    th:text="'Etaj ' + ${fl.number}">
-            </option>
+            <option value="">-- Select a floor --</option>
+            <option th:each="f : ${floors}"
+                    th:value="${f.id}"
+                    th:text="'Floor ' + ${f.number}"></option>
         </select>
-        <span class="error" th:if="${#fields.hasErrors('floor')}" th:errors="*{floor}"></span>
+        <div th:if="${#fields.hasErrors('floor')}" th:errors="*{floor}" style="color:red"></div>
     </div>
 
-    <br>
-    <button type="submit">Save</button>
+    <div>
+        <button type="submit">Save</button>
+    </div>
 </form>
 
-<a href="/maintenance">Back</a>
+<!-- EDIT form -->
+<form th:action="@{/maintenance/{id}/edit(id=${task.id})}" th:object="${task}" method="post" th:if="${task.id != null}">
+    <input type="hidden" th:field="*{id}" />
 
+    <div>
+        <label>Description</label>
+        <input th:field="*{description}" />
+        <div th:if="${#fields.hasErrors('description')}" th:errors="*{description}" style="color:red"></div>
+    </div>
+
+    <div>
+        <label>Status</label>
+        <select th:field="*{status}">
+            <option value="">-- Select a status --</option>
+            <option th:each="s : ${allStatuses}"
+                    th:value="${s.name()}"
+                    th:text="${s.toString()}"></option>
+        </select>
+        <div th:if="${#fields.hasErrors('status')}" th:errors="*{status}" style="color:red"></div>
+    </div>
+
+    <div>
+        <label>Floor</label>
+        <select name="floorId">
+            <option value="">-- Select a floor --</option>
+            <option th:each="f : ${floors}"
+                    th:value="${f.id}"
+                    th:text="'Floor ' + ${f.number}"
+                    th:selected="${task.floor != null and task.floor.id == f.id}"></option>
+        </select>
+        <div th:if="${#fields.hasErrors('floor')}" th:errors="*{floor}" style="color:red"></div>
+    </div>
+
+    <div>
+        <button type="submit">Save</button>
+    </div>
+</form>
+
+<br>
+<a th:href="@{/maintenance}">Back to List</a>
 </body>
 </html>

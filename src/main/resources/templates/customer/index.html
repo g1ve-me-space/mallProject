@@ -2,13 +2,12 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>All Customers</title>
+    <title>Customers</title>
 </head>
 <body>
-
 <h1>Customers</h1>
 
-<a href="/customer/new">Add New Customer</a>
+<a th:href="@{/customer/new}">Add New Customer</a>
 
 <table border="1">
     <thead>
@@ -21,15 +20,16 @@
     </tr>
     </thead>
     <tbody>
-    <!-- Loop through the list of customers passed from the controller -->
     <tr th:each="customer : ${customers}">
         <td th:text="${customer.id}">-</td>
         <td th:text="${customer.name}">-</td>
         <td th:text="${customer.currency}">-</td>
         <td th:text="${customer.email}">-</td>
         <td>
-            <!-- Form to handle the deletion of a customer -->
-            <form th:action="@{'/customer/' + ${customer.id} + '/delete'}" method="post" style="display:inline;">
+            <form th:action="@{|/customer/${customer.id}/edit|}" method="get" style="display:inline;margin-right:6px;">
+                <button type="submit">Edit</button>
+            </form>
+            <form th:action="@{|/customer/${customer.id}/delete|}" method="post" style="display:inline;">
                 <button type="submit">Delete</button>
             </form>
         </td>
@@ -38,7 +38,6 @@
 </table>
 
 <br>
-<a href="/shop">Back to Shops</a>
-
+<a th:href="@{/}">Back to Home</a>
 </body>
 </html>

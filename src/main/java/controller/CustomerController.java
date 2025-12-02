@@ -1,4 +1,5 @@
 package controller;
+
 import java.util.UUID;
 import jakarta.validation.Valid; // Import necesar pentru validare
 import model.Customer;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import service.CustomerService;
 
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/customer")
@@ -58,6 +60,31 @@ public class CustomerController {
     @PostMapping("/{id}/delete")
     public String deleteCustomer(@PathVariable String id) {
         customerService.deleteById(id);
+        return "redirect:/customer";
+    }
+
+    // ---------- ADDED: show edit form ----------
+    @GetMapping("/{id}/edit")
+    public String showEditForm(@PathVariable String id, Model model) {
+        Optional<Customer> opt = customerService.findById(id);
+        if (opt.isEmpty()) {
+            return "redirect:/customer";
+        }
+        model.addAttribute("customer", opt.get());
+        return "customer/form";
+    }
+
+    // ---------- ADDED: handle edit submit ----------
+    @PostMapping("/{id}/edit")
+    public String updateCustomer(@PathVariable String id,
+                                 @Valid @ModelAttribute Customer customer,
+                                 BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return "customer/form";
+        }
+        // ensure path id is the source of truth
+        customer.setId(id);
+        customerService.save(customer);
         return "redirect:/customer";
     }
 }

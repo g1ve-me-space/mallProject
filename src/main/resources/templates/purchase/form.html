@@ -1,51 +1,82 @@
+<!--@thymesVar id="purchase" type="model.Purchase"-->
+<!--@thymesVar id="customers" type="java.util.List<model.Customer>"-->
+<!--@thymesVar id="shops" type="java.util.List<model.Shop>"-->
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>Create Purchase</title>
-    <style> .error { color: red; font-size: 0.9em; } </style>
+    <meta charset="UTF-8"/>
+    <title th:text="${purchase.id != null} ? 'Edit Purchase' : 'Create Purchase'">Purchase</title>
 </head>
 <body>
+<h1 th:text="${purchase.id != null} ? 'Edit Purchase' : 'Create New Purchase'"></h1>
 
-<h1>Create New Purchase</h1>
-
-<form th:action="@{/purchase}" th:object="${purchase}" method="post">
+<!-- CREATE form -->
+<form th:action="@{/purchase}" th:object="${purchase}" method="post" th:if="${purchase.id == null}">
+    <!-- If your Purchase has additional simple fields (e.g. amount, description), add them here:
+         <div>
+           <label>Amount</label>
+           <input th:field="*{amount}" />
+         </div>
+    -->
 
     <div>
-        <label for="customerId">Select Customer:</label>
-        <select id="customerId" name="customerId">
-            <option value="">-- Choose a Customer --</option>
-            <option th:each="cust : ${customers}"
-                    th:value="${cust.id}"
-                    th:text="${cust.name} + ' (' + ${cust.email} + ')'">
-            </option>
+        <label>Customer</label>
+        <select name="customerId">
+            <option value="">-- Select a Customer --</option>
+            <option th:each="c : ${customers}"
+                    th:value="${c.id}"
+                    th:text="${c.name}"></option>
         </select>
     </div>
 
     <div>
-        <label for="shopId">Select Shop:</label>
-        <select id="shopId" name="shopId">
-            <option value="">-- Choose a Shop --</option>
-            <option th:each="shp : ${shops}"
-                    th:value="${shp.id}"
-                    th:text="${shp.name}">
-            </option>
+        <label>Shop</label>
+        <select name="shopId">
+            <option value="">-- Select a Shop --</option>
+            <option th:each="s : ${shops}"
+                    th:value="${s.id}"
+                    th:text="${s.name}"></option>
         </select>
     </div>
 
-    <div>
-        <label for="amount">Amount:</label>
-        <input type="number" step="0.01" id="amount" th:field="*{amount}" />
-        <span class="error" th:if="${#fields.hasErrors('amount')}" th:errors="*{amount}"></span>
-    </div>
-
-    <br>
     <div>
         <button type="submit">Save</button>
     </div>
 </form>
 
-<a href="/purchase">Back to List</a>
+<!-- EDIT form -->
+<form th:action="@{/purchase/{id}/edit(id=${purchase.id})}" th:object="${purchase}" method="post" th:if="${purchase.id != null}">
+    <input type="hidden" th:field="*{id}" />
 
+    <!-- Add additional fields here if Purchase has them -->
+    <div>
+        <label>Customer</label>
+        <select name="customerId">
+            <option value="">-- Select a Customer --</option>
+            <option th:each="c : ${customers}"
+                    th:value="${c.id}"
+                    th:text="${c.name}"
+                    th:selected="${purchase.customer != null and purchase.customer.id == c.id}"></option>
+        </select>
+    </div>
+
+    <div>
+        <label>Shop</label>
+        <select name="shopId">
+            <option value="">-- Select a Shop --</option>
+            <option th:each="s : ${shops}"
+                    th:value="${s.id}"
+                    th:text="${s.name}"
+                    th:selected="${purchase.shop != null and purchase.shop.id == s.id}"></option>
+        </select>
+    </div>
+
+    <div>
+        <button type="submit">Save</button>
+    </div>
+</form>
+
+<br>
+<a th:href="@{/purchase}">Back to List</a>
 </body>
 </html>

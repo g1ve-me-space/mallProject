@@ -1,38 +1,62 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>Create Floor</title>
-    <style> .error { color: red; font-size: 0.9em; } </style>
+    <meta charset="UTF-8"/>
+    <title th:text="${floor.id != null} ? 'Edit Floor' : 'Create Floor'">Floor</title>
 </head>
 <body>
+<h1 th:text="${floor.id != null} ? 'Edit Floor' : 'Create New Floor'"></h1>
 
-<h1>Create New Floor</h1>
-
-<form th:action="@{/floor}" th:object="${floor}" method="post">
-
+<!-- CREATE form -->
+<form th:action="@{/floor}" th:object="${floor}" method="post" th:if="${floor.id == null}">
     <div>
-        <label>Floor Number:</label>
+        <label>Number</label>
         <input type="number" th:field="*{number}" />
-        <span class="error" th:if="${#fields.hasErrors('number')}" th:errors="*{number}"></span>
+        <div th:if="${#fields.hasErrors('number')}" th:errors="*{number}" style="color:red"></div>
     </div>
 
     <div>
-        <label>Mall:</label>
+        <label>Mall</label>
         <select name="mallId">
-            <option value="">-- Select Mall --</option>
-            <option th:each="m : ${malls}"
-                    th:value="${m.id}"
-                    th:text="${m.name} + ' (' + ${m.city} + ')'">
-            </option>
+            <option value="">-- Select a Mall --</option>
+            <option th:each="mall : ${malls}"
+                    th:value="${mall.id}"
+                    th:text="${mall.name}"></option>
         </select>
     </div>
 
-    <br>
-    <button type="submit">Save</button>
+    <div>
+        <button type="submit">Save</button>
+    </div>
 </form>
 
-<a href="/floor">Back to List</a>
+<!-- EDIT form -->
+<form th:action="@{/floor/{id}/edit(id=${floor.id})}" th:object="${floor}" method="post" th:if="${floor.id != null}">
+    <input type="hidden" th:field="*{id}" />
 
+    <div>
+        <label>Number</label>
+        <input type="number" th:field="*{number}" />
+        <div th:if="${#fields.hasErrors('number')}" th:errors="*{number}" style="color:red"></div>
+    </div>
+
+    <div>
+        <label>Mall</label>
+        <select name="mallId">
+            <option value="">-- Select a Mall --</option>
+            <option th:each="mall : ${malls}"
+                    th:value="${mall.id}"
+                    th:text="${mall.name}"
+                    th:selected="${floor.mall != null and floor.mall.id == mall.id}"></option>
+        </select>
+    </div>
+
+    <div>
+        <button type="submit">Save</button>
+    </div>
+</form>
+
+<br>
+<a th:href="@{/floor}">Back to List</a>
 </body>
 </html>

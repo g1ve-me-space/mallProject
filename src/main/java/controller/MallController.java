@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import repository.MallRepository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Controller
@@ -57,6 +58,34 @@ public class MallController {
     @PostMapping("/{id}/delete")
     public String deleteMall(@PathVariable String id) {
         mallRepository.deleteById(id);
+        return "redirect:/mall";
+    }
+
+    // ---------- ADDED: show edit form ----------
+    @GetMapping("/{id}/edit")
+    public String showEditForm(@PathVariable String id, Model model) {
+        Optional<Mall> opt = mallRepository.findById(id);
+        if (opt.isEmpty()) {
+            return "redirect:/mall";
+        }
+        model.addAttribute("mall", opt.get());
+        return "mall/form";
+    }
+
+    // ---------- ADDED: handle edit submit ----------
+    @PostMapping("/{id}/edit")
+    public String updateMall(@PathVariable String id,
+                             @Valid @ModelAttribute Mall mall,
+                             BindingResult bindingResult) {
+
+        if (bindingResult.hasErrors()) {
+            return "mall/form";
+        }
+
+        // ensure path id is the source of truth
+        mall.setId(id);
+
+        mallRepository.save(mall);
         return "redirect:/mall";
     }
 }
